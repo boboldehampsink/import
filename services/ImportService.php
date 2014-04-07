@@ -82,17 +82,13 @@ class ImportService extends BaseApplicationComponent {
         
         }
         
-        // Hook to prepare as appropriate fieldtype
-        $operations = craft()->plugins->call('registerFieldTypeOperation', array($fields));
         // Prepare entry model
         $entry = $this->prepForEntryModel($fields, $entry);
         
-        // Merge results into fields
-        if(is_array($operations) && count($operations) > 0) {
-        	foreach($operations as $operation) {
-        	    $fields = \CMap::mergeArray($fields, $operation);
-        	}
-        }
+        // Hook to prepare as appropriate fieldtypes
+        array_walk($fields, function(&$data, $handle) {
+            return craft()->plugins->call('registerFieldTypeOperation', array(&$data, $handle));
+        });
         
         // Set fields on entry model
         $entry->setContentFromPost($fields);
@@ -188,173 +184,157 @@ class ImportService extends BaseApplicationComponent {
     }
     
     // Prepare fields for fieldtypes
-    public function prepForFieldType($fields) {
+    public function prepForFieldType(&$data, $handle) {
+                
+        // Get field info
+        $field = craft()->fields->getFieldByHandle($handle);
         
-        foreach($fields as $handle => $data) {
-        
-            // Get field info
-            $field = craft()->fields->getFieldByHandle($handle);
+        // If it's a field ofcourse
+        if(!is_null($field)) {
             
-            // If it's a field ofcourse
-            if(!is_null($field)) {
+            // For some fieldtypes the're special rules
+            switch($field->type) {
+            
+                case ImportModel::FieldTypeEntries:
                 
-                // For some fieldtypes the're special rules
-                switch($field->type) {
+                    // Fresh up $data
+                    $data = str_replace("\n", "", $data);
+                    $data = str_replace("\r", "", $data);
+                    $data = trim($data);
+                    
+                    // Don't connect empty fields
+                    if(!empty($data)) {
                 
-                    case ImportModel::FieldTypeEntries:
-                    
-                        // Fresh up $data
-                        $data = str_replace("\n", "", $data);
-                        $data = str_replace("\r", "", $data);
-                        $data = trim($data);
-                        
-                        // Don't connect empty fields
-                        if(!empty($data)) {
-                    
-                            // Get source id's for connecting
-                            $sectionIds = array();
-                            foreach($field->getFieldType()->getSettings()->sources as $source) {
-                                list($type, $id) = explode(':', $source);
-                                $sectionIds[] = $id;
-                            }
-                                        
-                            // Find matching element in sections       
-                            $criteria = craft()->elements->getCriteria(ElementType::Entry);
-                            $criteria->sectionId = $sectionIds;
-     
-                            // "Loose" matching for easier connecting
-                            $data = implode(' OR ', ArrayHelper::stringToArray($data));
-                            $criteria->search = $data;
-                            
-                            // Return the found id's for connecting
-                            $data = $criteria->ids();
-                        
-                        } else {
-                        
-                            // Return empty array
-                            $data = array();
-                        
-                        }
-                                            
-                    break;
-                    
-                    case ImportModel::FieldTypeCategories:
-                    
-                        // Fresh up $data
-                        $data = trim($data);
-                        
-                        // Don't connect empty fields
-                        if(!empty($data)) {
-                                                                            
-                            // Get source id
-                            $source = $field->getFieldType()->getSettings()->source;
+                        // Get source id's for connecting
+                        $sectionIds = array();
+                        foreach($field->getFieldType()->getSettings()->sources as $source) {
                             list($type, $id) = explode(':', $source);
-                            
-                            // Get category data
-                            $category = new CategoryModel();
-                            $category->groupId = $id;                    
-                        
-                            // This we append before the slugified path
-                            $categoryUrl = str_replace('/{slug}', '/', $category->getUrlFormat());
-                                                                
-                            // Find matching element by URI (dirty, not all categories have URI's)        
-                            $criteria = craft()->elements->getCriteria(ElementType::Category);
-                            $criteria->groupId = $id;
-                            $criteria->uri = $categoryUrl . $this->_slugify($data);
-                            
-                            // Return the found id's for connecting
-                            $data = $criteria->ids();
-                            
-                        } else {
-                        
-                            // Return empty array
-                            $data = array();
-                        
+                            $sectionIds[] = $id;
                         }
-                                            
-                    break;
-                    
-                    case ImportModel::FieldTypeAssets:
-                    
-                        // Fresh up $data
-                        $data = trim($data);
-                        
-                        // Don't connect empty fields
-                        if(!empty($data)) {
-                    
-                            // Get source id's for connecting
-                            $sourceIds = array();
-                            foreach($field->getFieldType()->getSettings()->sources as $source) {
-                                list($type, $id) = explode(':', $source);
-                                $sourceIds[] = $id;
-                            }
-                                        
-                            // Find matching element in sources    
-                            $criteria = craft()->elements->getCriteria(ElementType::Asset);
-                            $criteria->sourceId = $sourceIds;
-                            
-                            // Ability to import multiple Assets at once
-    						$data = implode(' OR ', ArrayHelper::stringToArray($data));
-                            $criteria->search = $data;
-                                                    
-                            // Return the found id's for connecting
-                            $data = $criteria->ids();
-                            
-                        } else {
-                        
-                            // Return empty array
-                            $data = array();
-                        
-                        }
-                                            
-                    break;
-                    
-                    case ImportModel::FieldTypeUsers:
-                    
-                        // Fresh up $data
-                        $data = trim($data);
-                        
-                        // Don't connect empty fields
-                        if(!empty($data)) {
                                     
-                            // Find matching element        
-                            $criteria = craft()->elements->getCriteria(ElementType::User);
-                            
-                            // Ability to import multiple Users at once
-    						$data = implode(' OR ', ArrayHelper::stringToArray($data));
-                            $criteria->search = $data;
-                                                    
-                            // Return the found id's for connecting
-                            $data = $criteria->ids();
-                            
-                        } else {
+                        // Find matching element in sections       
+                        $criteria = craft()->elements->getCriteria(ElementType::Entry);
+                        $criteria->sectionId = $sectionIds;
+ 
+                        // "Loose" matching for easier connecting
+                        $data = implode(' OR ', ArrayHelper::stringToArray($data));
+                        $criteria->search = $data;
                         
-                            // Return empty array
-                            $data = array();
-                        
-                        }
-                                            
-                    break;
+                        // Return the found id's for connecting
+                        $data = $criteria->ids();
                     
-                    case ImportModel::FieldTypeRichText:
+                    } else {
                     
-                        // Fresh up $data
-                        $data = trim($data);
-                        
-                        // Parse Markdown into Rich Text
-                        $data = StringHelper::parseMarkdown($data);
-                                            
-                    break;
+                        // Return empty array
+                        $data = array();
+                    
+                    }
+                                        
+                break;
                 
-                }
+                case ImportModel::FieldTypeCategories:
+                
+                    // Fresh up $data
+                    $data = trim($data);
+                    
+                    // Don't connect empty fields
+                    if(!empty($data)) {
+                                                                        
+                        // Get source id
+                        $source = $field->getFieldType()->getSettings()->source;
+                        list($type, $id) = explode(':', $source);
+                        
+                        // Get category data
+                        $category = new CategoryModel();
+                        $category->groupId = $id;                    
+                    
+                        // This we append before the slugified path
+                        $categoryUrl = str_replace('/{slug}', '/', $category->getUrlFormat());
+                                                            
+                        // Find matching element by URI (dirty, not all categories have URI's)        
+                        $criteria = craft()->elements->getCriteria(ElementType::Category);
+                        $criteria->groupId = $id;
+                        $criteria->uri = $categoryUrl . $this->_slugify($data);
+                        
+                        // Return the found id's for connecting
+                        $data = $criteria->ids();
+                        
+                    } else {
+                    
+                        // Return empty array
+                        $data = array();
+                    
+                    }
+                                        
+                break;
+                
+                case ImportModel::FieldTypeAssets:
+                
+                    // Fresh up $data
+                    $data = trim($data);
+                    
+                    // Don't connect empty fields
+                    if(!empty($data)) {
+                
+                        // Get source id's for connecting
+                        $sourceIds = array();
+                        foreach($field->getFieldType()->getSettings()->sources as $source) {
+                            list($type, $id) = explode(':', $source);
+                            $sourceIds[] = $id;
+                        }
+                                    
+                        // Find matching element in sources    
+                        $criteria = craft()->elements->getCriteria(ElementType::Asset);
+                        $criteria->sourceId = $sourceIds;
+                        
+                        // Ability to import multiple Assets at once
+						$data = implode(' OR ', ArrayHelper::stringToArray($data));
+                        $criteria->search = $data;
+                                                
+                        // Return the found id's for connecting
+                        $data = $criteria->ids();
+                        
+                    } else {
+                    
+                        // Return empty array
+                        $data = array();
+                    
+                    }
+                                        
+                break;
+                
+                case ImportModel::FieldTypeUsers:
+                
+                    // Fresh up $data
+                    $data = trim($data);
+                    
+                    // Don't connect empty fields
+                    if(!empty($data)) {
+                                
+                        // Find matching element        
+                        $criteria = craft()->elements->getCriteria(ElementType::User);
+                        
+                        // Ability to import multiple Users at once
+						$data = implode(' OR ', ArrayHelper::stringToArray($data));
+                        $criteria->search = $data;
+                                                
+                        // Return the found id's for connecting
+                        $data = $criteria->ids();
+                        
+                    } else {
+                    
+                        // Return empty array
+                        $data = array();
+                    
+                    }
+                                        
+                break;
             
             }
-
-            $fields[$handle] = $data;
         
         }
                                 
-        return $fields;
+        return $data;
     
     }
     
