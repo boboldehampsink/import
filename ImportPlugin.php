@@ -23,13 +23,13 @@ class ImportPlugin extends BasePlugin
 		return 'http://www.itmundi.nl';
 	}
 	
-	public function hasCpSection()
+	function hasCpSection()
 	{
 		return true;
 	}
 	
 	// Create a hook and call it from service
-	public function registerFieldTypeOperation($data) {
+	function registerFieldTypeOperation($data) {
 	
 	    return craft()->import->prepForFieldType($data);
 	
