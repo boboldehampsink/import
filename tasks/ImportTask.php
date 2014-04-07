@@ -1,0 +1,55 @@
+<?php
+namespace Craft;
+
+class ImportTask extends BaseTask {
+
+    protected function defineSettings() {
+    
+        return array(
+            'file'      => AttributeType::Name,
+            'rows'      => AttributeType::Number,
+            'map'       => AttributeType::Mixed,
+            'unique'    => AttributeType::Mixed,
+            'section'   => AttributeType::Number,
+            'entrytype' => AttributeType::Number,
+            'behavior'  => AttributeType::Name
+        );
+    
+    }
+
+    public function getDescription() {
+    
+        return Craft::t('Import');
+    
+    }
+    
+    public function getTotalSteps() {
+    
+        // Delete element template caches before importing
+        craft()->templateCache->deleteCachesByElementType(ElementType::Entry);
+    
+        // Take a step for every row
+        return $this->getSettings()->rows;
+    
+    }
+    
+    public function runStep($step) {
+    
+        // Get settings
+        $settings = $this->getSettings();
+    
+        // Open file
+        $data = craft()->import->data($settings->file);
+        
+        if(isset($data[$step])) {
+                
+            // Import row
+            return craft()->import->row($data[$step], $settings);
+            
+        }
+    
+        return true;
+    
+    }
+
+}

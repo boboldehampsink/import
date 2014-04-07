@@ -1,0 +1,17 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Import"|t %}
+
+{% set tabs = {
+    upload: { label: "Upload file"|t, url: url('import') },
+    map:    { label: "Map fields"|t, url: url('import/map') }
+} %}
+
+{% set selectedTab = 'progress' %}
+
+{% set content %}
+
+    <h2 class="first">{{ "Import process started."|t }}</h2>
+    <p>{{ "The import process has been dedicated to a task, which will show its progress in the navigation bar."|t }}</p>
+    
+{% endset %}
