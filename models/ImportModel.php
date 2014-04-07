@@ -41,14 +41,14 @@ class ImportModel extends BaseModel
     const DelimiterComma     = ',';
     const DelimiterPipe      = '|';
 
-	protected function defineAttributes()
-	{
-		return array(
-		    'section'   => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Section')),
-		    'entrytype' => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Entrytype')),
-			'behavior'  => array(AttributeType::Enum, 'required' => true, 'values' => array(self::BehaviorAppend, self::BehaviorReplace, self::BehaviorDelete)),
-		    'file'      => array(AttributeType::String, 'required' => true, 'label' => Craft::t('File')),
-			'type'      => array(AttributeType::Enum, 'required' => true, 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth))
-		);
-	}
+    protected function defineAttributes()
+    {
+        return array(
+            'section'   => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Section')),
+            'entrytype' => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Entrytype')),
+            'behavior'  => array(AttributeType::Enum, 'required' => true, 'values' => array(self::BehaviorAppend, self::BehaviorReplace, self::BehaviorDelete)),
+            'file'      => array(AttributeType::String, 'required' => true, 'label' => Craft::t('File')),
+            'type'      => array(AttributeType::Enum, 'required' => true, 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth))
+        );
+    }
 }

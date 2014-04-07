@@ -159,28 +159,28 @@ class ImportService extends BaseApplicationComponent {
         unset($fields[ImportModel::HandleAuthor]);
         
         // Set slug
-		$entry->slug = isset($fields[ImportModel::HandleSlug]) ? ElementHelper::createSlug($fields[ImportModel::HandleSlug]) : $entry->slug;
-		unset($fields[ImportModel::HandleSlug]);
-		
-		// Set postdate
-		if(isset($fields[ImportModel::HandlePostDate])) {
-		    $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
-		}
-		unset($fields[ImportModel::HandlePostDate]);
-		
-		// Set expiry date
-		if(isset($fields[ImportModel::HandlePostDate])) {
-		    $entry->expiryDate = DateTime::createFromString($fields[ImportModel::ExpiryDate], craft()->timezone);
-		}
-		unset($fields[ImportModel::HandlePostDate]);
-		
-		// Set enabled
-		$entry->enabled = isset($fields[ImportModel::HandleEnabled]) ? (bool)$fields[ImportModel::HandleEnabled] : $entry->enabled;
-		unset($fields[ImportModel::HandleEnabled]);
+        $entry->slug = isset($fields[ImportModel::HandleSlug]) ? ElementHelper::createSlug($fields[ImportModel::HandleSlug]) : $entry->slug;
+        unset($fields[ImportModel::HandleSlug]);
+        
+        // Set postdate
+        if(isset($fields[ImportModel::HandlePostDate])) {
+            $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
+        }
+        unset($fields[ImportModel::HandlePostDate]);
+        
+        // Set expiry date
+        if(isset($fields[ImportModel::HandlePostDate])) {
+            $entry->expiryDate = DateTime::createFromString($fields[ImportModel::ExpiryDate], craft()->timezone);
+        }
+        unset($fields[ImportModel::HandlePostDate]);
+        
+        // Set enabled
+        $entry->enabled = isset($fields[ImportModel::HandleEnabled]) ? (bool)$fields[ImportModel::HandleEnabled] : $entry->enabled;
+        unset($fields[ImportModel::HandleEnabled]);
 
         // Return entry
-		return $entry;
-        		    
+        return $entry;
+                    
     }
     
     // Prepare fields for fieldtypes
@@ -288,7 +288,7 @@ class ImportService extends BaseApplicationComponent {
                         $criteria->sourceId = $sourceIds;
                         
                         // Ability to import multiple Assets at once
-						$data = implode(' OR ', ArrayHelper::stringToArray($data));
+                        $data = implode(' OR ', ArrayHelper::stringToArray($data));
                         $criteria->search = $data;
                                                 
                         // Return the found id's for connecting
@@ -315,7 +315,7 @@ class ImportService extends BaseApplicationComponent {
                         $criteria = craft()->elements->getCriteria(ElementType::User);
                         
                         // Ability to import multiple Users at once
-						$data = implode(' OR ', ArrayHelper::stringToArray($data));
+                        $data = implode(' OR ', ArrayHelper::stringToArray($data));
                         $criteria->search = $data;
                                                 
                         // Return the found id's for connecting
