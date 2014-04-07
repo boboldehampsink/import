@@ -27,6 +27,7 @@ class ImportModel extends BaseModel
     const HandleExpiryDate   = 'expiryDate';
     const HandleEnabled      = 'enabled';
     const HandleStatus       = 'status';
+    const HandleSlug         = 'slug';
     
     // Fieldtypes
     const FieldTypeEntries    = 'Entries';

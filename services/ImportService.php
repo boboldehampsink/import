@@ -80,49 +80,12 @@ class ImportService extends BaseApplicationComponent {
             
             } 
         
-        }  
-                    
-        ## Set standard fields on entry ##
-        
-        // Set author
-        if(isset($fields[ImportModel::HandleAuthor])) {
-            $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
-            unset($fields[ImportModel::HandleAuthor]);
-        } else {
-            $entry->authorId = craft()->userSession->getUser()->id;
-        }
-        
-        // Set postDate, if any
-        if(isset($fields[ImportModel::HandlePostDate])) {
-            $entry->postDate = date('Y-m-d', strtotime($fields[ImportModel::HandlePostDate]));
-            unset($fields[ImportModel::HandlePostDate]);
-        }
-        
-        // Set expiryDate, if any
-        if(isset($fields[ImportModel::HandleExpiryDate])) {
-            $entry->expiryDate = date('Y-m-d', strtotime($fields[ImportModel::HandleExpiryDate]));
-            unset($fields[ImportModel::HandleExpiryDate]);
-        }
-        
-        // Set enabled
-        if(isset($fields[ImportModel::HandleEnabled])) {
-            $entry->enabled = ($fields[ImportModel::HandleEnabled] ? true : false);
-            unset($fields[ImportModel::HandleEnabled]);
-        }
-        
-        // Set status
-        if(isset($fields[ImportModel::HandleStatus])) {
-            $entry->status = ($fields[ImportModel::HandleStatus]);
-            unset($fields[ImportModel::HandleStatus]);
-        }
-        
-        // Set title
-        if(isset($fields[ImportModel::HandleTitle])) {
-            $entry->getContent()->title = $fields[ImportModel::HandleTitle];
         }
         
         // Hook to prepare as appropriate fieldtype
         $operations = craft()->plugins->call('registerFieldTypeOperation', array($fields));
+        // Prepare entry model
+        $entry = $this->prepForEntryModel($fields, $entry);
         
         // Merge results into fields
         if(is_array($operations) && count($operations) > 0) {
@@ -141,10 +104,11 @@ class ImportService extends BaseApplicationComponent {
             Craft::log('Import error:' . json_encode($entry->getErrors()));
             
             // But keep on resuming task
+            return true;
         
         }
         
-        // Always return true
+        // No failure; also return true
         return true;
     
     }
@@ -185,6 +149,42 @@ class ImportService extends BaseApplicationComponent {
         // Return data array
         return $data;
     
+    }
+    
+    // Prepare reserved EntryModel values
+    public function prepForEntryModel(&$fields, EntryModel $entry) {
+    
+        // Set Author
+        if(isset($fields[ImportModel::HandleAuthor])) {
+            $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
+        } else {
+            $entry->authorId = ($entry->authorId ? $entry->authorId : craft()->userSession->getUser()->id);
+        }
+        unset($fields[ImportModel::HandleAuthor]);
+        
+        // Set slug
+		$entry->slug = isset($fields[ImportModel::HandleSlug]) ? ElementHelper::createSlug($fields[ImportModel::HandleSlug]) : $entry->slug;
+		unset($fields[ImportModel::HandleSlug]);
+		
+		// Set postdate
+		if(isset($fields[ImportModel::HandlePostDate])) {
+		    $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
+		}
+		unset($fields[ImportModel::HandlePostDate]);
+		
+		// Set expiry date
+		if(isset($fields[ImportModel::HandlePostDate])) {
+		    $entry->expiryDate = DateTime::createFromString($fields[ImportModel::ExpiryDate], craft()->timezone);
+		}
+		unset($fields[ImportModel::HandlePostDate]);
+		
+		// Set enabled
+		$entry->enabled = isset($fields[ImportModel::HandleEnabled]) ? (bool)$fields[ImportModel::HandleEnabled] : $entry->enabled;
+		unset($fields[ImportModel::HandleEnabled]);
+
+        // Return entry
+		return $entry;
+        		    
     }
     
     // Prepare fields for fieldtypes
