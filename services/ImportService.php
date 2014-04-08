@@ -177,6 +177,10 @@ class ImportService extends BaseApplicationComponent {
         // Set enabled
         $entry->enabled = isset($fields[ImportModel::HandleEnabled]) ? (bool)$fields[ImportModel::HandleEnabled] : $entry->enabled;
         unset($fields[ImportModel::HandleEnabled]);
+        
+        // Set title
+        $entry->getContent()->title = isset($fields[ImportModel::HandleTitle]) ? $fields[ImportModel::HandleTitle] : $entry->title;
+        unset($fields[ImportModel::HandleTitle]);
 
         // Return entry
         return $entry;
