@@ -114,13 +114,13 @@ class ImportController extends BaseController
 
         // Create the import task
         craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), array(
-        	'file'      => $file,
-        	'rows'      => $rows,
-        	'map'       => $map,
-        	'unique'    => $unique,
-        	'section'   => $section,
-        	'entrytype' => $entrytype,
-        	'behavior'  => $behavior
+            'file'      => $file,
+            'rows'      => $rows,
+            'map'       => $map,
+            'unique'    => $unique,
+            'section'   => $section,
+            'entrytype' => $entrytype,
+            'behavior'  => $behavior
         ));
         
         // Send variables to template and display

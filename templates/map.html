@@ -15,39 +15,39 @@
 
 {% set content %}
     <form id="import-form" method="post" action="" class="centered" accept-charset="UTF-8">
-    	<input type="hidden" name="action" value="import/importFile">
+        <input type="hidden" name="action" value="import/importFile">
         <input type="hidden" name="section" value="{{ section }}">
         <input type="hidden" name="entrytype" value="{{ entrytype }}">
         <input type="hidden" name="behavior" value="{{ behavior }}">
-    	<input type="hidden" name="file" value="{{ file }}">
-    	<input type="hidden" name="unique[]" value="">
-    	    	
-    	{% set entrytypes = craft.sections.getSectionById(section).getEntryTypes() %}
-    	    	
-    	<p>{{ "Choose where you want to import your fields. * Please note that \"{title}\" is always required."|t({
-    	    title: entrytypes[0].titleLabel
-    	}) }}</p>
-    	
-    	<table class="data">
+        <input type="hidden" name="file" value="{{ file }}">
+        <input type="hidden" name="unique[]" value="">
+                
+        {% set entrytypes = craft.sections.getSectionById(section).getEntryTypes() %}
+                
+        <p>{{ "Choose where you want to import your fields. * Please note that \"{title}\" is always required."|t({
+            title: entrytypes[0].titleLabel
+        }) }}</p>
+        
+        <table class="data">
         {% for column in columns %}
             {% set column = column|trim %}
             <tr>
                 <td>
                     <div class="field">
                         <div class="heading">
-                    	    <label>{{ column }}</label>
-                    		<div class="instructions">
-                    		    <p>{{ "will be imported into:"|t }}</p>                
-                    		</div>
-                    	</div>
+                            <label>{{ column }}</label>
+                            <div class="instructions">
+                                <p>{{ "will be imported into:"|t }}</p>                
+                            </div>
+                        </div>
                     </div>
                 </td>
                 <td>
                     <div class="field">
                         <div class="input">
                             <div class="select mapper">
-                        	    <select name="fields[{{ column }}]">
-                        	        <option value="dont">{{ "Don't import"|t }}</option>
+                                <select name="fields[{{ column }}]">
+                                    <option value="dont">{{ "Don't import"|t }}</option>
                         {% for entrytype in entrytypes %}
                                     <option value="title"{% if column == 'title' or column == 'name' or column == entrytype.titleLabel %} selected{% endif %}>{{ entrytype.titleLabel }} *</option>  
                                     <option value="authorId"{% if column == 'author' or column == 'admin' %} selected{% endif %}>{{ "Author"|t }}</option>
@@ -55,16 +55,16 @@
                                     <option value="expiryDate"{% if column == 'expirydate' or column == 'enddate' %} selected{% endif %}>{{ "Expiry Date"|t }}</option>
                                     <option value="enabled"{% if column == 'enabled' %} selected{% endif %}>{{ "Enabled"|t }}</option>
                                     <option value="status"{% if column == 'status' %} selected{% endif %}>{{ "Status"|t }}</option>
-                        	{% for tab in craft.fields.getLayoutById(entrytype.fieldLayoutId).getTabs() %}
-                        	        <optgroup label="{{ tab.name }}">
-                        	    {% for field in tab.getFields() %}
-                        	        {% set f = field.getField() %}
-                        	        <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
-                        	    {% endfor %}
-                        	        </optgroup>
-                        	{% endfor %}
+                            {% for tab in craft.fields.getLayoutById(entrytype.fieldLayoutId).getTabs() %}
+                                    <optgroup label="{{ tab.name }}">
+                                {% for field in tab.getFields() %}
+                                    {% set f = field.getField() %}
+                                    <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
+                                {% endfor %}
+                                    </optgroup>
+                            {% endfor %}
                         {% endfor %}
-                        		</select>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -72,11 +72,11 @@
                 {% if craft.request.getParam('importBehavior') != 'append' %}
                 <td>
                 {{ forms.checkboxField({
-                	label: 'Criterium'|t,
-                	instructions: "Criterium for finding existing data."|t,
-                	name: "unique[" ~ column ~ "]",
-                	class: "unique",
-                	checked: loop.first
+                    label: 'Criterium'|t,
+                    instructions: "Criterium for finding existing data."|t,
+                    name: "unique[" ~ column ~ "]",
+                    class: "unique",
+                    checked: loop.first
                 }) }}
                 </td>
                 {% endif %}
