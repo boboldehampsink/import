@@ -97,14 +97,16 @@ class ImportService extends BaseApplicationComponent {
         if(!craft()->entries->saveEntry($entry)) {
         
             // Log errors          
-            ImportPlugin::log('Error:' . json_encode($entry->getErrors()));
-            
-            // But keep on resuming task
-            return true;
+            ImportPlugin::log('Error: ' . json_encode($entry->getErrors()));
+        
+        } else {
+        
+        	// Log successfull entry
+        	ImportPlugin::log('Success: ' . $entry->title . ' has been successfully imported');
         
         }
         
-        // No failure; also return true
+        // Always return true
         return true;
     
     }
