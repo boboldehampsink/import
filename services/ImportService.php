@@ -26,7 +26,7 @@ class ImportService extends BaseApplicationComponent {
     
     }
     
-    public function row($data, $settings) {
+    public function row($row, $data, $settings) {
     
         // Get max power
         craft()->config->maxPowerCaptain();
@@ -96,15 +96,22 @@ class ImportService extends BaseApplicationComponent {
         // Save entry
         if(!craft()->entries->saveEntry($entry)) {
         
-            // Log errors          
-            ImportPlugin::log('Error: ' . json_encode($entry->getErrors()));
+            // Log errors when unsuccessful
+            $log = array(
+                ($row+1) => $entry->getErrors()
+            );
         
         } else {
         
-        	// Log successfull entry
-        	ImportPlugin::log('Success: ' . $entry->title . ' has been successfully imported');
-        
+            // Log title when successful
+            $log = array(
+                ($row+1) => $entry->title
+            );
+
         }
+        
+        // Write to import.log
+        ImportPlugin::log(json_encode($log), LogLevel::Profile);
         
         // Always return true
         return true;

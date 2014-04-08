@@ -25,11 +25,17 @@ class ImportTask extends BaseTask {
     
     public function getTotalSteps() {
     
+        // Get total rows
+        $rows = $this->getSettings()->rows;
+    
+        // Write start of log
+        ImportPlugin::log('Starting import of ' . $rows . ' rows', LogLevel::Profile);
+    
         // Delete element template caches before importing
         craft()->templateCache->deleteCachesByElementType(ElementType::Entry);
     
         // Take a step for every row
-        return $this->getSettings()->rows;
+        return $rows;
     
     }
     
@@ -44,8 +50,16 @@ class ImportTask extends BaseTask {
         if(isset($data[$step])) {
                 
             // Import row
-            return craft()->import->row($data[$step], $settings);
+            craft()->import->row($step, $data[$step], $settings);
             
+        }
+        
+        // When finished
+        if($step == ($settings['rows']-1)) {
+        
+            // Write end of log
+            ImportPlugin::log('End of import', LogLevel::Profile);
+        
         }
     
         return true;
