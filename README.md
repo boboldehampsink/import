@@ -26,3 +26,12 @@ Map fields
 
 Map fields (2)
 ![Fields](https://raw.githubusercontent.com/boboldehampsink/CraftImportPlugin/gh-pages/images/fields.png)
+
+Changelog
+=================
+
+###0.3.1###
+ - Fixed a bug where Title fields would not be set
+ 
+###0.3###
+ - Initial push to GitHub
