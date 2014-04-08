@@ -64,7 +64,7 @@ class ImportService extends BaseApplicationComponent {
                     craft()->elements->deleteElementById($criteria->ids());
                     
                     // Skip rest and continue
-                    return true;
+                    return;
                     
                 }  else {
                 
@@ -76,7 +76,7 @@ class ImportService extends BaseApplicationComponent {
             } else {
             
                 // Else do nothing
-                return true;
+                return;
             
             } 
         
@@ -100,21 +100,45 @@ class ImportService extends BaseApplicationComponent {
             $log = array(
                 ($row+1) => $entry->getErrors()
             );
+            
+            // Write to import.log
+            ImportPlugin::log(json_encode($log), LogLevel::Profile);
         
-        } else {
+        }
+    
+    }
+    
+    public function finish($rows) {
+    
+        // Gather results
+        $results = array(
+        	'success' => $rows,
+        	'errors' => array()
+        );
+    
+        // Read log
+        $log = @file(craft()->path->getLogPath().'import.log');
         
-            // Log title when successful
-            $log = array(
-                ($row+1) => $entry->title
-            );
-
+        // Gather errors
+        foreach($log as $result) {
+             $results['errors'][] = json_decode($result, true);
         }
         
-        // Write to import.log
-        ImportPlugin::log(json_encode($log), LogLevel::Profile);
+        // Recalculate successful results
+        $results['success'] -= count($results['errors']);
         
-        // Always return true
-        return true;
+        // Who do we send the summary to?
+        $user = new UserModel();
+        $user->email = 'bob@realityweb.nl';
+        $user->firstName = 'Bob';
+        $user->lastName = 'Olde Hampsink';
+    
+    	// Send summary
+    	craft()->email->sendEmailByKey($user, 'importSummary', array(
+    		'summary' => craft()->templates->render('import/_email', array(
+    			'results' => $results
+    		))
+    	));
     
     }
 

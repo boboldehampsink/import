@@ -27,8 +27,11 @@ class ImportTask extends BaseTask {
     
         // Get total rows
         $rows = $this->getSettings()->rows;
+        
+        // Clear log
+        IOHelper::clearFile(craft()->path->getLogPath().'import.log', true);
     
-        // Write start of log
+        // Write start of new log
         ImportPlugin::log('Starting import of ' . $rows . ' rows', LogLevel::Profile);
     
         // Delete element template caches before importing
@@ -47,6 +50,7 @@ class ImportTask extends BaseTask {
         // Open file
         $data = craft()->import->data($settings->file);
         
+        // Check if row exists
         if(isset($data[$step])) {
                 
             // Import row
@@ -59,6 +63,9 @@ class ImportTask extends BaseTask {
         
             // Write end of log
             ImportPlugin::log('End of import', LogLevel::Profile);
+            
+            // Finish
+            craft()->import->finish($settings['rows']);
         
         }
     

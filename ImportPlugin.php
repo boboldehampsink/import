@@ -28,9 +28,18 @@ class ImportPlugin extends BasePlugin
         return true;
     }
     
-    // Create a hook and call it from service
-    function registerImportOperation(&$data, $handle) {
+    // Register import summary email message
+    function registerEmailMessages()
+    {
+        return array(
+            'importSummary'
+        );
+    }
     
+    // Register ImportOperation
+    // Create a hook and call it from service
+    function registerImportOperation(&$data, $handle)
+    {
         return craft()->import->prepForFieldType($data, $handle);
     
     }
