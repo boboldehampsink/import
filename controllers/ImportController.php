@@ -57,7 +57,7 @@ class ImportController extends BaseController
             $columns = craft()->import->columns($import->file);
             
             // Send variables to template and display
-            $this->renderTemplate('import/map', array(
+            $this->renderTemplate('import/_map', array(
                 'import'    => $import,
                 'columns'   => $columns,
                 'file'      => craft()->path->getTempUploadsPath().$file->getName(),
@@ -75,7 +75,7 @@ class ImportController extends BaseController
     
     }
     
-    // Process mapping and start importing
+    // Start import task
     public function actionImportFile() {
     
         // Only post requests
@@ -124,7 +124,7 @@ class ImportController extends BaseController
         ));
         
         // Send variables to template and display
-        $this->renderTemplate('import/progress');
+        $this->renderTemplate('import/_progress');
     
     }
     
