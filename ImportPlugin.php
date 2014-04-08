@@ -29,7 +29,7 @@ class ImportPlugin extends BasePlugin
     }
     
     // Create a hook and call it from service
-    function registerFieldTypeOperation(&$data, $handle) {
+    function registerImportOperation(&$data, $handle) {
     
         return craft()->import->prepForFieldType($data, $handle);
     

@@ -87,7 +87,7 @@ class ImportService extends BaseApplicationComponent {
         
         // Hook to prepare as appropriate fieldtypes
         array_walk($fields, function(&$data, $handle) {
-            return craft()->plugins->call('registerFieldTypeOperation', array(&$data, $handle));
+            return craft()->plugins->call('registerImportOperation', array(&$data, $handle));
         });
         
         // Set fields on entry model
