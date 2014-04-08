@@ -97,7 +97,7 @@ class ImportService extends BaseApplicationComponent {
         if(!craft()->entries->saveEntry($entry)) {
         
             // Log errors          
-            Craft::log('Import error:' . json_encode($entry->getErrors()));
+            ImportPlugin::log('Error:' . json_encode($entry->getErrors()));
             
             // But keep on resuming task
             return true;
