@@ -99,9 +99,7 @@ class ImportService extends BaseApplicationComponent {
         if(!craft()->entries->saveEntry($entry)) {
         
             // Log errors when unsuccessful
-            $this->log = array(
-                ($row+1) => $entry->getErrors()
-            );
+            $this->log[($row+1)] = $entry->getErrors();
         
         }
     
@@ -116,25 +114,26 @@ class ImportService extends BaseApplicationComponent {
         );
         
         // Gather errors
-        foreach($this->log as $result) {
-             $results['errors'][] = $result;
+        foreach($this->log as $line => $result) {
+             $results['errors'][$line] = $result;
         }
         
         // Recalculate successful results
         $results['success'] -= count($results['errors']);
         
-        // Who do we send the summary to?
-        $user = new UserModel();
-        $user->email = 'bob@realityweb.nl';
-        $user->firstName = 'Bob';
-        $user->lastName = 'Olde Hampsink';
-    
-    	// Send summary
-    	craft()->email->sendEmailByKey($user, 'importSummary', array(
-    		'summary' => craft()->templates->render('import/_email', array(
-    			'results' => $results
-    		))
-    	));
+        // Prepare the mail
+        $email = new EmailModel();
+        $emailSettings = craft()->email->getSettings();
+        $email->toEmail = $emailSettings['emailAddress'];
+        
+        // Set email content
+        $email->subject = Craft::t('The import task is finished');
+        $email->htmlBody = TemplateHelper::getRaw(craft()->templates->render('import/_email', array(
+    	    'results' => $results
+    	)));
+    	
+    	// Send it
+    	craft()->email->sendEmail($email);
     
     }
 

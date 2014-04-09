@@ -10,7 +10,7 @@ class ImportPlugin extends BasePlugin
 
     function getVersion()
     {
-        return '0.3.1';
+        return '0.4';
     }
 
     function getDeveloper()
@@ -28,16 +28,7 @@ class ImportPlugin extends BasePlugin
         return true;
     }
     
-    // Register import summary email message
-    function registerEmailMessages()
-    {
-        return array(
-            'importSummary'
-        );
-    }
-    
-    // Register ImportOperation
-    // Create a hook and call it from service
+    // Register ImportOperation hook
     function registerImportOperation(&$data, $handle)
     {
         return craft()->import->prepForFieldType($data, $handle);

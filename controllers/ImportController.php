@@ -95,20 +95,6 @@ class ImportController extends BaseController
         $map = craft()->request->getParam('fields');
         $unique = craft()->request->getParam('unique');
         
-        // Testing - non-task
-        /*$data = craft()->import->data($file);
-        foreach($data as $row) {
-            craft()->import->row($row, array(
-                 'file'      => $file,
-                 'rows'      => count($data),
-                 'map'       => $map,
-                 'unique'    => $unique,
-                 'section'   => $section,
-                 'entrytype' => $entrytype,
-                 'behavior'  => $behavior     
-            ));
-        }*/
-        
         // Get rows/steps from file
         $rows = count(craft()->import->data($file));
 

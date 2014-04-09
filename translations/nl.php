@@ -28,7 +28,5 @@ return array(
     'rows have been successfully imported.' => 'rijen succesvol geïmporteerd.',
     'However, {failed} rows failed to import. He\'re some details on what went wrong.' => 'Echter zijn er {failed} rijen niet geïmporteerd. Dit ging er mis.',
     'Line' => 'Regel',
-    'importSummary_heading' => 'Wanneer het import proces is afgerond',
-    'importSummary_subject' => 'Het import proces is afgerond',
-    'importSummary_body' => '{{summary}}'
+    'The import task is finished' => 'Het import proces is afgerond'
 );
