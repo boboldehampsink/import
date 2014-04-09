@@ -11,10 +11,14 @@ Features:
  - Uses the Task service to import while you work on.
  - Automatically detects CSV delimiters
  - Will connect Entries, Users and Assets by searching for them
+ - Will send a summary email when the task if finished
  
 Todo:
  - Import all ElementTypes (currently only Entries)
- - Give more info about the import process
+ - Support JSON and XML
+ - Backup before importing, so you can rollback
+ - Import a fixed value in absence of data
+ - More info in the import summary mail
 
 ###Screenshots###
 
@@ -29,6 +33,9 @@ Map fields (2)
 
 Changelog
 =================
+
+###0.4###
+ - When the import task if finished, you'll receive an e-mail with info about the import task
 
 ###0.3.1###
  - Fixed a bug where Title fields would not be set
