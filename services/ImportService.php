@@ -36,8 +36,10 @@ class ImportService extends BaseApplicationComponent {
         // Map data to fields
         $fields = array_combine($settings['map'], $data);
         
-        // Remove fields that will not be imported
-        unset($fields['dont']);
+        // If set, remove fields that will not be imported
+        if(isset($fields['dont'])) {
+            unset($fields['dont']);
+        }
         
         // Set up new entry model
         $entry = new EntryModel();
@@ -239,9 +241,12 @@ class ImportService extends BaseApplicationComponent {
                 
                         // Get source id's for connecting
                         $sectionIds = array();
-                        foreach($field->getFieldType()->getSettings()->sources as $source) {
-                            list($type, $id) = explode(':', $source);
-                            $sectionIds[] = $id;
+                        $sources = $field->getFieldType()->getSettings()->sources;
+                        if(is_array($sources)) {
+                            foreach($sources as $source) {
+                                list($type, $id) = explode(':', $source);
+                                $sectionIds[] = $id;
+                            }
                         }
                                     
                         // Find matching element in sections       
@@ -310,9 +315,12 @@ class ImportService extends BaseApplicationComponent {
                 
                         // Get source id's for connecting
                         $sourceIds = array();
-                        foreach($field->getFieldType()->getSettings()->sources as $source) {
-                            list($type, $id) = explode(':', $source);
-                            $sourceIds[] = $id;
+                        $sources = $field->getFieldType()->getSettings()->sources;
+                        if(is_array($sources)) {
+                            foreach($sources as $source) {
+                                list($type, $id) = explode(':', $source);
+                                $sourceIds[] = $id;
+                            }
                         }
                                     
                         // Find matching element in sources    
