@@ -3,6 +3,8 @@ namespace Craft;
 
 class ImportService extends BaseApplicationComponent {
 
+    public $log = array();
+
     public function columns($file) {
                 
         // Open CSV file       
@@ -97,12 +99,9 @@ class ImportService extends BaseApplicationComponent {
         if(!craft()->entries->saveEntry($entry)) {
         
             // Log errors when unsuccessful
-            $log = array(
+            $this->log = array(
                 ($row+1) => $entry->getErrors()
             );
-            
-            // Write to import.log
-            ImportPlugin::log(json_encode($log), LogLevel::Profile);
         
         }
     
@@ -115,13 +114,10 @@ class ImportService extends BaseApplicationComponent {
         	'success' => $rows,
         	'errors' => array()
         );
-    
-        // Read log
-        $log = @file(craft()->path->getLogPath().'import.log');
         
         // Gather errors
-        foreach($log as $result) {
-             $results['errors'][] = json_decode($result, true);
+        foreach($this->log as $result) {
+             $results['errors'][] = $result;
         }
         
         // Recalculate successful results
