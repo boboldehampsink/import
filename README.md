@@ -33,6 +33,8 @@ Map fields (2)
 
 Changelog
 =================
+###0.4.1###
+ - In certain situations, values of variables within the plugin weren't properly checked
 
 ###0.4###
  - When the import task if finished, you'll receive an e-mail with info about the import task
