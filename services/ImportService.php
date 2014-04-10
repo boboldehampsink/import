@@ -32,6 +32,15 @@ class ImportService extends BaseApplicationComponent {
     
         // Get max power
         craft()->config->maxPowerCaptain();
+        
+        // See if map and data match (could not be due to malformed csv)
+        if(count($settings['map']) != count($data)) {
+        
+            // Log errors when unsuccessful
+            $this->log[($row+1)] = array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'));
+            return;
+        
+        }
             
         // Map data to fields
         $fields = array_combine($settings['map'], $data);
