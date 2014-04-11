@@ -37,7 +37,7 @@ class ImportService extends BaseApplicationComponent {
         if(count($settings['map']) != count($data)) {
         
             // Log errors when unsuccessful
-            $this->log[($row+1)] = array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'));
+            $this->log[($row+1)] = array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.')));
             return;
         
         }
