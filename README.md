@@ -7,7 +7,7 @@ Features:
  - Map CSV columns onto Fields
  - Append, replace or delete data
    - When replacing or deleting, you can build your own criteria for finding
- - Has a hook "registerFieldTypeOperations" to parse special FieldType inputs if you want.
+ - Has a hook "registerImportOperation" to parse special FieldType inputs if you want.
  - Uses the Task service to import while you work on.
  - Automatically detects CSV delimiters
  - Will connect Entries, Users and Assets by searching for them
@@ -33,6 +33,10 @@ Map fields (2)
 
 Changelog
 =================
+###0.4.2###
+ - You now get a warning when a CSV row is malformed (per mail)
+ - Now supports slug importing
+
 ###0.4.1###
  - In certain situations, values of variables within the plugin weren't properly checked
 
