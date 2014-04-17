@@ -2,6 +2,7 @@
 
 return array(
     'Import' => 'Importeren',
+    '{plugin} only works on Craft build {build} or higher' => '{plugin} werkt alleen met Craft build {build} of hoger',
     'Upload file' => 'Bestand uploaden',
     'Map fields' => 'Velden instellen',
     'Choose the section you want to import to.' => 'Kies de sectie waar je in wilt importeren.',
@@ -28,5 +29,6 @@ return array(
     'rows have been successfully imported.' => 'rijen succesvol geïmporteerd.',
     'However, {failed} rows failed to import. He\'re some details on what went wrong.' => 'Echter zijn er {failed} rijen niet geïmporteerd. Dit ging er mis.',
     'Line' => 'Regel',
+    'Columns and data did not match, could be due to malformed CSV row.' => 'Kolommen en data kwamen niet overeen, dit zou een corrupte CSV regel kunnen zijn.',
     'The import task is finished' => 'Het import proces is afgerond'
 );
