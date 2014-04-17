@@ -35,6 +35,7 @@ Changelog
 =================
 ###0.5###
  - The plugin now checks if you meet the minimum Craft build that's required
+ - Ability to backup database before importing
 
 ###0.4.2###
  - You now get a warning when a CSV row is malformed (per mail)
