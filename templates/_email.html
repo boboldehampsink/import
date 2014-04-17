@@ -19,3 +19,12 @@
     {% endfor %}
 
 {% endif %}
+
+{% if backup %}
+
+    <hr />
+    
+    <h3>{{ "Database Backup"|t }}</h3>
+    <p><a href="{{ siteUrl }}craft/{{ backup|split('craft/')[1] }}">Download backup</a></p>
+
+{% endif %}

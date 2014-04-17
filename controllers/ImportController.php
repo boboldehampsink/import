@@ -42,6 +42,9 @@ class ImportController extends BaseController
         // Get behavior
         $behavior = craft()->request->getPost('importBehavior');
         
+        // Backup?
+        $backup = craft()->request->getPost('importBackup');
+        
         // Put vars in model
         $import            = new ImportModel();
         $import->file      = craft()->path->getTempUploadsPath().$file->getName();
@@ -49,6 +52,7 @@ class ImportController extends BaseController
         $import->section   = $section;
         $import->entrytype = $entrytype;
         $import->behavior  = $behavior;
+        $import->backup    = $backup;
         
         // Validate model
         if($import->validate()) {
@@ -63,7 +67,8 @@ class ImportController extends BaseController
                 'file'      => craft()->path->getTempUploadsPath().$file->getName(),
                 'section'   => $section,
                 'entrytype' => $entrytype,
-                'behavior'  => $behavior
+                'behavior'  => $behavior,
+                'backup'    => $backup
             ));
         
         } else {
@@ -91,6 +96,9 @@ class ImportController extends BaseController
         // Get file
         $file = craft()->request->getParam('file');
         
+        // Backup?
+        $backup = craft()->request->getParam('backup');
+        
         // Get mapping fields
         $map = craft()->request->getParam('fields');
         $unique = craft()->request->getParam('unique');
@@ -106,7 +114,8 @@ class ImportController extends BaseController
             'unique'    => $unique,
             'section'   => $section,
             'entrytype' => $entrytype,
-            'behavior'  => $behavior
+            'behavior'  => $behavior,
+            'backup'    => $backup
         ));
         
         // Send variables to template and display

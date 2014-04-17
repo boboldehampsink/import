@@ -3,6 +3,8 @@ namespace Craft;
 
 class ImportTask extends BaseTask {
 
+    protected $backupFile = false;
+
     protected function defineSettings() {
     
         return array(
@@ -12,7 +14,8 @@ class ImportTask extends BaseTask {
             'unique'    => AttributeType::Mixed,
             'section'   => AttributeType::Number,
             'entrytype' => AttributeType::Number,
-            'behavior'  => AttributeType::Name
+            'behavior'  => AttributeType::Name,
+            'backup'    => AttributeType::Bool
         );
     
     }
@@ -37,6 +40,15 @@ class ImportTask extends BaseTask {
     
         // Get settings
         $settings = $this->getSettings();
+        
+        // Backup?
+        if($settings->backup && !$step) {
+        
+            // Do the backup
+            $backup = new DbBackup();
+            $this->backupFile = $backup->run();
+        
+        }
     
         // Open file
         $data = craft()->import->data($settings->file);
@@ -50,10 +62,10 @@ class ImportTask extends BaseTask {
         }
         
         // When finished
-        if($step == ($settings['rows']-1)) {
+        if($step == ($settings->rows - 1)) {
             
             // Finish
-            craft()->import->finish($settings['rows']);
+            craft()->import->finish($settings->rows, $this->backupFile);
         
         }
     

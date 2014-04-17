@@ -20,6 +20,7 @@
         <input type="hidden" name="entrytype" value="{{ entrytype }}">
         <input type="hidden" name="behavior" value="{{ behavior }}">
         <input type="hidden" name="file" value="{{ file }}">
+        <input type="hidden" name="backup" value="{{ backup }}">
         <input type="hidden" name="unique[]" value="">
                 
         {% set entrytypes = craft.sections.getSectionById(section).getEntryTypes() %}

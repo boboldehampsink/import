@@ -48,7 +48,8 @@ class ImportModel extends BaseModel
             'entrytype' => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Entrytype')),
             'behavior'  => array(AttributeType::Enum, 'required' => true, 'values' => array(self::BehaviorAppend, self::BehaviorReplace, self::BehaviorDelete)),
             'file'      => array(AttributeType::String, 'required' => true, 'label' => Craft::t('File')),
-            'type'      => array(AttributeType::Enum, 'required' => true, 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth))
+            'type'      => array(AttributeType::Enum, 'required' => true, 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth)),
+            'backup'    => array(AttributeType::Bool, 'label' => Craft::t('Backup Database'))
         );
     }
 }
