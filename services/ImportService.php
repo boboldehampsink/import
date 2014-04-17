@@ -32,12 +32,23 @@ class ImportService extends BaseApplicationComponent {
     
         // Get max power
         craft()->config->maxPowerCaptain();
+        
+        // See if map and data match (could not be due to malformed csv)
+        if(count($settings['map']) != count($data)) {
+        
+            // Log errors when unsuccessful
+            $this->log[($row+1)] = array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.')));
+            return;
+        
+        }
             
         // Map data to fields
         $fields = array_combine($settings['map'], $data);
         
-        // Remove fields that will not be imported
-        unset($fields['dont']);
+        // If set, remove fields that will not be imported
+        if(isset($fields['dont'])) {
+            unset($fields['dont']);
+        }
         
         // Set up new entry model
         $entry = new EntryModel();
@@ -177,38 +188,44 @@ class ImportService extends BaseApplicationComponent {
     
     // Prepare reserved EntryModel values
     public function prepForEntryModel(&$fields, EntryModel $entry) {
-    
+        
         // Set Author
         if(isset($fields[ImportModel::HandleAuthor])) {
             $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
+            unset($fields[ImportModel::HandleAuthor]);
         } else {
             $entry->authorId = ($entry->authorId ? $entry->authorId : craft()->userSession->getUser()->id);
         }
-        unset($fields[ImportModel::HandleAuthor]);
         
         // Set slug
-        $entry->slug = isset($fields[ImportModel::HandleSlug]) ? ElementHelper::createSlug($fields[ImportModel::HandleSlug]) : $entry->slug;
-        unset($fields[ImportModel::HandleSlug]);
+        if(isset($fields[ImportModel::HandleSlug])) {
+            $entry->slug = ElementHelper::createSlug($fields[ImportModel::HandleSlug]);
+            unset($fields[ImportModel::HandleSlug]);
+        }
         
         // Set postdate
         if(isset($fields[ImportModel::HandlePostDate])) {
             $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
+            unset($fields[ImportModel::HandlePostDate]);
         }
-        unset($fields[ImportModel::HandlePostDate]);
         
         // Set expiry date
         if(isset($fields[ImportModel::HandlePostDate])) {
             $entry->expiryDate = DateTime::createFromString($fields[ImportModel::ExpiryDate], craft()->timezone);
+            unset($fields[ImportModel::HandlePostDate]);
         }
-        unset($fields[ImportModel::HandlePostDate]);
         
         // Set enabled
-        $entry->enabled = isset($fields[ImportModel::HandleEnabled]) ? (bool)$fields[ImportModel::HandleEnabled] : $entry->enabled;
-        unset($fields[ImportModel::HandleEnabled]);
+        if(isset($fields[ImportModel::HandleEnabled])) {
+            $entry->enabled = (bool)$fields[ImportModel::HandleEnabled];
+            unset($fields[ImportModel::HandleEnabled]);
+        }
         
         // Set title
-        $entry->getContent()->title = isset($fields[ImportModel::HandleTitle]) ? $fields[ImportModel::HandleTitle] : $entry->title;
-        unset($fields[ImportModel::HandleTitle]);
+        if(isset($fields[ImportModel::HandleTitle])) {
+            $entry->getContent()->title = $fields[ImportModel::HandleTitle];
+            unset($fields[ImportModel::HandleTitle]);
+        }
 
         // Return entry
         return $entry;
@@ -239,9 +256,12 @@ class ImportService extends BaseApplicationComponent {
                 
                         // Get source id's for connecting
                         $sectionIds = array();
-                        foreach($field->getFieldType()->getSettings()->sources as $source) {
-                            list($type, $id) = explode(':', $source);
-                            $sectionIds[] = $id;
+                        $sources = $field->getFieldType()->getSettings()->sources;
+                        if(is_array($sources)) {
+                            foreach($sources as $source) {
+                                list($type, $id) = explode(':', $source);
+                                $sectionIds[] = $id;
+                            }
                         }
                                     
                         // Find matching element in sections       
@@ -310,9 +330,12 @@ class ImportService extends BaseApplicationComponent {
                 
                         // Get source id's for connecting
                         $sourceIds = array();
-                        foreach($field->getFieldType()->getSettings()->sources as $source) {
-                            list($type, $id) = explode(':', $source);
-                            $sourceIds[] = $id;
+                        $sources = $field->getFieldType()->getSettings()->sources;
+                        if(is_array($sources)) {
+                            foreach($sources as $source) {
+                                list($type, $id) = explode(':', $source);
+                                $sourceIds[] = $id;
+                            }
                         }
                                     
                         // Find matching element in sources    
