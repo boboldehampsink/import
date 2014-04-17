@@ -20,6 +20,10 @@ class ImportModel extends BaseModel
     const BehaviorReplace = 'replace';
     const BehaviorDelete  = 'delete';
     
+    // Statuses
+    const StatusStarted  = 'started';
+    const StatusFinished = 'finished';
+     
     // Handles
     const HandleTitle        = 'title';
     const HandleAuthor       = 'authorId';

@@ -14,7 +14,7 @@ class Import_HistoryRecord extends BaseRecord
     {
         return array(
             'behavior'  => array(AttributeType::Enum, 'values' => array(ImportModel::BehaviorAppend, ImportModel::BehaviorReplace, ImportModel::BehaviorDelete)),
-            'status'    => array(AttributeType::Enum, 'values' => array('started', 'pending', 'finished'))
+            'status'    => array(AttributeType::Enum, 'values' => array(ImportModel::StatusStarted, ImportModel::StatusFinished))
         );
     }
     

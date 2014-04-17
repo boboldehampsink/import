@@ -12,6 +12,8 @@
 
 {% set content %}
 
-    {{ dump(craft.import.history) }}
+    {% for item in craft.import.history %}
+        {{ dump(item) }}
+    {% endfor %}
     
 {% endset %}
