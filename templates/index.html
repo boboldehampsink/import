@@ -101,7 +101,7 @@
                         <div class="heading">
                             <label>{{ "File"|t }}</label>
                             <div class="instructions">
-                                <p>{{ "Choose the file you want to import.<br />Valid file formats: CSV, XML and JSON."|t|raw }}</p>                
+                                <p>{{ "Choose the file you want to import.<br />Valid file formats: CSV"|t|raw }}</p>                
                             </div>
                         </div>
                     </div>
@@ -110,6 +110,26 @@
                     <div class="field">
                         <div class="input">
                             <input type="file" name="importFile">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="field">
+                        <div class="heading">
+                            <label>{{ "Backup database before importing"|t }}</label>
+                            <div class="instructions">
+                                <p>{{ "When something occurs you don't like,<br />you can revert your database"|t|raw }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="input">
+                            <input type="hidden" name="backup" value="0">
+                            <input type="checkbox" name="backup" value="1" checked="checked" />
                         </div>
                     </div>
                 </td>
