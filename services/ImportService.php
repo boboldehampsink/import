@@ -37,7 +37,7 @@ class ImportService extends BaseApplicationComponent {
         if(count($settings->map) != count($data)) {
         
             // Log errors when unsuccessful
-            $this->log[($row+1)] = array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.')));
+            $this->log[$row] = craft()->import_history->log($settings->history, $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));            
             return;
         
         }
@@ -110,17 +110,20 @@ class ImportService extends BaseApplicationComponent {
         if(!craft()->entries->saveEntry($entry)) {
         
             // Log errors when unsuccessful
-            $this->log[($row+1)] = $entry->getErrors();
+            $this->log[$row] = craft()->import_history->log($settings->history, $row, $entry->getErrors());
+            
         
         }
     
     }
     
-    public function finish($rows, $backup) {
+    public function finish($settings) {
+    
+        craft()->import_history->end($settings->history);
     
         // Gather results
         $results = array(
-            'success' => $rows,
+            'success' => $settings->rows,
             'errors' => array()
         );
         

@@ -3,141 +3,15 @@
 {% set title = "Import"|t %}
 
 {% set tabs = {
-    upload: { label: "Upload file"|t, url: url('import') },
+    overview: { label: "Import history"|t, url: url('import') },
+    upload: { label: "Upload file"|t, url: url('import/upload') },
     map:    { label: "Map fields"|t, url: '', class: 'disabled' }
 } %}
 
-{% set selectedTab = 'upload' %}
-
-{% includeJsResource 'import/js/import.js' %}
-
-{% import "_includes/forms" as forms %}
+{% set selectedTab = 'overview' %}
 
 {% set content %}
-    <form id="import-form" method="post" action="" class="centered" accept-charset="UTF-8" enctype="multipart/form-data">
-        <input type="hidden" name="action" value="import/uploadFile">
-        
-        {% set sections = craft.sections.getAllSections() %}
-        
-        <table class="data">
-            <tr>
-                <td>
-                    <div class="field">
-                        <div class="heading">
-                            <label>{{ "Section"|t }}</label>
-                            <div class="instructions">
-                                <p>{{ "Choose the section you want to import to."|t }}</p>                
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="input">
-                            <div class="select">
-                                <select name="importSection">
-                                {% for section in sections %}
-                                    <option value="{{ section.id }}">{{ section.name }}</option>
-                                {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="field">
-                        <div class="heading">
-                            <label>{{ "Entrytype"|t }}</label>
-                            <div class="instructions">
-                                <p>{{ "Choose the entrytype you want to import to."|t }}</p>                
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="input">
-                            <div class="select">
-                                <select name="importEntryType" id="entrytypes">
-                                {% for entrytype in sections[0].getEntryTypes() %}
-                                    <option value="{{ entrytype.id }}">{{ entrytype.name }}</option>
-                                {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="field">
-                        <div class="heading">
-                            <label>{{ "Import behavior"|t }}</label>
-                            <div class="instructions">
-                                <p>{{ "Choose the behaviour you want to import with."|t }}</p>                
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="input">
-                            <div class="select">
-                                <select name="importBehavior">
-                                    <option value="append">{{ "Append data"|t }}</option>
-                                    <option value="replace">{{ "Replace data"|t }}</option>
-                                    <option value="delete">{{ "Delete data"|t }}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="field">
-                        <div class="heading">
-                            <label>{{ "File"|t }}</label>
-                            <div class="instructions">
-                                <p>{{ "Choose the file you want to import.<br />Valid file formats: CSV"|t|raw }}</p>                
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="input">
-                            <input type="file" name="importFile">
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="field">
-                        <div class="heading">
-                            <label>{{ "Backup Database"|t }}</label>
-                            <div class="instructions">
-                                <p>{{ "Backup database before importing"|t }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="input">
-                            <input type="hidden" name="importBackup" value="0">
-                            <input type="checkbox" name="importBackup" value="1" checked="checked" />
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Next'|t }}"></td>
-            </tr>
-        </table>
-        
-    </form>
+
+    {{ dump(craft.import.history) }}
+    
 {% endset %}

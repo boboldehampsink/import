@@ -33,6 +33,10 @@ Map fields (2)
 
 Changelog
 =================
+###0.6###
+ - Import history!
+ - Includes live logging of pending import tasks
+
 ###0.5###
  - The plugin now checks if you meet the minimum Craft build that's required
  - Ability to backup database before importing
