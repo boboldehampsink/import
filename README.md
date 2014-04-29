@@ -37,6 +37,9 @@ Changelog
  - Import history!
  - Includes live logging of pending import tasks
 
+###0.5.1###
+ - Fixed a bug where some objects were supposed to be arrays
+
 ###0.5###
  - The plugin now checks if you meet the minimum Craft build that's required
  - Ability to backup database before importing

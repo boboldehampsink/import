@@ -34,7 +34,7 @@ class ImportService extends BaseApplicationComponent {
         craft()->config->maxPowerCaptain();
         
         // See if map and data match (could not be due to malformed csv)
-        if(count($settings->map) != count($data)) {
+        if(count($settings['map']) != count($data)) {
         
             // Log errors when unsuccessful
             $this->log[$row] = craft()->import_history->log($settings->history, $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));            
@@ -43,7 +43,7 @@ class ImportService extends BaseApplicationComponent {
         }
             
         // Map data to fields
-        $fields = array_combine($settings->map, $data);
+        $fields = array_combine($settings['map'], $data);
         
         // If set, remove fields that will not be imported
         if(isset($fields['dont'])) {
@@ -52,18 +52,18 @@ class ImportService extends BaseApplicationComponent {
         
         // Set up new entry model
         $entry = new EntryModel();
-        $entry->sectionId = $settings->section;
-        $entry->typeId = $settings->entrytype;
+        $entry->sectionId = $settings['section'];
+        $entry->typeId = $settings['entrytype'];
         
         // If unique is non-empty array, we're replacing or deleting
-        if(is_array($settings->unique) && count($settings->unique) > 1) {
+        if(is_array($settings['unique']) && count($settings['unique']) > 1) {
         
             // Match with current data
             $criteria = craft()->elements->getCriteria(ElementType::Entry);
-            $criteria->sectionId = $settings->section;
-            foreach($settings->map as $key => $value) {
-                if(isset($settings->unique[$key]) && $settings->unique[$key] == 1) {
-                    $criteria->$settings->map[$key] = $fields[$value];
+            $criteria->sectionId = $settings['section'];
+            foreach($settings['map'] as $key => $value) {
+                if(isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
+                    $criteria->$settings['map'][$key] = $fields[$value];
                 }
             } 
             
@@ -71,7 +71,7 @@ class ImportService extends BaseApplicationComponent {
             if($criteria->total()) {
                 
                 // If we're deleting
-                if($settings->behavior == ImportModel::BehaviorDelete) {
+                if($settings['behavior'] == ImportModel::BehaviorDelete) {
                                 
                     // Do it
                     craft()->elements->deleteElementById($criteria->ids());
