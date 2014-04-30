@@ -29,9 +29,12 @@ class Import_HistoryService extends BaseApplicationComponent {
             $errors[$log['line']] = $log['errors'];
         }
         
+        // Get total rows
+        $rows = Import_HistoryRecord::model()->findById($history)->rows;
+        
         // Make "total" list
         $total = array();
-        for($i = 1; $i <= 5; $i++) {
+        for($i = 1; $i <= $rows; $i++) {
             $total[$i] = isset($errors[$i]) ? $errors[$i] : array(Craft::t('None'));
         }
         
