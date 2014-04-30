@@ -33,6 +33,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.5.2###
+ - Fixed a bug where specific backup settings would fail the import task
+
 ###0.5.1###
  - Fixed a bug where some objects were supposed to be arrays
 
