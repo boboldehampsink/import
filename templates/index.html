@@ -31,7 +31,13 @@
                     <div class="element" data-id="{{ item.id }}" data-status="{% if item.status == 'started' %}pending{% else %}live{% endif %}" data-label="{{ item.file }}">
                         <div class="label">
                             <span class="status {% if item.status == 'started' %}pending{% else %}live{% endif %}"></span>
-                            <span class="title"><a href="import/{{ item.id }}">{{ item.file }}</a></span>
+                            <span class="title">
+                            {% if item.status == 'finished' %}
+                                <a href="import/{{ item.id }}">{{ item.file }}</a>
+                            {% else %}
+                                {{ item.file }}
+                            {% endif %}
+                            </span>
                         </div>
                     </div>                
                 </td>

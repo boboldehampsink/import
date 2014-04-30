@@ -35,7 +35,6 @@ Changelog
 =================
 ###0.6###
  - Import history!
- - Includes live logging of pending import tasks
 
 ###0.5.2###
  - Fixed a bug where specific backup settings would fail the import task
