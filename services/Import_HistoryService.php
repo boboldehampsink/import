@@ -5,7 +5,10 @@ class Import_HistoryService extends BaseApplicationComponent {
     
     public function show() {
     
-        return Import_HistoryRecord::model()->findAll();
+        // Sort descending
+        $criteria = array('order' => 'id desc');
+    
+        return Import_HistoryRecord::model()->findAll($criteria);
     
     }
     
@@ -15,6 +18,8 @@ class Import_HistoryService extends BaseApplicationComponent {
         $history->userId = craft()->userSession->getUser()->id;
         $history->sectionId = $settings->section;
         $history->entrytypeId = $settings->entrytype;
+        $history->file = basename($settings->file);
+        $history->rows = $settings->rows;
         $history->behavior = $settings->behavior;
         $history->status = 'started';
         

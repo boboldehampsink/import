@@ -3,6 +3,11 @@
 return array(
     'Import' => 'Importeren',
     '{plugin} only works on Craft build {build} or higher' => '{plugin} werkt alleen met Craft build {build} of hoger',
+    'Import history' => 'Geschiedenis',
+    'Rows' => 'Rijen',
+    'Started' => 'Begonnen',
+    'Finished' => 'Afgelopen',
+    'Total time' => 'Totale tijd',
     'Upload file' => 'Bestand uploaden',
     'Map fields' => 'Velden instellen',
     'Choose the section you want to import to.' => 'Kies de sectie waar je in wilt importeren.',
