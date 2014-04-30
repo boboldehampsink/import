@@ -3,8 +3,9 @@
 {% set title = "Import"|t %}
 
 {% set tabs = {
-    upload: { label: "Upload file"|t, url: url('import') },
-    map:    { label: "Map fields"|t, url: url('import/map') }
+    overview: { label: "Import history"|t, url: url('import') },
+    upload: { label: "Upload file"|t, url: url('import/upload') },
+    map:    { label: "Map fields"|t, url: '', class: 'disabled' }
 } %}
 
 {% set selectedTab = 'map' %}

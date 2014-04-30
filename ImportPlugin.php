@@ -10,7 +10,7 @@ class ImportPlugin extends BasePlugin
 
     function getVersion()
     {
-        return '0.5.1';
+        return '0.6';
     }
 
     function getDeveloper()
@@ -26,6 +26,15 @@ class ImportPlugin extends BasePlugin
     function hasCpSection()
     {
         return true;
+    }
+    
+    // Register CP routes
+    function registerCpRoutes() {
+    
+        return array(
+            'import/(?P<historyId>\d+)' => 'import/_history'
+        );
+    
     }
     
     // Register ImportOperation hook

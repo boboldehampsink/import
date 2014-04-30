@@ -105,9 +105,9 @@ class ImportController extends BaseController
         
         // Get rows/steps from file
         $rows = count(craft()->import->data($file));
-
-        // Create the import task
-        craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), array(
+        
+        // Define settings
+        $settings = array(
             'file'      => $file,
             'rows'      => $rows,
             'map'       => $map,
@@ -116,7 +116,13 @@ class ImportController extends BaseController
             'entrytype' => $entrytype,
             'behavior'  => $behavior,
             'backup'    => $backup
-        ));
+        );
+        
+        // Create history
+        $history = craft()->import_history->start((object)$settings);
+
+        // Create the import task
+        craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), array_merge($settings, array('history' => $history)));
         
         // Send variables to template and display
         $this->renderTemplate('import/_progress');

@@ -15,7 +15,8 @@ class ImportTask extends BaseTask {
             'section'   => AttributeType::Number,
             'entrytype' => AttributeType::Number,
             'behavior'  => AttributeType::Name,
-            'backup'    => AttributeType::Bool
+            'backup'    => AttributeType::Bool,
+            'history'   => AttributeType::Number
         );
     
     }
@@ -65,7 +66,7 @@ class ImportTask extends BaseTask {
         if($step == ($settings->rows - 1)) {
             
             // Finish
-            craft()->import->finish($settings->rows, $this->backupFile);
+            craft()->import->finish($settings, $this->backupFile);
         
         }
     

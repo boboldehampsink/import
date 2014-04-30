@@ -1,0 +1,37 @@
+{% extends "_layouts/cp" %}
+
+{% set crumbs = [
+    { label: "Import"|t, url: url('import') },
+    { label: "Import history"|t, url: url('import/' ~ historyId) }
+] %}
+
+{% set title = "Import"|t %}
+
+{% set tabs = {
+    overview: { label: "Import history"|t, url: url('import') },
+    upload: { label: "Upload file"|t, url: url('import/upload') },
+    map:    { label: "Map fields"|t, url: '', class: 'disabled' }
+} %}
+
+{% set selectedTab = 'overview' %}
+
+{% set content %}
+    
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th scope="col" data-attribute="line" style="width: 10%">{{ "Line"|t }}</th>
+                <th scope="col" data-attribute="errors">{{ "Errors"|t }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for line, errors in craft.import.log(historyId) %}
+            <tr>
+                <td data-title="{{ 'Line'|t }}">{{ line }}</td>
+                <td data-title="{{ 'Errors'|t }}">{{ errors | join(', ') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+{% endset %}
