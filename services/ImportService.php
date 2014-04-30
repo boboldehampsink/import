@@ -117,7 +117,7 @@ class ImportService extends BaseApplicationComponent {
     
     }
     
-    public function finish($settings) {
+    public function finish($settings, $backup) {
     
         craft()->import_history->end($settings->history);
     
@@ -141,7 +141,7 @@ class ImportService extends BaseApplicationComponent {
         $email->toEmail = $emailSettings['emailAddress'];
         
         // Zip the backup
-        if($backup && IOHelper::fileExists($backup)) {
+        if($settings->backup && IOHelper::fileExists($backup)) {
             $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
             if(IOHelper::fileExists($destZip)) {
                 IOHelper::deleteFile($destZip, true);
