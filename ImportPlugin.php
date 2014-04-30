@@ -28,6 +28,15 @@ class ImportPlugin extends BasePlugin
         return true;
     }
     
+    // Register CP routes
+    function registerCpRoutes() {
+    
+        return array(
+            'import/(?P<historyId>\d+)' => 'import/_history'
+        );
+    
+    }
+    
     // Register ImportOperation hook
     function registerImportOperation(&$data, $handle)
     {

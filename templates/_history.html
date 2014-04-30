@@ -1,0 +1,60 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Import"|t %}
+
+{% set tabs = {
+    overview: { label: "Import history"|t, url: url('import') },
+    upload: { label: "Upload file"|t, url: url('import/upload') },
+    map:    { label: "Map fields"|t, url: '', class: 'disabled' }
+} %}
+
+{% set selectedTab = 'overview' %}
+
+{% set content %}
+    
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th scope="col" data-attribute="date">{{ "Filename"|t }}</th>
+                <th scope="col" data-attribute="behavior">{{ "Import behavior"|t }}</th>
+                <th scope="col" data-attribute="rows">{{ "Rows"|t }}</th>
+                <th scope="col" data-attribute="started">{{ "Started"|t }}</th>
+                <th scope="col" data-attribute="finished">{{ "Finished"|t }}</th>
+                <th scope="col" data-attribute="totaltime">{{ "Total time"|t }}</th>
+                <th scope="col" data-attribute="user">{{ "User"|t }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in craft.import.log(historyId) %}
+            <tr>
+                <td scope="row" data-title="{{ 'Filename'|t }}">
+                    <div class="element" data-id="{{ item.id }}" data-status="{% if item.status == 'started' %}pending{% else %}live{% endif %}" data-label="{{ item.file }}">
+                        <div class="label">
+                            <span class="status {% if item.status == 'started' %}pending{% else %}live{% endif %}"></span>
+                            <span class="title"><a href="import/{{ item.id }}">{{ item.file }}</a></span>
+                        </div>
+                    </div>                
+                </td>
+                <td data-title="{{ 'Import behavior'|t }}">
+                {% switch item.behavior %}
+                    {% case 'append' %}
+                        {{ "Append data"|t }}
+                    {% case 'replace' %}
+                        {{ "Replace data"|t }}
+                    {% case 'delete' %}
+                        {{ "Delete data"|t }}
+                {% endswitch %}
+                </td>
+                <td data-title="{{ 'Rows'|t }}">{{ item.rows }}</td>
+                <td data-title="{{ 'Started'|t }}">{{ item.dateCreated | datetime }}</td>
+                <td data-title="{{ 'Finished'|t }}">{% if item.status == 'finished' %}{{ item.dateUpdated | datetime }}{% endif %}</td>
+                <td data-title="{{ 'Total time'|t }}">{% if item.status == 'finished' %}{{ item.dateCreated.diff(item.dateUpdated).humanDuration() }}{% endif %}</td>
+                <td data-title="{{ 'User'|t }}">
+                    <a href="users/{{ item.user.id }}">{{ item.user.username }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+{% endset %}

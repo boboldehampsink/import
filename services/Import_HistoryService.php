@@ -5,10 +5,24 @@ class Import_HistoryService extends BaseApplicationComponent {
     
     public function show() {
     
-        // Sort descending
-        $criteria = array('order' => 'id desc');
+        // Set criteria
+        $criteria = new \CDbCriteria;
+        $criteria->order = 'id desc';
     
         return Import_HistoryRecord::model()->findAll($criteria);
+    
+    }
+    
+    public function showLog($history) {
+    
+        // Set criteria
+        $criteria = new \CDbCriteria;
+        $criteria->condition = 'historyId = :history_id';
+        $criteria->params = array(
+            ':history_id' => $history,
+        );
+    
+        return Import_LogRecord::model()->findAll($criteria);
     
     }
     
