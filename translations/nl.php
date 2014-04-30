@@ -8,6 +8,7 @@ return array(
     'Started' => 'Begonnen',
     'Finished' => 'Afgelopen',
     'Total time' => 'Totale tijd',
+    'Errors' => 'Fouten',
     'Upload file' => 'Bestand uploaden',
     'Map fields' => 'Velden instellen',
     'Choose the section you want to import to.' => 'Kies de sectie waar je in wilt importeren.',

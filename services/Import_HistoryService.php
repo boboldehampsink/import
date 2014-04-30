@@ -22,7 +22,20 @@ class Import_HistoryService extends BaseApplicationComponent {
             ':history_id' => $history,
         );
     
-        return Import_LogRecord::model()->findAll($criteria);
+        // Get errors
+        $errors = array();
+        $logs = Import_LogRecord::model()->findAll($criteria);
+        foreach($logs as $log) {
+            $errors[$log['line']] = $log['errors'];
+        }
+        
+        // Make "total" list
+        $total = array();
+        for($i = 1; $i <= 5; $i++) {
+            $total[$i] = isset($errors[$i]) ? $errors[$i] : array(Craft::t('None'));
+        }
+        
+        return $total;
     
     }
     
