@@ -12,15 +12,18 @@ Features:
  - Automatically detects CSV delimiters
  - Will connect Entries, Users and Assets by searching for them
  - Will send a summary email when the task if finished
+ - View your import history
  
 Todo:
  - Import all ElementTypes (currently only Entries)
  - Support JSON and XML
- - Backup before importing, so you can rollback
  - Import a fixed value in absence of data
  - More info in the import summary mail
 
 ###Screenshots###
+
+History
+![History](https://raw.githubusercontent.com/boboldehampsink/CraftImportPlugin/gh-pages/images/history.png)
 
 Upload
 ![Upload](https://raw.githubusercontent.com/boboldehampsink/CraftImportPlugin/gh-pages/images/upload.png)
@@ -34,7 +37,7 @@ Map fields (2)
 Changelog
 =================
 ###0.6###
- - Import history!
+ - Added an import history tab
 
 ###0.5.2###
  - Fixed a bug where specific backup settings would fail the import task
