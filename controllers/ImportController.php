@@ -122,10 +122,13 @@ class ImportController extends BaseController
         $history = craft()->import_history->start((object)$settings);
 
         // Create the import task
-        craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), array_merge($settings, array('history' => $history)));
+        $task = craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), array_merge($settings, array('history' => $history)));
         
-        // Send variables to template and display
-        $this->renderTemplate('import/_progress');
+        // Notify user
+        craft()->userSession->setNotice(Craft::t('Import process started.'));
+        
+        // Redirect to index
+        $this->redirect('import?task=' . $task->id);
     
     }
     

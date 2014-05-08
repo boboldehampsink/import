@@ -29,8 +29,6 @@ return array(
     'Criterium' => 'Criterium',
     'Criterium for finding existing data.' => 'Criterium om bestaande gegevens te vinden.',
     'Import process started.' => 'Import proces gestart.',
-    'The import process has been dedicated to a task, which will show its progress in the navigation bar.' => 'Er is een taak aangemaakt die het import proces zal afhandelen. Je kunt de voortgang in de navigatiebalk bekijken.',
-    'Once the import process has finished, you will receive an e-mail with details about the process.' => 'Wanneer de import taak klaar is, zul je een e-mail ontvangen met details over het proces.',
     'Preparing import process' => 'Importeer proces voorbereiden',
     'Importing' => 'Bezig met importeren van',
     'rows have been successfully imported.' => 'rijen succesvol geïmporteerd.',

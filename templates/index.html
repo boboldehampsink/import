@@ -10,9 +10,26 @@
 
 {% set selectedTab = 'overview' %}
 
+{% if craft.request.getParam('task') %}
+
+    {% set javascript %}
+    setTimeout(function() {
+        var taskCheck = setInterval(function() {
+            if((Craft.cp.runningTaskInfo && Craft.cp.runningTaskInfo.id != {{ craft.request.getParam('task') }}) || Craft.cp.runningTaskInfo === null) {
+                clearInterval(taskCheck);
+                window.location.href = 'import';
+            }
+        }, 500);
+    }, 500);
+    {% endset %}
+    
+    {% includeJs javascript %}
+
+{% endif %}
+
 {% set content %}
     
-    <table class="data fullwidth">
+    <table class="data fullwidth" id="history">
         <thead>
             <tr>
                 <th scope="col" data-attribute="date">{{ "Filename"|t }}</th>
