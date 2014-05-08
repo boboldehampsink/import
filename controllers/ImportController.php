@@ -42,6 +42,9 @@ class ImportController extends BaseController
         // Get behavior
         $behavior = craft()->request->getPost('importBehavior');
         
+        // Send e-mail?
+        $email = craft()->request->getPost('importEmail');
+        
         // Backup?
         $backup = craft()->request->getPost('importBackup');
         
@@ -52,6 +55,7 @@ class ImportController extends BaseController
         $import->section   = $section;
         $import->entrytype = $entrytype;
         $import->behavior  = $behavior;
+        $import->email     = $email;
         $import->backup    = $backup;
         
         // Validate model
@@ -63,12 +67,7 @@ class ImportController extends BaseController
             // Send variables to template and display
             $this->renderTemplate('import/_map', array(
                 'import'    => $import,
-                'columns'   => $columns,
-                'file'      => craft()->path->getTempUploadsPath().$file->getName(),
-                'section'   => $section,
-                'entrytype' => $entrytype,
-                'behavior'  => $behavior,
-                'backup'    => $backup
+                'columns'   => $columns
             ));
         
         } else {
@@ -96,6 +95,9 @@ class ImportController extends BaseController
         // Get file
         $file = craft()->request->getParam('file');
         
+        // Email?
+        $email = craft()->request->getParam('email');
+        
         // Backup?
         $backup = craft()->request->getParam('backup');
         
@@ -115,6 +117,7 @@ class ImportController extends BaseController
             'section'   => $section,
             'entrytype' => $entrytype,
             'behavior'  => $behavior,
+            'email'     => $email,
             'backup'    => $backup
         );
         

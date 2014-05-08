@@ -36,6 +36,10 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.1###
+ - Get pending task info in import overview
+ - Ability to choose wether you want to receive an e-mail or not
+ 
 ###0.6###
  - Added an import history tab
 

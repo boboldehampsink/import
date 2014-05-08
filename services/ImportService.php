@@ -120,47 +120,51 @@ class ImportService extends BaseApplicationComponent {
     public function finish($settings, $backup) {
     
         craft()->import_history->end($settings->history);
-    
-        // Gather results
-        $results = array(
-            'success' => $settings->rows,
-            'errors' => array()
-        );
         
-        // Gather errors
-        foreach($this->log as $line => $result) {
-             $results['errors'][$line] = $result;
-        }
+        if($settings->email) {
         
-        // Recalculate successful results
-        $results['success'] -= count($results['errors']);
-        
-        // Prepare the mail
-        $email = new EmailModel();
-        $emailSettings = craft()->email->getSettings();
-        $email->toEmail = $emailSettings['emailAddress'];
-        
-        // Zip the backup
-        if($settings->backup && IOHelper::fileExists($backup)) {
-            $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
-            if(IOHelper::fileExists($destZip)) {
-                IOHelper::deleteFile($destZip, true);
+            // Gather results
+            $results = array(
+                'success' => $settings->rows,
+                'errors' => array()
+            );
+            
+            // Gather errors
+            foreach($this->log as $line => $result) {
+                 $results['errors'][$line] = $result;
             }
-            IOHelper::createFile($destZip);
-            if(Zip::add($destZip, $backup, craft()->path->getDbBackupPath())) {
-                $backup = $destZip;
+            
+            // Recalculate successful results
+            $results['success'] -= count($results['errors']);
+        
+            // Prepare the mail
+            $email = new EmailModel();
+            $emailSettings = craft()->email->getSettings();
+            $email->toEmail = $emailSettings['emailAddress'];
+            
+            // Zip the backup
+            if($settings->backup && IOHelper::fileExists($backup)) {
+                $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
+                if(IOHelper::fileExists($destZip)) {
+                    IOHelper::deleteFile($destZip, true);
+                }
+                IOHelper::createFile($destZip);
+                if(Zip::add($destZip, $backup, craft()->path->getDbBackupPath())) {
+                    $backup = $destZip;
+                }
             }
+            
+            // Set email content
+            $email->subject = Craft::t('The import task is finished');
+            $email->htmlBody = TemplateHelper::getRaw(craft()->templates->render('import/_email', array(
+                'results' => $results,
+                'backup' => $backup
+            )));
+            
+            // Send it
+            craft()->email->sendEmail($email);
+            
         }
-        
-        // Set email content
-        $email->subject = Craft::t('The import task is finished');
-        $email->htmlBody = TemplateHelper::getRaw(craft()->templates->render('import/_email', array(
-            'results' => $results,
-            'backup' => $backup
-        )));
-        
-        // Send it
-        craft()->email->sendEmail($email);
     
     }
 

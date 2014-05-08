@@ -21,6 +21,8 @@ return array(
     'Delete data' => 'Gegevens verwijderen',
     'File' => 'Bestand',
     'Choose the file you want to import.<br />Valid file formats: CSV' => 'Kies het bestand dat je wilt importeren.<br />Geldige bestandsformaten: CSV',
+    'Send e-mail notification' => 'Stuur e-mail notificatie',
+    'Send an e-mail summary when the import process is completed' => 'Stuur een e-mail samenvatting wanneer het import proces is voltooid.',
     'Backup database before importing' => 'Eerst backup maken voor het importeren',
     'This filetype is not valid!' => 'Dit is geen geldig bestandstype!',
     'Choose where you want to import your fields. * Please note that "{title}" is always required.' => 'Kies waar je je velden in wilt importeren. * Let op: "{title}" is altijd verplicht.',

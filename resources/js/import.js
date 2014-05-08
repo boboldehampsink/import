@@ -16,6 +16,11 @@ $(function() {
             
         });
         
+        // Only show backup option when receiving email
+        $('#email').change(function() {
+            $('#backup').prop('disabled', !$(this).is(':checked'));
+        });
+        
     }
     
     if($('.mapper select').length) {
