@@ -36,7 +36,7 @@
                     <div class="field">
                         <div class="input">
                             <div class="select">
-                                <select name="importSection">
+                                <select name="importSection" id="sections">
                                 {% for section in sections %}
                                     <option value="{{ section.id }}">{{ section.name }}</option>
                                 {% endfor %}
@@ -119,6 +119,26 @@
                 <td>
                     <div class="field">
                         <div class="heading">
+                            <label>{{ "Send e-mail notification"|t }}</label>
+                            <div class="instructions">
+                                <p>{{ "Send an e-mail summary when the import process is completed."|t }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="input">
+                            <input type="hidden" name="importEmail" value="0">
+                            <input type="checkbox" name="importEmail" value="1" id="email" />
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="field">
+                        <div class="heading">
                             <label>{{ "Backup Database"|t }}</label>
                             <div class="instructions">
                                 <p>{{ "Backup database before importing"|t }}</p>
@@ -130,7 +150,7 @@
                     <div class="field">
                         <div class="input">
                             <input type="hidden" name="importBackup" value="0">
-                            <input type="checkbox" name="importBackup" value="1" />
+                            <input type="checkbox" name="importBackup" value="1" id="backup" disabled />
                         </div>
                     </div>
                 </td>

@@ -15,6 +15,7 @@ class ImportTask extends BaseTask {
             'section'   => AttributeType::Number,
             'entrytype' => AttributeType::Number,
             'behavior'  => AttributeType::Name,
+            'email'     => AttributeType::Email,
             'backup'    => AttributeType::Bool,
             'history'   => AttributeType::Number
         );

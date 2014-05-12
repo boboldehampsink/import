@@ -17,14 +17,15 @@
 {% set content %}
     <form id="import-form" method="post" action="" class="centered" accept-charset="UTF-8">
         <input type="hidden" name="action" value="import/importFile">
-        <input type="hidden" name="section" value="{{ section }}">
-        <input type="hidden" name="entrytype" value="{{ entrytype }}">
-        <input type="hidden" name="behavior" value="{{ behavior }}">
-        <input type="hidden" name="file" value="{{ file }}">
-        <input type="hidden" name="backup" value="{{ backup }}">
+        <input type="hidden" name="section" value="{{ import.section }}">
+        <input type="hidden" name="entrytype" value="{{ import.entrytype }}">
+        <input type="hidden" name="behavior" value="{{ import.behavior }}">
+        <input type="hidden" name="file" value="{{ import.file }}">
+        <input type="hidden" name="email" value="{{ import.email }}">
+        <input type="hidden" name="backup" value="{{ import.backup }}">
         <input type="hidden" name="unique[]" value="">
                 
-        {% set entrytypes = craft.sections.getSectionById(section).getEntryTypes() %}
+        {% set entrytypes = craft.sections.getSectionById(import.section).getEntryTypes() %}
                 
         <p>{{ "Choose where you want to import your fields. * Please note that \"{title}\" is always required."|t({
             title: entrytypes[0].titleLabel
@@ -72,7 +73,7 @@
                         </div>
                     </div>
                 </td>
-                {% if craft.request.getParam('importBehavior') != 'append' %}
+                {% if import.behavior != 'append' %}
                 <td>
                 {{ forms.checkboxField({
                     label: 'Criterium'|t,
