@@ -36,6 +36,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.4###
+ - Fixed a redirecting bug that occured in the previous update
+
 ###0.6.3###
  - Better live import updates
 
