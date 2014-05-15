@@ -36,6 +36,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.2###
+ - Fixed a bug where errors in import failed to render a history detail page
+
 ###0.6.1###
  - Get pending task info in import overview
  - Ability to choose wether you want to receive an e-mail or not
