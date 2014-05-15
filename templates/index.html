@@ -22,7 +22,7 @@
                 var taskCheck = setInterval(function() {
                     if((Craft.cp.runningTaskInfo && Craft.cp.runningTaskInfo.id != {{ craft.request.getParam('task') }}) || Craft.cp.runningTaskInfo === null) {
                         clearInterval(taskCheck);
-                        window.location.href = 'scpimport';
+                        window.location.href = 'import';
                     }
                 }, 500);
             }
