@@ -13,14 +13,21 @@
 {% if craft.request.getParam('task') %}
 
     {% set javascript %}
-    setTimeout(function() {
-        var taskCheck = setInterval(function() {
-            if((Craft.cp.runningTaskInfo && Craft.cp.runningTaskInfo.id != {{ craft.request.getParam('task') }}) || Craft.cp.runningTaskInfo === null) {
-                clearInterval(taskCheck);
-                window.location.href = 'import';
+    $(function() {
+        setTimeout(function() {
+            if(!$('#taskicon').length) {
+                window.location.reload();
+            } else {
+                $('#taskicon').trigger('click');
+                var taskCheck = setInterval(function() {
+                    if((Craft.cp.runningTaskInfo && Craft.cp.runningTaskInfo.id != {{ craft.request.getParam('task') }}) || Craft.cp.runningTaskInfo === null) {
+                        clearInterval(taskCheck);
+                        window.location.href = 'scpimport';
+                    }
+                }, 500);
             }
         }, 500);
-    }, 500);
+    });
     {% endset %}
     
     {% includeJs javascript %}

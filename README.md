@@ -36,6 +36,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.3###
+ - Better live import updates
+
 ###0.6.2###
  - Fixed a bug where errors in import failed to render a history detail page
 
