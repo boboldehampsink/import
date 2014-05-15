@@ -28,7 +28,7 @@
         {% for line, errors in craft.import.log(historyId) %}
             <tr>
                 <td data-title="{{ 'Line'|t }}">{{ line }}</td>
-                <td data-title="{{ 'Errors'|t }}">{{ errors | join(', ') }}</td>
+                <td data-title="{{ 'Errors'|t }}">{{ errors[0] | join(', ') }}</td>
             </tr>
         {% endfor %}
         </tbody>
