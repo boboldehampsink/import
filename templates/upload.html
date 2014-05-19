@@ -37,7 +37,7 @@
                         <div class="input">
                             <div class="select">
                                 <select name="importSection" id="sections">
-                                {% for section in sections %}
+                                {% for section in sections if section.type != 'single' %}
                                     <option value="{{ section.id }}">{{ section.name }}</option>
                                 {% endfor %}
                                 </select>
