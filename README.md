@@ -36,6 +36,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.5###
+ - Disabled listing of singles to import into
+
 ###0.6.4###
  - Fixed a redirecting bug that occured in the previous update
 
