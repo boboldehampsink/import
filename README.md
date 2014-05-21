@@ -36,6 +36,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.8###
+ - Only list sections for which the user has permissions, also fixing an entrytype listing bug if the first found section was a single.
+
 ###0.6.7###
  - Bugfix: Criteria matching now checks all statuses and has no limit
 
