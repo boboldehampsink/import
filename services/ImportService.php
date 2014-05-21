@@ -60,9 +60,12 @@ class ImportService extends BaseApplicationComponent {
         
             // Match with current data
             $criteria = craft()->elements->getCriteria(ElementType::Entry);
+            $criteria->limit = null;
+            $criteria->status = isset($settings['map']['status']) ? $settings['map']['status'] : null;
             $criteria->sectionId = $settings['section'];
+            
             foreach($settings['map'] as $key => $value) {
-                if(isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
+                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
                     $criteria->$settings['map'][$key] = $fields[$value];
                 }
             } 

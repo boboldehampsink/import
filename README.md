@@ -36,6 +36,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.7###
+ - Bugfix: Criteria matching now checks all statuses and has no limit
+
 ###0.6.6###
  - Added an "onBeforeImportDelete" event, so your plugin can intervene on deletion by this plugin
 
