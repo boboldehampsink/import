@@ -72,9 +72,22 @@ class ImportService extends BaseApplicationComponent {
                 
                 // If we're deleting
                 if($settings['behavior'] == ImportModel::BehaviorDelete) {
+                
+                    // Get id's of elements to delete
+                    $elementIds = $criteria->ids();
+                
+                    // Fire an 'onBeforeImportDelete' event
+                    Craft::import('plugins.import.events.ImportDeleteEvent');
+                    $event = new ImportDeleteEvent($this, array('elementIds' => $elementIds));
+                    $this->onBeforeImportDelete($event);
+                    
+                    // Give event the chance to blow off deletion
+                    if($event->proceed) {
                                 
-                    // Do it
-                    craft()->elements->deleteElementById($criteria->ids());
+                        // Do it
+                        craft()->elements->deleteElementById($elementIds);
+                        
+                    }
                     
                     // Skip rest and continue
                     return;
@@ -435,6 +448,12 @@ class ImportService extends BaseApplicationComponent {
         
         return $slug;
         
+    }
+    
+    // Fires an "onBeforeImportDelete" event
+    public function onBeforeImportDelete(ImportDeleteEvent $event)
+    {
+    	$this->raiseEvent('onBeforeImportDelete', $event);
     }
 
 }
