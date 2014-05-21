@@ -18,7 +18,10 @@
     <form id="import-form" method="post" action="" class="centered" accept-charset="UTF-8" enctype="multipart/form-data">
         <input type="hidden" name="action" value="import/uploadFile">
         
-        {% set sections = craft.sections.getAllSections() %}
+        {% set sections = {} %}
+        {% for section in craft.sections.getEditableSections() if section.type != 'single' %}
+            {% set sections = sections|merge([section]) %}
+        {% endfor %}
         
         <table class="data">
             <tr>
@@ -37,7 +40,7 @@
                         <div class="input">
                             <div class="select">
                                 <select name="importSection" id="sections">
-                                {% for section in sections if section.type != 'single' %}
+                                {% for section in sections %}
                                     <option value="{{ section.id }}">{{ section.name }}</option>
                                 {% endfor %}
                                 </select>
