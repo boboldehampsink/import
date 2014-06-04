@@ -64,13 +64,6 @@ class ImportService extends BaseApplicationComponent {
             $criteria->status = isset($settings['map']['status']) ? $settings['map']['status'] : null;
             $criteria->sectionId = $settings['section'];
             
-            // WORKAROUND: if we want to match titles
-            // https://plus.google.com/105657957336798514916/posts/Si9WvnmoXmt
-            if(isset($settings['map']['title'])) {
-                $criteria->search("title::'{$title}'");
-            }
-            
-            // Try to match fields on criteria
             foreach($settings['map'] as $key => $value) {
                 if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
                     $criteria->$settings['map'][$key] = $fields[$value];
