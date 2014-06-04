@@ -47,8 +47,8 @@ class ImportPlugin extends BasePlugin
     // Check if the plugin meets the requirements, else uninstall again
     function onAfterInstall() {
     
-        // Minimum build is 2535
-        $minBuild = '2535';
+        // Minimum build is 2554
+        $minBuild = '2554';
         
         // If your build is lower
         if(craft()->getBuild() < $minBuild) {
