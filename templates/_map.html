@@ -54,6 +54,7 @@
                         {% for entrytype in entrytypes %}
                                     <option value="title"{% if column == 'title' or column == 'name' or column == entrytype.titleLabel %} selected{% endif %}>{{ entrytype.titleLabel }} *</option>
                                     <option value="slug"{% if column == 'slug' %} selected{% endif %}>{{ "Slug"|t }}</option>
+                                    <option value="parent"{% if column == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
                                     <option value="authorId"{% if column == 'author' or column == 'admin' %} selected{% endif %}>{{ "Author"|t }}</option>
                                     <option value="postDate"{% if column == 'postdate' or column == 'date' %} selected{% endif %}>{{ "Post Date"|t }}</option>
                                     <option value="expiryDate"{% if column == 'expirydate' or column == 'enddate' %} selected{% endif %}>{{ "Expiry Date"|t }}</option>

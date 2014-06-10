@@ -225,7 +225,7 @@ class ImportService extends BaseApplicationComponent {
     // Prepare reserved EntryModel values
     public function prepForEntryModel(&$fields, EntryModel $entry) {
         
-        // Set Author
+        // Set author
         if(isset($fields[ImportModel::HandleAuthor])) {
             $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
             unset($fields[ImportModel::HandleAuthor]);
@@ -262,9 +262,38 @@ class ImportService extends BaseApplicationComponent {
             $entry->getContent()->title = $fields[ImportModel::HandleTitle];
             unset($fields[ImportModel::HandleTitle]);
         }
+        
+        // Set parent id
+        if(isset($fields[ImportModel::HandleParent])) {
+           
+           // Get data
+           $data = $fields[ImportModel::HandleParent];
+            
+            // Fresh up $data
+           $data = str_replace("\n", "", $data);
+           $data = str_replace("\r", "", $data);
+           $data = trim($data);
+           
+           // Don't connect empty fields
+           if(!empty($data)) {
+         
+               // Find matching element       
+               $criteria = craft()->elements->getCriteria(ElementType::Entry);
 
-        // Return entry
-        return $entry;
+               // "Loose" matching for easier connecting
+               $data = implode(' OR ', ArrayHelper::stringToArray($data));
+               $criteria->search = $data;
+               
+               // Return the first found id for connecting
+               if($criteria->total()) {
+               
+                   $entry->parentId = $criteria->first()->id;
+                   
+               }
+           
+           }
+        
+        }
                     
     }
     
