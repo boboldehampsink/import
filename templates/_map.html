@@ -52,6 +52,7 @@
                                 <select name="fields[{{ column }}]">
                                     <option value="dont">{{ "Don't import"|t }}</option>
                         {% for entrytype in entrytypes %}
+                            {% if loop.first %}
                                     <option value="title"{% if column == 'title' or column == 'name' or column == entrytype.titleLabel %} selected{% endif %}>{{ entrytype.titleLabel }} *</option>
                                     <option value="slug"{% if column == 'slug' %} selected{% endif %}>{{ "Slug"|t }}</option>
                                     <option value="parent"{% if column == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
@@ -60,6 +61,7 @@
                                     <option value="expiryDate"{% if column == 'expirydate' or column == 'enddate' %} selected{% endif %}>{{ "Expiry Date"|t }}</option>
                                     <option value="enabled"{% if column == 'enabled' %} selected{% endif %}>{{ "Enabled"|t }}</option>
                                     <option value="status"{% if column == 'status' %} selected{% endif %}>{{ "Status"|t }}</option>
+                            {% endif %}
                             {% for tab in craft.fields.getLayoutById(entrytype.fieldLayoutId).getTabs() %}
                                     <optgroup label="{{ tab.name }}">
                                 {% for field in tab.getFields() %}
