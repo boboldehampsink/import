@@ -46,7 +46,7 @@
 <li>Has a hook "registerImportOperation" to parse special FieldType inputs if you want.</li>
 <li>Uses the Task service to import while you work on.</li>
 <li>Automatically detects CSV delimiters</li>
-<li>Will connect Entries, Users and Assets by searching for them</li>
+<li>Will connect Entries (also Structures), Users and Assets by searching for them</li>
 <li>Will send a summary email when the task if finished</li>
 <li>View your import history</li>
 </ul><p>Todo:</p>
@@ -75,6 +75,52 @@
 <a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h1>
 
 <h3>
+<a name="069" class="anchor" href="#069"><span class="octicon octicon-link"></span></a>0.6.9</h3>
+
+<ul>
+<li>Added parent matching, so you can import entries as children of other entries</li>
+</ul><h3>
+<a name="068" class="anchor" href="#068"><span class="octicon octicon-link"></span></a>0.6.8</h3>
+
+<ul>
+<li>Only list sections for which the user has permissions, also fixing an entrytype listing bug if the first found section was a single.</li>
+</ul><h3>
+<a name="067" class="anchor" href="#067"><span class="octicon octicon-link"></span></a>0.6.7</h3>
+
+<ul>
+<li>Bugfix: Criteria matching now checks all statuses and has no limit</li>
+</ul><h3>
+<a name="066" class="anchor" href="#066"><span class="octicon octicon-link"></span></a>0.6.6</h3>
+
+<ul>
+<li>Added an "onBeforeImportDelete" event, so your plugin can intervene on deletion by this plugin</li>
+</ul><h3>
+<a name="065" class="anchor" href="#065"><span class="octicon octicon-link"></span></a>0.6.5</h3>
+
+<ul>
+<li>Disabled listing of singles to import into</li>
+</ul><h3>
+<a name="064" class="anchor" href="#064"><span class="octicon octicon-link"></span></a>0.6.4</h3>
+
+<ul>
+<li>Fixed a redirecting bug that occured in the previous update</li>
+</ul><h3>
+<a name="063" class="anchor" href="#063"><span class="octicon octicon-link"></span></a>0.6.3</h3>
+
+<ul>
+<li>Better live import updates</li>
+</ul><h3>
+<a name="062" class="anchor" href="#062"><span class="octicon octicon-link"></span></a>0.6.2</h3>
+
+<ul>
+<li>Fixed a bug where errors in import failed to render a history detail page</li>
+</ul><h3>
+<a name="061" class="anchor" href="#061"><span class="octicon octicon-link"></span></a>0.6.1</h3>
+
+<ul>
+<li>Get pending task info in import overview</li>
+<li>Ability to choose wether you want to receive an e-mail or not</li>
+</ul><h3>
 <a name="06" class="anchor" href="#06"><span class="octicon octicon-link"></span></a>0.6</h3>
 
 <ul>
