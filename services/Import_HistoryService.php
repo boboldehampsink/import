@@ -86,5 +86,21 @@ class Import_HistoryService extends BaseApplicationComponent
         $history->save(false);
     
     }
+    
+    public function version($history, $entry)
+    {
+    
+        // Get previous version
+        $version = end(craft()->entryRevisions->getVersionsByEntryId($entry, false, 2));
+        
+        // Save
+        $log = new Import_EntriesRecord();
+        $log->historyId = $history;
+        $log->entryId = $entry;
+        $log->versionId = $version->versionId;
+        
+        $log->save(false);
+    
+    }
 
 }
