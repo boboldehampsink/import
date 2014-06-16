@@ -36,6 +36,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.6.9###
+ - Added parent matching, so you can import entries as children of other entries
+
 ###0.6.8###
  - Only list sections for which the user has permissions, also fixing an entrytype listing bug if the first found section was a single.
 
