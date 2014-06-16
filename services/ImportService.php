@@ -38,8 +38,7 @@ class ImportService extends BaseApplicationComponent
         craft()->config->maxPowerCaptain();
         
         // See if map and data match (could not be due to malformed csv)
-        if(count($settings['map']) != count($data)) 
-        {
+        if(count($settings['map']) != count($data)) {
         
             // Log errors when unsuccessful
             $this->log[$row] = craft()->import_history->log($settings->history, $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));            
@@ -51,8 +50,7 @@ class ImportService extends BaseApplicationComponent
         $fields = array_combine($settings['map'], $data);
         
         // If set, remove fields that will not be imported
-        if(isset($fields['dont'])) 
-        {
+        if(isset($fields['dont'])) {
             unset($fields['dont']);
         }
         
@@ -62,8 +60,7 @@ class ImportService extends BaseApplicationComponent
         $entry->typeId = $settings['entrytype'];
         
         // If unique is non-empty array, we're replacing or deleting
-        if(is_array($settings['unique']) && count($settings['unique']) > 1) 
-        {
+        if(is_array($settings['unique']) && count($settings['unique']) > 1) {
         
             // Match with current data
             $criteria = craft()->elements->getCriteria(ElementType::Entry);
@@ -71,21 +68,17 @@ class ImportService extends BaseApplicationComponent
             $criteria->status = isset($settings['map']['status']) ? $settings['map']['status'] : null;
             $criteria->sectionId = $settings['section'];
             
-            foreach($settings['map'] as $key => $value) 
-            {
-                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) 
-                {
+            foreach($settings['map'] as $key => $value) {
+                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
                     $criteria->$settings['map'][$key] = $fields[$value];
                 }
             } 
             
             // If there's a match...
-            if($criteria->total()) 
-            {
+            if($criteria->total()) {
                 
                 // If we're deleting
-                if($settings['behavior'] == ImportModel::BehaviorDelete) 
-                {
+                if($settings['behavior'] == ImportModel::BehaviorDelete) {
                 
                     // Get id's of elements to delete
                     $elementIds = $criteria->ids();
@@ -96,8 +89,7 @@ class ImportService extends BaseApplicationComponent
                     $this->onBeforeImportDelete($event);
                     
                     // Give event the chance to blow off deletion
-                    if($event->proceed) 
-                    {
+                    if($event->proceed) {
                                 
                         // Do it
                         craft()->elements->deleteElementById($elementIds);
@@ -107,18 +99,14 @@ class ImportService extends BaseApplicationComponent
                     // Skip rest and continue
                     return;
                     
-                }
-                else
-                {
+                } else {
                 
                     // Fill new EntryModel with match
                     $entry = $criteria->first();
                 
                 } 
                 
-            } 
-            else
-            {
+            } else {
             
                 // Else do nothing
                 return;
@@ -154,8 +142,7 @@ class ImportService extends BaseApplicationComponent
     
         craft()->import_history->end($settings->history);
         
-        if($settings->email) 
-        {
+        if($settings->email) {
         
             // Gather results
             $results = array(
@@ -164,8 +151,7 @@ class ImportService extends BaseApplicationComponent
             );
             
             // Gather errors
-            foreach($this->log as $line => $result) 
-            {
+            foreach($this->log as $line => $result) {
                  $results['errors'][$line] = $result;
             }
             
@@ -178,8 +164,7 @@ class ImportService extends BaseApplicationComponent
             $email->toEmail = $emailSettings['emailAddress'];
             
             // Zip the backup
-            if($settings->backup && IOHelper::fileExists($backup)) 
-            {
+            if($settings->backup && IOHelper::fileExists($backup)) {
                 $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
                 if(IOHelper::fileExists($destZip)) 
                 {
@@ -232,8 +217,7 @@ class ImportService extends BaseApplicationComponent
         
         // Open file and parse csv rows
         $handle = fopen($file, 'r');        
-        while(($row = fgetcsv($handle, 0, $delimiter)) !== false) 
-        {
+        while(($row = fgetcsv($handle, 0, $delimiter)) !== false) {
         
             // Add row to data array
             $data[] = $row;
@@ -251,54 +235,45 @@ class ImportService extends BaseApplicationComponent
     {
         
         // Set author
-        if(isset($fields[ImportModel::HandleAuthor])) 
-        {
+        if(isset($fields[ImportModel::HandleAuthor])) {
             $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
             unset($fields[ImportModel::HandleAuthor]);
-        } 
-        else 
-        {
+        } else {
             $entry->authorId = ($entry->authorId ? $entry->authorId : craft()->userSession->getUser()->id);
         }
         
         // Set slug
-        if(isset($fields[ImportModel::HandleSlug])) 
-        {
+        if(isset($fields[ImportModel::HandleSlug])) {
             $entry->slug = ElementHelper::createSlug($fields[ImportModel::HandleSlug]);
             unset($fields[ImportModel::HandleSlug]);
         }
         
         // Set postdate
-        if(isset($fields[ImportModel::HandlePostDate])) 
-        {
+        if(isset($fields[ImportModel::HandlePostDate])) {
             $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
             unset($fields[ImportModel::HandlePostDate]);
         }
         
         // Set expiry date
-        if(isset($fields[ImportModel::HandlePostDate])) 
-        {
+        if(isset($fields[ImportModel::HandlePostDate])) {
             $entry->expiryDate = DateTime::createFromString($fields[ImportModel::ExpiryDate], craft()->timezone);
             unset($fields[ImportModel::HandlePostDate]);
         }
         
         // Set enabled
-        if(isset($fields[ImportModel::HandleEnabled])) 
-        {
+        if(isset($fields[ImportModel::HandleEnabled])) {
             $entry->enabled = (bool)$fields[ImportModel::HandleEnabled];
             unset($fields[ImportModel::HandleEnabled]);
         }
         
         // Set title
-        if(isset($fields[ImportModel::HandleTitle])) 
-        {
+        if(isset($fields[ImportModel::HandleTitle])) {
             $entry->getContent()->title = $fields[ImportModel::HandleTitle];
             unset($fields[ImportModel::HandleTitle]);
         }
         
         // Set parent id
-        if(isset($fields[ImportModel::HandleParent])) 
-        {
+        if(isset($fields[ImportModel::HandleParent])) {
            
            // Get data
            $data = $fields[ImportModel::HandleParent];
@@ -309,8 +284,7 @@ class ImportService extends BaseApplicationComponent
            $data = trim($data);
            
            // Don't connect empty fields
-           if(!empty($data)) 
-           {
+           if(!empty($data)) {
          
                // Find matching element       
                $criteria = craft()->elements->getCriteria(ElementType::Entry);
@@ -340,12 +314,10 @@ class ImportService extends BaseApplicationComponent
         $field = craft()->fields->getFieldByHandle($handle);
         
         // If it's a field ofcourse
-        if(!is_null($field)) 
-        {
+        if(!is_null($field)) {
             
             // For some fieldtypes the're special rules
-            switch($field->type) 
-            {
+            switch($field->type) {
             
                 case ImportModel::FieldTypeEntries:
                 
@@ -355,16 +327,13 @@ class ImportService extends BaseApplicationComponent
                     $data = trim($data);
                     
                     // Don't connect empty fields
-                    if(!empty($data)) 
-                    {
+                    if(!empty($data)) {
                 
                         // Get source id's for connecting
                         $sectionIds = array();
                         $sources = $field->getFieldType()->getSettings()->sources;
-                        if(is_array($sources)) 
-                        {
-                            foreach($sources as $source) 
-                            {
+                        if(is_array($sources)) {
+                            foreach($sources as $source) {
                                 list($type, $id) = explode(':', $source);
                                 $sectionIds[] = $id;
                             }
@@ -381,16 +350,14 @@ class ImportService extends BaseApplicationComponent
                         // Return the found id's for connecting
                         $data = $criteria->ids();
                     
-                    } 
-                    else 
-                    {
+                    } else {
                     
                         // Return empty array
                         $data = array();
                     
                     }
                                         
-                break;
+                    break;
                 
                 case ImportModel::FieldTypeCategories:
                 
@@ -398,8 +365,7 @@ class ImportService extends BaseApplicationComponent
                     $data = trim($data);
                     
                     // Don't connect empty fields
-                    if(!empty($data)) 
-                    {
+                    if(!empty($data)) {
                                                                         
                         // Get source id
                         $source = $field->getFieldType()->getSettings()->source;
@@ -420,16 +386,14 @@ class ImportService extends BaseApplicationComponent
                         // Return the found id's for connecting
                         $data = $criteria->ids();
                         
-                    } 
-                    else 
-                    {
+                    } else {
                     
                         // Return empty array
                         $data = array();
                     
                     }
                                         
-                break;
+                    break;
                 
                 case ImportModel::FieldTypeAssets:
                 
@@ -437,16 +401,13 @@ class ImportService extends BaseApplicationComponent
                     $data = trim($data);
                     
                     // Don't connect empty fields
-                    if(!empty($data)) 
-                    {
+                    if(!empty($data)) {
                 
                         // Get source id's for connecting
                         $sourceIds = array();
                         $sources = $field->getFieldType()->getSettings()->sources;
-                        if(is_array($sources)) 
-                        {
-                            foreach($sources as $source) 
-                            {
+                        if(is_array($sources)) {
+                            foreach($sources as $source) {
                                 list($type, $id) = explode(':', $source);
                                 $sourceIds[] = $id;
                             }
@@ -463,16 +424,14 @@ class ImportService extends BaseApplicationComponent
                         // Return the found id's for connecting
                         $data = $criteria->ids();
                         
-                    } 
-                    else
-                    {
+                    } else {
                     
                         // Return empty array
                         $data = array();
                     
                     }
                                         
-                break;
+                    break;
                 
                 case ImportModel::FieldTypeUsers:
                 
@@ -480,8 +439,7 @@ class ImportService extends BaseApplicationComponent
                     $data = trim($data);
                     
                     // Don't connect empty fields
-                    if(!empty($data)) 
-                    {
+                    if(!empty($data)) {
                                 
                         // Find matching element        
                         $criteria = craft()->elements->getCriteria(ElementType::User);
@@ -493,16 +451,14 @@ class ImportService extends BaseApplicationComponent
                         // Return the found id's for connecting
                         $data = $criteria->ids();
                         
-                    } 
-                    else 
-                    {
+                    } else {
                     
                         // Return empty array
                         $data = array();
                     
                     }
                                         
-                break;
+                    break;
             
             }
         

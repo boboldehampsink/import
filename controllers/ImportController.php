@@ -60,8 +60,7 @@ class ImportController extends BaseController
         $import->backup    = $backup;
         
         // Validate model
-        if($import->validate()) 
-        {
+        if($import->validate()) {
         
             // Get columns
             $columns = craft()->import->columns($import->file);
@@ -72,9 +71,7 @@ class ImportController extends BaseController
                 'columns'   => $columns
             ));
         
-        } 
-        else 
-        {
+        } else {
         
             // Not validated, show error
             craft()->userSession->setError(Craft::t('This filetype is not valid!').': '.$import->type);
