@@ -1,5 +1,4 @@
 <?php
-
 namespace Craft;
 
 class Import_LogRecord extends BaseRecord

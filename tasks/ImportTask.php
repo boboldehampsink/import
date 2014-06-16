@@ -1,11 +1,13 @@
 <?php
 namespace Craft;
 
-class ImportTask extends BaseTask {
+class ImportTask extends BaseTask 
+{
 
     protected $backupFile = false;
 
-    protected function defineSettings() {
+    protected function defineSettings() 
+    {
     
         return array(
             'file'      => AttributeType::Name,
@@ -22,13 +24,15 @@ class ImportTask extends BaseTask {
     
     }
 
-    public function getDescription() {
+    public function getDescription() 
+    {
     
         return Craft::t('Import');
     
     }
     
-    public function getTotalSteps() {
+    public function getTotalSteps() 
+    {
     
         // Delete element template caches before importing
         craft()->templateCache->deleteCachesByElementType(ElementType::Entry);
@@ -38,13 +42,15 @@ class ImportTask extends BaseTask {
     
     }
     
-    public function runStep($step) {
+    public function runStep($step)
+    {
     
         // Get settings
         $settings = $this->getSettings();
         
         // Backup?
-        if($settings->backup && !$step) {
+        if($settings->backup && !$step) 
+        {
         
             // Do the backup
             $backup = new DbBackup();
@@ -56,7 +62,8 @@ class ImportTask extends BaseTask {
         $data = craft()->import->data($settings->file);
         
         // Check if row exists
-        if(isset($data[$step])) {
+        if(isset($data[$step])) 
+        {
                 
             // Import row
             craft()->import->row($step, $data[$step], $settings);
@@ -64,7 +71,8 @@ class ImportTask extends BaseTask {
         }
         
         // When finished
-        if($step == ($settings->rows - 1)) {
+        if($step == ($settings->rows - 1)) 
+        {
             
             // Finish
             craft()->import->finish($settings, $this->backupFile);

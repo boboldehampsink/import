@@ -1,5 +1,4 @@
 <?php
-
 namespace Craft;
 
 class Import_HistoryRecord extends BaseRecord

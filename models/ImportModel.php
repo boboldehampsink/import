@@ -1,8 +1,7 @@
 <?php
-
 namespace Craft;
 
-class ImportModel extends BaseModel
+class ImportModel extends BaseModel 
 {
 
     // Filetypes
@@ -46,7 +45,7 @@ class ImportModel extends BaseModel
     const DelimiterComma     = ',';
     const DelimiterPipe      = '|';
 
-    protected function defineAttributes()
+    protected function defineAttributes() 
     {
         return array(
             'section'   => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Section')),

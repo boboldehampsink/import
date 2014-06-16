@@ -1,16 +1,18 @@
 <?php 
-
 namespace Craft;
 
-class ImportVariable {
+class ImportVariable 
+{
 
-    public function history() {
+    public function history() 
+    {
     
         return craft()->import_history->show();
     
     }
     
-    public function log($history) {
+    public function log($history) 
+    {
     
         return craft()->import_history->showLog($history);
     

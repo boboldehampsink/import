@@ -1,9 +1,11 @@
 <?php
 namespace Craft;
 
-class Import_HistoryService extends BaseApplicationComponent {
+class Import_HistoryService extends BaseApplicationComponent 
+{
     
-    public function show() {
+    public function show() 
+    {
     
         // Set criteria
         $criteria = new \CDbCriteria;
@@ -13,7 +15,8 @@ class Import_HistoryService extends BaseApplicationComponent {
     
     }
     
-    public function showLog($history) {
+    public function showLog($history) 
+    {
     
         // Set criteria
         $criteria = new \CDbCriteria;
@@ -42,7 +45,8 @@ class Import_HistoryService extends BaseApplicationComponent {
     
     }
     
-    public function start($settings) {
+    public function start($settings) 
+    {
     
         $history = new Import_HistoryRecord();
         $history->userId = craft()->userSession->getUser()->id;
@@ -59,7 +63,8 @@ class Import_HistoryService extends BaseApplicationComponent {
     
     }
 
-    public function log($history, $line, $errors) {
+    public function log($history, $line, $errors) 
+    {
     
         $log = new Import_LogRecord();
         $log->historyId = $history;
@@ -72,7 +77,8 @@ class Import_HistoryService extends BaseApplicationComponent {
     
     }
     
-    public function end($history) {
+    public function end($history) 
+    {
     
         $history = Import_HistoryRecord::model()->findById($history);
         $history->status = 'finished';

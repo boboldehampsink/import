@@ -1,11 +1,11 @@
 <?php
-
 namespace Craft;
 
-class ImportController extends BaseController
+class ImportController extends BaseController 
 {
 
-    public function actionGetEntryTypes() {
+    public function actionGetEntryTypes() 
+    {
     
         // Only ajax post requests
         $this->requirePostRequest();
@@ -24,7 +24,8 @@ class ImportController extends BaseController
     }
 
     // Upload file and process it for mapping
-    public function actionUploadFile() {
+    public function actionUploadFile() 
+    {
     
         // Only post requests
         $this->requirePostRequest();
@@ -59,7 +60,8 @@ class ImportController extends BaseController
         $import->backup    = $backup;
         
         // Validate model
-        if($import->validate()) {
+        if($import->validate()) 
+        {
         
             // Get columns
             $columns = craft()->import->columns($import->file);
@@ -70,7 +72,9 @@ class ImportController extends BaseController
                 'columns'   => $columns
             ));
         
-        } else {
+        } 
+        else 
+        {
         
             // Not validated, show error
             craft()->userSession->setError(Craft::t('This filetype is not valid!').': '.$import->type);
@@ -80,7 +84,8 @@ class ImportController extends BaseController
     }
     
     // Start import task
-    public function actionImportFile() {
+    public function actionImportFile() 
+    {
     
         // Only post requests
         $this->requirePostRequest();

@@ -3,6 +3,7 @@ namespace Craft;
 
 class ImportPlugin extends BasePlugin
 {
+
     function getName()
     {
         return Craft::t('Import');
@@ -29,8 +30,8 @@ class ImportPlugin extends BasePlugin
     }
     
     // Register CP routes
-    function registerCpRoutes() {
-    
+    function registerCpRoutes() 
+    {
         return array(
             'import/(?P<historyId>\d+)' => 'import/_history'
         );
@@ -41,11 +42,11 @@ class ImportPlugin extends BasePlugin
     function registerImportOperation(&$data, $handle)
     {
         return craft()->import->prepForFieldType($data, $handle);
-    
     }
     
     // Check if the plugin meets the requirements, else uninstall again
-    function onAfterInstall() {
+    function onAfterInstall() 
+    {
     
         // Minimum build is 2554
         $minBuild = '2554';
