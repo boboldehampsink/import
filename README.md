@@ -10,7 +10,7 @@ Features:
  - Has a hook "registerImportOperation" to parse special FieldType inputs if you want.
  - Uses the Task service to import while you work on.
  - Automatically detects CSV delimiters
- - Will connect Entries, Users and Assets by searching for them
+ - Will connect Entries (also Structures), Users and Assets by searching for them
  - Will send a summary email when the task if finished
  - View your import history
  
