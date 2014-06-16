@@ -144,7 +144,7 @@ class ImportService extends BaseApplicationComponent
     public function finish($settings, $backup) 
     {
     
-        craft()->import_history->end($settings->history);
+        craft()->import_history->end($settings->history, ImportModel::StatusFinished);
         
         if($settings->email) {
         

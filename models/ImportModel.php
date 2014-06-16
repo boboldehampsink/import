@@ -22,6 +22,7 @@ class ImportModel extends BaseModel
     // Statuses
     const StatusStarted  = 'started';
     const StatusFinished = 'finished';
+    const StatusReverted = 'reverted';
      
     // Handles
     const HandleTitle        = 'title';

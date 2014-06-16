@@ -55,7 +55,7 @@ class Import_HistoryService extends BaseApplicationComponent
         $history->file = basename($settings->file);
         $history->rows = $settings->rows;
         $history->behavior = $settings->behavior;
-        $history->status = 'started';
+        $history->status = ImportModel::StatusStarted;
         
         $history->save(false);
                 
@@ -77,13 +77,19 @@ class Import_HistoryService extends BaseApplicationComponent
     
     }
     
-    public function end($history) 
+    public function end($history, $status) 
     {
     
         $history = Import_HistoryRecord::model()->findById($history);
-        $history->status = 'finished';
+        $history->status = $status;
         
         $history->save(false);
+    
+    }
+    
+    public function clear($history) {
+    
+        // TODO
     
     }
     

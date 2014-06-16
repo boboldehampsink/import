@@ -15,7 +15,7 @@ class Import_HistoryRecord extends BaseRecord
             'file'      => AttributeType::Name,
             'rows'      => AttributeType::Number,
             'behavior'  => array(AttributeType::Enum, 'values' => array(ImportModel::BehaviorAppend, ImportModel::BehaviorReplace, ImportModel::BehaviorDelete)),
-            'status'    => array(AttributeType::Enum, 'values' => array(ImportModel::StatusStarted, ImportModel::StatusFinished))
+            'status'    => array(AttributeType::Enum, 'values' => array(ImportModel::StatusStarted, ImportModel::StatusFinished, ImportModel::StatusReverted))
         );
     }
     

@@ -50,6 +50,20 @@ class Import_RevertTask extends BaseTask
             craft()->entryRevisions->revertEntryToVersion($version);
     
         }
+        
+        // At last
+        if($step == (count($settings->entries) - 1)) {
+        
+            // Get history id
+            $historyId = $settings->entries[$step]['historyId'];
+        
+            // Mark this import as reverted
+            craft()->import_history->end($historyId, ImportModel::StatusReverted);
+            
+            // Clear entries history
+            craft()->import_history->clear($historyId);
+        
+        }
     
         return true;
     

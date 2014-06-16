@@ -53,11 +53,11 @@
         {% for item in craft.import.history %}
             <tr>
                 <td scope="row" data-title="{{ 'Filename'|t }}">
-                    <div class="element" data-id="{{ item.id }}" data-status="{% if item.status == 'started' %}pending{% else %}live{% endif %}" data-label="{{ item.file }}">
+                    <div class="element" data-id="{{ item.id }}" data-status="{% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}" data-label="{{ item.file }}">
                         <div class="label">
-                            <span class="status {% if item.status == 'started' %}pending{% else %}live{% endif %}"></span>
+                            <span class="status {% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}"></span>
                             <span class="title">
-                            {% if item.status == 'finished' %}
+                            {% if item.status != 'started' %}
                                 <a href="import/{{ item.id }}">{{ item.file }}</a>
                             {% else %}
                                 {{ item.file }}
@@ -78,13 +78,13 @@
                 </td>
                 <td data-title="{{ 'Rows'|t }}">{{ item.rows }}</td>
                 <td data-title="{{ 'Started'|t }}">{{ item.dateCreated | datetime }}</td>
-                <td data-title="{{ 'Finished'|t }}">{% if item.status == 'finished' %}{{ item.dateUpdated | datetime }}{% endif %}</td>
-                <td data-title="{{ 'Total time'|t }}">{% if item.status == 'finished' %}{{ item.dateCreated.diff(item.dateUpdated).humanDuration() }}{% endif %}</td>
+                <td data-title="{{ 'Finished'|t }}">{% if item.status != 'started' %}{{ item.dateUpdated | datetime }}{% endif %}</td>
+                <td data-title="{{ 'Total time'|t }}">{% if item.status != 'started' %}{{ item.dateCreated.diff(item.dateUpdated).humanDuration() }}{% endif %}</td>
                 <td data-title="{{ 'User'|t }}">
                     <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
                 </td>
                 <td data-title="{{ 'Revert'|t }}">
-                    {% if item.status != 'started' %}<a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>{% endif %}
+                    {% if item.status == 'finished' %}<a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>{% endif %}
                 </td>
             </tr>
         {% endfor %}
