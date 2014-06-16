@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class ImportController extends BaseController 
+class Import_HistoryController extends BaseController 
 {
 
     public function actionRevert() 

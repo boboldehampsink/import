@@ -84,7 +84,7 @@
                     <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
                 </td>
                 <td data-title="{{ 'Revert'|t }}">
-                    {% if item.status != 'started' %}<a href="{{ actionUrl('import_history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>{% endif %}
+                    {% if item.status != 'started' %}<a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>{% endif %}
                 </td>
             </tr>
         {% endfor %}
