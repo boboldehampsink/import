@@ -170,13 +170,11 @@ class ImportService extends BaseApplicationComponent
             // Zip the backup
             if($settings->backup && IOHelper::fileExists($backup)) {
                 $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
-                if(IOHelper::fileExists($destZip)) 
-                {
+                if(IOHelper::fileExists($destZip)) {
                     IOHelper::deleteFile($destZip, true);
                 }
                 IOHelper::createFile($destZip);
-                if(Zip::add($destZip, $backup, craft()->path->getDbBackupPath())) 
-                {
+                if(Zip::add($destZip, $backup, craft()->path->getDbBackupPath())) {
                     $backup = $destZip;
                 }
             }
