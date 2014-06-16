@@ -307,6 +307,9 @@ class ImportService extends BaseApplicationComponent
            }
         
         }
+        
+        // Return entry
+        return $entry;
                     
     }
     

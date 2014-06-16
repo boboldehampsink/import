@@ -8,6 +8,8 @@ return array(
     'Started' => 'Begonnen',
     'Finished' => 'Afgelopen',
     'Total time' => 'Totale tijd',
+    'Revert' => 'Terugzetten',
+    'Are you sure you want to revert the imported entries to the previous version?' => 'Weet je zeker dat je de geïmporteerde entries wilt terugzetten naar een vorige versie?',
     'Errors' => 'Fouten',
     'Upload file' => 'Bestand uploaden',
     'Map fields' => 'Velden instellen',
@@ -37,5 +39,8 @@ return array(
     'However, {failed} rows failed to import. He\'re some details on what went wrong.' => 'Echter zijn er {failed} rijen niet geïmporteerd. Dit ging er mis.',
     'Line' => 'Regel',
     'Columns and data did not match, could be due to malformed CSV row.' => 'Kolommen en data kwamen niet overeen, dit zou een corrupte CSV regel kunnen zijn.',
-    'The import task is finished' => 'Het import proces is afgerond'
+    'The import task is finished' => 'Het import proces is afgerond',
+    'Revert Import' => 'Import terugdraaien',
+    'Reverting import' => 'Import aan het terugdraaien',
+    'Revert import process started.' => 'Import terugdraai proces gestart'
 );
