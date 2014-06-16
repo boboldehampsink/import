@@ -8,7 +8,7 @@ class Import_HistoryController extends BaseController
     {
     
         // Get history id
-        $history = craft()->request->getParam('history');
+        $history = craft()->request->getParam('id');
         
         // Set criteria
         $criteria = new \CDbCriteria;

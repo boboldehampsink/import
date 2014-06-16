@@ -41,7 +41,7 @@ class Import_RevertTask extends BaseTask
         if(isset($settings->entries[$step])) {
         
             // Get version id
-            $versionId = $settings->entries[$step]->versionId;
+            $versionId = $settings->entries[$step]['versionId'];
         
             // Get version
             $version = craft()->entryRevisions->getVersionById($versionId);
