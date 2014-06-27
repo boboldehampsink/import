@@ -290,10 +290,10 @@ class ImportService extends BaseApplicationComponent
          
                // Find matching element       
                $criteria = craft()->elements->getCriteria(ElementType::Entry);
+               $criteria->sectionId = $entry->sectionId;
 
-               // "Loose" matching for easier connecting
-               $data = implode(' OR ', ArrayHelper::stringToArray($data));
-               $criteria->search = $data;
+               // Exact match
+               $criteria->search = '"'.$data.'"';
                
                // Return the first found id for connecting
                if($criteria->total()) {
