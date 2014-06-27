@@ -103,7 +103,7 @@ class Import_HistoryService extends BaseApplicationComponent
         $log = new Import_EntriesRecord();
         $log->historyId = $history;
         $log->entryId = $entry;
-        $log->versionId = $version->versionId;
+        $log->versionId = $version? $version->versionId : null;
         
         $log->save(false);
     
