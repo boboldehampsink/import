@@ -13,6 +13,7 @@ Features:
  - Will connect Entries (also Structures), Users and Assets by searching for them
  - Will send a summary email when the task if finished
  - View your import history
+ - Ability to revert imports
  
 Todo:
  - Import all ElementTypes (currently only Entries)
@@ -36,6 +37,10 @@ Map fields (2)
 
 Changelog
 =================
+###0.7.0###
+ - Ability to revert imports
+ - Fixed a bug with parent matching where the parent wasn't looked up in the same section
+
 ###0.6.9###
  - Added parent matching, so you can import entries as children of other entries
 
