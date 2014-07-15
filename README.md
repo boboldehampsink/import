@@ -20,6 +20,7 @@ Todo:
  - Support JSON and XML
  - Import a fixed value in absence of data
  - More info in the import summary mail
+ - Permissions, who can import in what section/entrytype
 
 ###Screenshots###
 
