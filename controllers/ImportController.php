@@ -72,13 +72,13 @@ class ImportController extends BaseController
             );
             
             // Render template (by hook, so you can edit the template)
-            $templates = craft()->plugins->call('registerImportTemplate', array('map', $options));
+            $templates = craft()->plugins->call('registerImportTemplate', array('map'));
                         
             // Check if there's a custom template
             foreach($templates as $plugin => $template) {
             
                 // If so, return that template
-                craft()->end($template);
+                $this->renderTemplate($template, $options);
             
             }
             
