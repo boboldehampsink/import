@@ -29,13 +29,46 @@ class ImportPlugin extends BasePlugin
         return true;
     }
     
+    // See if there are templates to be overwritten
+    function init()
+    {
+        
+        // Only check in CP
+        if(craft()->request->isCpRequest()) {
+        
+            $segments = craft()->request->segments;
+            
+            // Only check in import plugin
+            if(isset($segments[0]) && $segments[0] == 'import') {
+            
+                // Only check on upload tempalte
+                if(isset($segments[1]) && $segments[1] == 'upload' && $_SERVER['REQUEST_METHOD'] != 'POST') {
+                
+                    // Render template (by hook, so you can edit the template)
+                    $templates = craft()->plugins->call('registerImportTemplate', array('upload'));
+                                
+                    // Check if there's a custom template
+                    foreach($templates as $plugin => $template) {
+                    
+                        // If so, return that template
+                        BaseController::renderTemplate($template);
+                    
+                    }
+                
+                }
+            
+            }
+        
+        }
+        
+    }
+    
     // Register CP routes
     function registerCpRoutes() 
     {
         return array(
             'import/(?P<historyId>\d+)' => 'import/_history'
         );
-    
     }
     
     // Register ImportOperation hook
