@@ -75,6 +75,17 @@ class ImportPlugin extends BasePlugin
         );
     }
     
+    // Register permissions
+    function registerUserPermissions()
+    {
+        return array(
+            // Behavior permissions
+            ImportModel::BehaviorAppend => array('label' => Craft::t('Append data')),
+            ImportModel::BehaviorReplace => array('label' => Craft::t('Replace data')),
+            ImportModel::BehaviorDelete => array('label' => Craft::t('Delete data'))
+        );
+    }
+    
     // Register ImportOperation hook
     function registerImportOperation(&$data, $handle)
     {
