@@ -38,6 +38,13 @@ Map fields (2)
 
 Changelog
 =================
+###0.7.1###
+ - Added Number FieldType parsing (as float)
+ - Fixed a bug with importing Expiry Date
+ 
+ Also moved the git structure around, so it's more clear what the plugin's folder should be.
+ Been getting alot of questions about it.
+
 ###0.7.0###
  - Ability to revert imports
  - Fixed a bug with parent matching where the parent wasn't looked up in the same section
