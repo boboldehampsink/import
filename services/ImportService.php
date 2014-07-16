@@ -257,9 +257,9 @@ class ImportService extends BaseApplicationComponent
         }
         
         // Set expiry date
-        if(isset($fields[ImportModel::HandlePostDate])) {
-            $entry->expiryDate = DateTime::createFromString($fields[ImportModel::ExpiryDate], craft()->timezone);
-            unset($fields[ImportModel::HandlePostDate]);
+        if(isset($fields[ImportModel::HandleExpiryDate])) {
+            $entry->expiryDate = DateTime::createFromString($fields[ImportModel::HandleExpiryDate], craft()->timezone);
+            unset($fields[ImportModel::HandleExpiryDate]);
         }
         
         // Set enabled
