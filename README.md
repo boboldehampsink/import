@@ -42,8 +42,8 @@ Changelog
  - Added Number FieldType parsing (as float)
  - Fixed a bug with importing Expiry Date
  
- Also moved the git structure around, so it's more clear what the plugin's folder should be.
- Been getting alot of questions about it.
+Also moved the git structure around, so it's more clear what the plugin's folder should be.
+Been getting alot of questions about it.
 
 ###0.7.0###
  - Ability to revert imports
