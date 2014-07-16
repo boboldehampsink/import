@@ -21,6 +21,9 @@ Todo:
  - Import a fixed value in absence of data
  - More info in the import summary mail
  - Permissions, who can import in what section/entrytype
+ 
+Important:
+The plugin's folder should be named "import"
 
 ###Screenshots###
 
@@ -41,9 +44,6 @@ Changelog
 ###0.7.1###
  - Added Number FieldType parsing (as float)
  - Fixed a bug with importing Expiry Date
- 
-Also moved the git structure around, so it's more clear what the plugin's folder should be.
-Been getting alot of questions about it.
 
 ###0.7.0###
  - Ability to revert imports
