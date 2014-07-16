@@ -464,6 +464,16 @@ class ImportService extends BaseApplicationComponent
                     }
                                         
                     break;
+                    
+                case ImportModel::FieldTypeNumber:
+                
+                    // Fresh up $data
+                    $data = trim($data);
+                    
+                    // Parse as float
+                    $data = floatval($data);
+                    
+                    break;
             
             }
         
