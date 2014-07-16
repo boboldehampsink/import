@@ -65,11 +65,25 @@ class ImportController extends BaseController
             // Get columns
             $columns = craft()->import->columns($import->file);
             
-            // Send variables to template and display
-            $this->renderTemplate('import/_map', array(
-                'import'    => $import,
-                'columns'   => $columns
-            ));
+            // Template options
+            $options = array(
+                'import' => $import,
+                'columns' => $columns
+            );
+            
+            // Render template (by hook, so you can edit the template)
+            $templates = craft()->plugins->call('registerImportTemplate', array('map', $options));
+                        
+            // Check if there's a custom template
+            foreach($templates as $plugin => $template) {
+            
+                // If so, return that template
+                craft()->end($template);
+            
+            }
+            
+            // Else, return the normal template
+            $this->renderTemplate('import/_map', $options);
         
         } else {
         
