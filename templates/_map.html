@@ -15,7 +15,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set content %}
-    <form id="import-form" method="post" action="" class="centered" accept-charset="UTF-8">
+    <form method="post" action="" class="centered" accept-charset="UTF-8">
         <input type="hidden" name="action" value="import/importFile">
         <input type="hidden" name="section" value="{{ import.section }}">
         <input type="hidden" name="entrytype" value="{{ import.entrytype }}">
@@ -77,7 +77,7 @@
                     </div>
                 </td>
                 {% if import.behavior != 'append' %}
-                <td>
+                <td class="importCriterium">
                 {{ forms.checkboxField({
                     label: 'Criterium'|t,
                     instructions: "Criterium for finding existing data."|t,

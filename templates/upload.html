@@ -25,7 +25,7 @@
         
         <table class="data">
             {% if sections | length %}
-            <tr>
+            <tr class="importSection">
                 <td>
                     <div class="field">
                         <div class="heading">
@@ -50,7 +50,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="importEntryType">
                 <td>
                     <div class="field">
                         <div class="heading">
@@ -75,7 +75,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="importBehavior">
                 <td>
                     <div class="field">
                         <div class="heading">
@@ -90,7 +90,7 @@
                     <div class="field">
                         <div class="input">
                             <div class="select">
-                                <select name="importBehavior">
+                                <select name="importBehavior" id="behaviors">
                                     {% if currentUser.can('append') %}<option value="append">{{ "Append data"|t }}</option>{% endif %}
                                     {% if currentUser.can('replace') %}<option value="replace">{{ "Replace data"|t }}</option>{% endif %}
                                     {% if currentUser.can('delete') %}<option value="delete">{{ "Delete data"|t }}</option>{% endif %}
@@ -100,7 +100,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="importFile">
                 <td>
                     <div class="field">
                         <div class="heading">
@@ -119,7 +119,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="importEmail">
                 <td>
                     <div class="field">
                         <div class="heading">
@@ -139,7 +139,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="importBackup">
                 <td>
                     <div class="field">
                         <div class="heading">
