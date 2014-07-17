@@ -49,13 +49,9 @@ class ImportPlugin extends BasePlugin
                                 
                     // Check if there's a custom template
                     foreach($templates as $plugin => $template) {
-                        
-                        if($template) {
                     
-                            // If so, return that template
-                            BaseController::renderTemplate($template);
-                            
-                        }
+                        // If so, return that template
+                        BaseController::renderTemplate($template);
                     
                     }
                 

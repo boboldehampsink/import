@@ -77,12 +77,8 @@ class ImportController extends BaseController
             // Check if there's a custom template
             foreach($templates as $plugin => $template) {
             
-                if($template) {
-            
-                    // If so, return that template
-                    $this->renderTemplate($template, $options);
-                    
-                }
+                // If so, return that template
+                $this->renderTemplate($template, $options);
             
             }
             
