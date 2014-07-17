@@ -49,7 +49,7 @@
                     <div class="field">
                         <div class="input">
                             <div class="select mapper">
-                                <select name="fields[{{ column }}]">
+                                <select name="fields[{{ column }}]" class="importFields">
                                     <option value="dont">{{ "Don't import"|t }}</option>
                         {% for entrytype in entrytypes %}
                             {% if loop.first %}

@@ -3,7 +3,7 @@ $(function() {
     if($('#sections').length) {
 
         // Find entry types by chosen section
-        $('#sections').change(function() {
+        $(document).on('change', '#sections', function() {
         
             $('#entrytypes').html('');
             Craft.postActionRequest('import/getEntryTypes', { 'section': $(this).val() }, function(entrytypes) {
@@ -17,7 +17,7 @@ $(function() {
         });
         
         // Only show backup option when receiving email
-        $('#email').change(function() {
+        $(document).on('change', '#email', function() {
             $('#backup').prop('disabled', !$(this).is(':checked'));
         });
         
@@ -26,7 +26,7 @@ $(function() {
     if($('.mapper select').length) {
     
         // Make sure each field gets mapped once
-        $('.mapper select').change(function() {
+        $(document).on('change', '.mapper select', function() {
         
             // Disable chosen option for all mapper fields
             $('.mapper select option:disabled').prop('disabled', false);
