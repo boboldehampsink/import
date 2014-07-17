@@ -75,7 +75,7 @@ class ImportTask extends BaseTask
             craft()->import->finish($settings, $this->backupFile);
             
             // Run custom hook on finish
-            craft()->plugins->call('registerImportFinish');
+            craft()->plugins->call('registerImportFinish', array($settings));
         
         }
     
