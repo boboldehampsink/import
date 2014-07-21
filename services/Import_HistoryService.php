@@ -33,12 +33,19 @@ class Import_HistoryService extends BaseApplicationComponent
         }
         
         // Get total rows
-        $rows = Import_HistoryRecord::model()->findById($history)->rows;
+        $model = Import_HistoryRecord::model()->findById($history);
         
-        // Make "total" list
         $total = array();
-        for($i = 1; $i <= $rows; $i++) {
-            $total[$i] = isset($errors[$i]) ? $errors[$i] : array(Craft::t('None'));
+        
+        if($model) {
+        
+            $rows = $model->rows;
+        
+            // Make "total" list
+            for($i = 1; $i <= $rows; $i++) {
+                $total[$i] = isset($errors[$i]) ? $errors[$i] : array(Craft::t('None'));
+            }
+            
         }
         
         return $total;
@@ -66,12 +73,16 @@ class Import_HistoryService extends BaseApplicationComponent
     public function log($history, $line, $errors) 
     {
     
-        $log = new Import_LogRecord();
-        $log->historyId = $history;
-        $log->line = $line + 1;
-        $log->errors = $errors;
+        if(Import_HistoryRecord::model()->findById($history)) {
+    
+            $log = new Import_LogRecord();
+            $log->historyId = $history;
+            $log->line = $line + 1;
+            $log->errors = $errors;
+            
+            $log->save(false);
         
-        $log->save(false);
+        }
     
         return $errors;
     
