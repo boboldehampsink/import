@@ -50,7 +50,8 @@ class ImportPlugin extends BasePlugin
     }
     
     // Register a Unit Test for my own use
-    function registerUnitTest() {
+    function registerUnitTest() 
+    {
     
         // Import the test
         Craft::import('plugins.import.tests.ImportTest');
