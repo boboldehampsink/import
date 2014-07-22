@@ -24,4 +24,11 @@ class ImportTest extends \UnitTestCase
         $this->assertTrue($entry instanceOf EntryModel);
     }
     
+    function testPrepForFieldType()
+    {
+        $data = ' u0';
+        craft()->import->prepForFieldType($data, 'price');
+        $this->assertTrue(is_numeric($data));
+    }
+    
 }
