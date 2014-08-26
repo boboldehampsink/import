@@ -44,6 +44,7 @@
 </ul>
 </li>
 <li>Has a hook "registerImportOperation" to parse special FieldType inputs if you want.</li>
+<li>Has a hook "registerImportFinish" to run a custom function after finishing.</li>
 <li>Uses the Task service to import while you work on.</li>
 <li>Automatically detects CSV delimiters</li>
 <li>Will connect Entries (also Structures), Users and Assets by searching for them</li>
@@ -57,7 +58,10 @@
 <li>Support JSON and XML</li>
 <li>Import a fixed value in absence of data</li>
 <li>More info in the import summary mail</li>
-</ul><h3>
+</ul><p>Important:
+The plugin's folder should be named "import"</p>
+
+<h3>
 <a name="screenshots" class="anchor" href="#screenshots"><span class="octicon octicon-link"></span></a>Screenshots</h3>
 
 <p>History
@@ -76,6 +80,19 @@
 <a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h1>
 
 <h3>
+<a name="072" class="anchor" href="#072"><span class="octicon octicon-link"></span></a>0.7.2</h3>
+
+<ul>
+<li>Added the ability to run a custom hook on import finish</li>
+<li>Added behaviour permissions and a section permissions check/warning</li>
+<li>Added unit testing via phpunit</li>
+</ul><h3>
+<a name="071" class="anchor" href="#071"><span class="octicon octicon-link"></span></a>0.7.1</h3>
+
+<ul>
+<li>Added Number FieldType parsing (as float)</li>
+<li>Fixed a bug with importing Expiry Date</li>
+</ul><h3>
 <a name="070" class="anchor" href="#070"><span class="octicon octicon-link"></span></a>0.7.0</h3>
 
 <ul>
