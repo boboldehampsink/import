@@ -8,6 +8,7 @@ Features:
  - Append, replace or delete data
    - When replacing or deleting, you can build your own criteria for finding
  - Has a hook "registerImportOperation" to parse special FieldType inputs if you want.
+ - Has a hook "registerImportFinish" to run a custom function after finishing.
  - Uses the Task service to import while you work on.
  - Automatically detects CSV delimiters
  - Will connect Entries (also Structures), Users and Assets by searching for them
@@ -20,7 +21,6 @@ Todo:
  - Support JSON and XML
  - Import a fixed value in absence of data
  - More info in the import summary mail
- - Permissions, who can import in what section/entrytype
  
 Important:
 The plugin's folder should be named "import"
@@ -41,6 +41,11 @@ Map fields (2)
 
 Changelog
 =================
+###0.7.2###
+ - Added the ability to run a custom hook on import finish
+ - Added behaviour permissions and a section permissions check/warning
+ - Added unit testing via phpunit
+
 ###0.7.1###
  - Added Number FieldType parsing (as float)
  - Fixed a bug with importing Expiry Date
