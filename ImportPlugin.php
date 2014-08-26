@@ -49,18 +49,6 @@ class ImportPlugin extends BasePlugin
         );
     }
     
-    // Register a Unit Test for my own use
-    function registerUnitTest() 
-    {
-    
-        // Import the test
-        Craft::import('plugins.import.tests.ImportTest');
-        
-        // Return the test
-        return new ImportTest();
-    
-    }
-    
     // Register ImportOperation hook
     function registerImportOperation(&$data, $handle)
     {

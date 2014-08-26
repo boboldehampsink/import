@@ -241,7 +241,7 @@ class ImportService extends BaseApplicationComponent
             $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
             unset($fields[ImportModel::HandleAuthor]);
         } else {
-            $entry->authorId = ($entry->authorId ? $entry->authorId : craft()->userSession->getUser()->id);
+            $entry->authorId = ($entry->authorId ? $entry->authorId : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
         }
         
         // Set slug
