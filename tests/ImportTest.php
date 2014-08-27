@@ -12,23 +12,21 @@ class ImportTest extends BaseTest
     
         // Get dependencies
         $dir = __DIR__;
-		$map = array(
-		    '\\Craft\\ImportModel'           => '/../models/ImportModel.php',
-		    '\\Craft\\Import_EntriesRecord'  => '/../records/Import_EntriesRecord.php',
-		    '\\Craft\\Import_HistoryRecord'  => '/../records/Import_HistoryRecord.php',
-		    '\\Craft\\Import_LogRecord'      => '/../records/Import_LogRecord.php',
-		    '\\Craft\\Import_HistoryService' => '/../services/Import_HistoryService.php',
-			'\\Craft\\ImportService'	     => '/../services/ImportService.php'
-		);
+        $map = array(
+            '\\Craft\\ImportModel'           => '/../models/ImportModel.php',
+            '\\Craft\\Import_EntriesRecord'  => '/../records/Import_EntriesRecord.php',
+            '\\Craft\\Import_HistoryRecord'  => '/../records/Import_HistoryRecord.php',
+            '\\Craft\\Import_LogRecord'      => '/../records/Import_LogRecord.php',
+            '\\Craft\\Import_HistoryService' => '/../services/Import_HistoryService.php',
+            '\\Craft\\ImportService'         => '/../services/ImportService.php'
+        );
 
         // Inject them
-		foreach ($map as $classPath => $filePath)
-		{
-			if (!class_exists($classPath, false))
-			{
-				require_once $dir.$filePath;
-			}
-		}
+        foreach($map as $classPath => $filePath) {
+            if(!class_exists($classPath, false)) {
+                require_once($dir . $filePath);
+            }
+        }
     
         // Construct them
         $this->importHistoryService = new Import_HistoryService;
