@@ -4,6 +4,7 @@ Import plugin for Craft CMS
 Plugin that allows you to import data from CSV files.
 
 Features:
+ - Import Entries and Users
  - Map CSV columns onto Fields
  - Append, replace or delete data
    - When replacing or deleting, you can build your own criteria for finding
@@ -17,10 +18,8 @@ Features:
  - Ability to revert imports
  
 Todo:
- - Import all ElementTypes (currently only Entries)
+ - Import more ElementTypes (currently only Entries and Users)
  - Support JSON and XML
- - Import a fixed value in absence of data
- - More info in the import summary mail
  
 Important:
 The plugin's folder should be named "import"
@@ -41,6 +40,9 @@ Map fields (2)
 
 Changelog
 =================
+###0.8.0###
+ - Added the ability to import Users
+
 ###0.7.2###
  - Added the ability to run a custom hook on import finish
  - Added behaviour permissions and a section permissions check/warning
