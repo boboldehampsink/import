@@ -54,20 +54,41 @@ class ImportService extends BaseApplicationComponent
             unset($fields['dont']);
         }
         
-        // Set up new entry model
-        $entry = new EntryModel();
-        $entry->sectionId = $settings['section'];
-        $entry->typeId = $settings['entrytype'];
-        
         // If unique is non-empty array, we're replacing or deleting
         if(is_array($settings['unique']) && count($settings['unique'])) {
         
             // Match with current data
-            $criteria = craft()->elements->getCriteria(ElementType::Entry);
+            $criteria = craft()->elements->getCriteria($settings['elementtype']);
             $criteria->limit = null;
             $criteria->status = isset($settings['map']['status']) ? $settings['map']['status'] : null;
-            $criteria->sectionId = $settings['section'];
             
+            // Set up a model to save according to element type
+            switch($settings['elementtype']) 
+            {
+            
+                case ElementType::Entry:
+            
+                    // Set up new entry model
+                    $entry = new EntryModel();
+                    $entry->sectionId = $settings['section'];
+                    $entry->typeId = $settings['entrytype'];
+                    
+                    // Look in same section when replacing
+                    $criteria->sectionId = $settings['section'];
+                    
+                    break;
+                    
+                case ElementType::User:
+                
+                    // Set up new user model
+                    $entry = new UserModel();
+                    $entry->groups = $settings['groups'];
+                
+                    break;
+                    
+            }
+            
+            // Set up criteria model for matching        
             foreach($settings['map'] as $key => $value) {
                 if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
                     $criteria->$settings['map'][$key] = $fields[$value];
@@ -115,8 +136,8 @@ class ImportService extends BaseApplicationComponent
         
         }
         
-        // Prepare entry model
-        $entry = $this->prepForEntryModel($fields, $entry);
+        // Prepare element model
+        $entry = $this->prepForElementModel($fields, $entry);
         
         // Hook to prepare as appropriate fieldtypes
         array_walk($fields, function(&$data, $handle) {
@@ -126,8 +147,28 @@ class ImportService extends BaseApplicationComponent
         // Set fields on entry model
         $entry->setContentFromPost($fields);
         
-        // Save entry
-        if(!craft()->entries->saveEntry($entry)) {
+        // Save according to elementtype
+        switch($settings['elementtype']) 
+        {
+        
+            case ElementType::Entry:
+        
+                // Save
+                $saved = craft()->entries->saveEntry($entry);
+                
+                break;
+                
+            case ElementType::User:
+                
+                // Save
+                $saved = craft()->users->saveUser($entry);
+            
+                break;
+                
+        }
+        
+        // Log
+        if(!$saved) {
         
             // Log errors when unsuccessful
             $this->log[$row] = craft()->import_history->log($settings->history, $row, $entry->getErrors());
@@ -232,8 +273,8 @@ class ImportService extends BaseApplicationComponent
     
     }
     
-    // Prepare reserved EntryModel values
-    public function prepForEntryModel(&$fields, EntryModel $entry) 
+    // Prepare reserved ElementModel values
+    public function prepForElementModel(&$fields, EntryModel $entry) 
     {
         
         // Set author

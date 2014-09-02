@@ -10,16 +10,18 @@ class ImportTask extends BaseTask
     {
     
         return array(
-            'file'      => AttributeType::Name,
-            'rows'      => AttributeType::Number,
-            'map'       => AttributeType::Mixed,
-            'unique'    => AttributeType::Mixed,
-            'section'   => AttributeType::Number,
-            'entrytype' => AttributeType::Number,
-            'behavior'  => AttributeType::Name,
-            'email'     => AttributeType::Email,
-            'backup'    => AttributeType::Bool,
-            'history'   => AttributeType::Number
+            'file'        => AttributeType::Name,
+            'rows'        => AttributeType::Number,
+            'map'         => AttributeType::Mixed,
+            'unique'      => AttributeType::Mixed,
+            'elementtype' => AttributeType::String,
+            'section'     => AttributeType::Number,
+            'entrytype'   => AttributeType::Number,
+            'groups'      => AttributeType::Mixed,
+            'behavior'    => AttributeType::Name,
+            'email'       => AttributeType::Email,
+            'backup'      => AttributeType::Bool,
+            'history'     => AttributeType::Number
         );
     
     }
