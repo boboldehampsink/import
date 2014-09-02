@@ -3,9 +3,6 @@
     <input type="hidden" name="type" value="{{ import.type }}">
     <input type="hidden" name="section" value="{{ import.section }}">
     <input type="hidden" name="entrytype" value="{{ import.entrytype }}">
-    {% for group in import.groups %}
-    <input type="hidden" name="groups[]" value="{{ group }}">
-    {% endfor %}
     <input type="hidden" name="behavior" value="{{ import.behavior }}">
     <input type="hidden" name="file" value="{{ import.file }}">
     <input type="hidden" name="email" value="{{ import.email }}">
