@@ -35,10 +35,16 @@ class ImportController extends BaseController
  
         // Save file to Craft's temp folder for later use
         $file->saveAs(craft()->path->getTempUploadsPath().$file->getName());
+        
+        // Get element type
+        $type = craft()->request->getParam('importType');
          
-        // Get section
+        // Entries / get section
         $section = craft()->request->getPost('importSection');
         $entrytype = craft()->request->getPost('importEntryType');
+        
+        // Users / get groups
+        $groups = craft()->request->getParam('importGroups');
         
         // Get behavior
         $behavior = craft()->request->getPost('importBehavior');
@@ -50,14 +56,16 @@ class ImportController extends BaseController
         $backup = craft()->request->getPost('importBackup');
         
         // Put vars in model
-        $import            = new ImportModel();
-        $import->file      = craft()->path->getTempUploadsPath().$file->getName();
-        $import->type      = $file->getType();
-        $import->section   = $section;
-        $import->entrytype = $entrytype;
-        $import->behavior  = $behavior;
-        $import->email     = $email;
-        $import->backup    = $backup;
+        $import              = new ImportModel();
+        $import->file        = craft()->path->getTempUploadsPath().$file->getName();
+        $import->elementtype = $type;
+        $import->type        = $file->getType();
+        $import->section     = $section;
+        $import->entrytype   = $entrytype;
+        $import->groups      = $groups;
+        $import->behavior    = $behavior;
+        $import->email       = $email;
+        $import->backup      = $backup;
         
         // Validate model
         if($import->validate()) {
@@ -66,7 +74,7 @@ class ImportController extends BaseController
             $columns = craft()->import->columns($import->file);
             
             // Send variables to template and display
-            $this->renderTemplate('import/_map', array(
+            $this->renderTemplate('import/map', array(
                 'import'    => $import,
                 'columns'   => $columns
             ));
@@ -74,7 +82,7 @@ class ImportController extends BaseController
         } else {
         
             // Not validated, show error
-            craft()->userSession->setError(Craft::t('This filetype is not valid!').': '.$import->type);
+            craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$import->type);
             
         }
     
@@ -87,9 +95,15 @@ class ImportController extends BaseController
         // Only post requests
         $this->requirePostRequest();
         
-        // Get section
+        // Get element type
+        $type = craft()->request->getParam('type');
+        
+        // Entries / get section
         $section = craft()->request->getParam('section');
         $entrytype = craft()->request->getParam('entrytype');
+        
+        // Users / get groups
+        $groups = craft()->request->getParam('groups');
         
         // Get behavior
         $behavior = craft()->request->getParam('behavior');
@@ -112,15 +126,17 @@ class ImportController extends BaseController
         
         // Define settings
         $settings = array(
-            'file'      => $file,
-            'rows'      => $rows,
-            'map'       => $map,
-            'unique'    => $unique,
-            'section'   => $section,
-            'entrytype' => $entrytype,
-            'behavior'  => $behavior,
-            'email'     => $email,
-            'backup'    => $backup
+            'file'        => $file,
+            'rows'        => $rows,
+            'map'         => $map,
+            'unique'      => $unique,
+            'elementtype' => $type,
+            'section'     => $section,
+            'entrytype'   => $entrytype,
+            'groups'      => $groups,
+            'behavior'    => $behavior,
+            'email'       => $email,
+            'backup'      => $backup
         );
         
         // Create history

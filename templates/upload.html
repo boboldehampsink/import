@@ -34,7 +34,7 @@
         {% endfor %}
         
         <table class="data">
-            <thead>
+            <thead class="importType">
                 <tr>
                     <td>
                         <div class="field">
@@ -61,7 +61,6 @@
                     </td>
                 </tr>
             </thead>
-            {% if sections | length %}
             <tbody class="type entry">
                 <tr class="importSection">
                     <td>
@@ -130,7 +129,7 @@
                     {% for group in groups %}
                         {{ forms.checkboxField({
                             label: group.name,
-                            name: "groups[]",
+                            name: "importGroups[]",
                             checked: true,
                             value: group.id
                         }) }}
@@ -227,22 +226,6 @@
                     <td colspan="2" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Next'|t }}"></td>
                 </tr>
             </tbody>
-            {% else %}
-            <tbody class="type entry">
-                <tr>
-                    <td colspan="2">
-                        <div class="field">
-                            <div class="heading">
-                                <label>{{ "Section"|t }}</label>
-                                <div class="instructions">
-                                    <p>{{ "You don't have permission to access any section."|t }}</p>                
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-            {% endif %}
         </table>
         
     </form>

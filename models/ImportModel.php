@@ -50,13 +50,15 @@ class ImportModel extends BaseModel
     protected function defineAttributes() 
     {
         return array(
-            'section'   => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Section')),
-            'entrytype' => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Entrytype')),
-            'behavior'  => array(AttributeType::Enum, 'required' => true, 'values' => array(self::BehaviorAppend, self::BehaviorReplace, self::BehaviorDelete)),
-            'file'      => array(AttributeType::String, 'required' => true, 'label' => Craft::t('File')),
-            'type'      => array(AttributeType::Enum, 'required' => true, 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth)),
-            'email'     => array(AttributeType::Bool, 'label' => Craft::t('Send e-mail notification')),
-            'backup'    => array(AttributeType::Bool, 'label' => Craft::t('Backup Database'))
+            'elementtype' => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Element Type'), 'values' => array(ElementType::Entry, ElementType::User)),
+            'section'     => array(AttributeType::Number, 'label' => Craft::t('Section')),
+            'entrytype'   => array(AttributeType::Number, 'label' => Craft::t('Entrytype')),
+            'groups'      => array(AttributeType::Mixed, 'label' => Craft::t('Groups')),
+            'behavior'    => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Behavior'), 'values' => array(self::BehaviorAppend, self::BehaviorReplace, self::BehaviorDelete)),
+            'file'        => array(AttributeType::String, 'required' => true, 'label' => Craft::t('File')),
+            'type'        => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Filetype'), 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth)),
+            'email'       => array(AttributeType::Bool, 'label' => Craft::t('Send e-mail notification')),
+            'backup'      => array(AttributeType::Bool, 'label' => Craft::t('Backup Database'))
         );
     }
 }
