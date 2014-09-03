@@ -43,6 +43,9 @@ Changelog
 ###0.8.0###
  - Added the ability to import Users
 
+###0.7.3###
+ - Fixed a bug that led to not importing data and not failing import
+
 ###0.7.2###
  - Added the ability to run a custom hook on import finish
  - Added behaviour permissions and a section permissions check/warning
