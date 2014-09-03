@@ -26,7 +26,7 @@ class Import_UserService extends BaseApplicationComponent
     
     }
     
-    public function save($element, $settings)
+    public function save(&$element, $settings)
     {
         
         // Save user

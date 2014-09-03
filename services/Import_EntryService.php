@@ -31,7 +31,7 @@ class Import_EntryService extends BaseApplicationComponent
     
     }
     
-    public function save($element, $settings)
+    public function save(&$element, $settings)
     {
         
         // Save user
