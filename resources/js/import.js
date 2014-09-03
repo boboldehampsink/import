@@ -1,7 +1,15 @@
 $(function() {
 
     if($('#sections').length) {
-
+    
+        // Show the fields that match the import type
+        $('#types').change(function() {
+        
+            $('.type').hide();
+            $('.' + $(this).val().toLowerCase()).show();     
+            
+        });
+        
         // Find entry types by chosen section
         $(document).on('change', '#sections', function() {
         

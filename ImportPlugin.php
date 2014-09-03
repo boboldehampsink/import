@@ -11,7 +11,7 @@ class ImportPlugin extends BasePlugin
 
     function getVersion()
     {
-        return '0.7.2';
+        return '0.8.0';
     }
 
     function getDeveloper()
@@ -21,7 +21,7 @@ class ImportPlugin extends BasePlugin
 
     function getDeveloperUrl()
     {
-        return 'http://www.itmundi.nl';
+        return 'https://github.com/boboldehampsink';
     }
     
     function hasCpSection()
@@ -43,9 +43,9 @@ class ImportPlugin extends BasePlugin
     {
         return array(
             // Behavior permissions
-            ImportModel::BehaviorAppend => array('label' => Craft::t('Append data')),
+            ImportModel::BehaviorAppend  => array('label' => Craft::t('Append data')),
             ImportModel::BehaviorReplace => array('label' => Craft::t('Replace data')),
-            ImportModel::BehaviorDelete => array('label' => Craft::t('Delete data'))
+            ImportModel::BehaviorDelete  => array('label' => Craft::t('Delete data'))
         );
     }
     

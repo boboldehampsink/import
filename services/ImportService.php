@@ -45,6 +45,9 @@ class ImportService extends BaseApplicationComponent
             return;
         
         }
+        
+        // Check what service we're gonna need
+        $service = 'import_' . strtolower($settings['elementtype']);
             
         // Map data to fields
         $fields = array_combine($settings['map'], $data);
@@ -54,20 +57,16 @@ class ImportService extends BaseApplicationComponent
             unset($fields['dont']);
         }
         
-        // Set up new entry model
-        $entry = new EntryModel();
-        $entry->sectionId = $settings['section'];
-        $entry->typeId = $settings['entrytype'];
+        // Set up a model to save according to element type
+        $entry = craft()->$service->setModel($settings);
         
         // If unique is non-empty array, we're replacing or deleting
         if(is_array($settings['unique']) && count($settings['unique'])) {
-        
-            // Match with current data
-            $criteria = craft()->elements->getCriteria(ElementType::Entry);
-            $criteria->limit = null;
-            $criteria->status = isset($settings['map']['status']) ? $settings['map']['status'] : null;
-            $criteria->sectionId = $settings['section'];
             
+            // Set criteria according to elementtype
+            $criteria = craft()->$service->setCriteria($settings);
+                        
+            // Set up criteria model for matching        
             foreach($settings['map'] as $key => $value) {
                 if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
                     $criteria->$settings['map'][$key] = $fields[$value];
@@ -115,8 +114,8 @@ class ImportService extends BaseApplicationComponent
         
         }
         
-        // Prepare entry model
-        $entry = $this->prepForEntryModel($fields, $entry);
+        // Prepare element model
+        $entry = craft()->$service->prepForElementModel($fields, $entry);
         
         // Hook to prepare as appropriate fieldtypes
         array_walk($fields, function(&$data, $handle) {
@@ -126,16 +125,11 @@ class ImportService extends BaseApplicationComponent
         // Set fields on entry model
         $entry->setContentFromPost($fields);
         
-        // Save entry
-        if(!craft()->entries->saveEntry($entry)) {
+        // Log
+        if(!craft()->$service->save($entry, $settings)) {
         
             // Log errors when unsuccessful
             $this->log[$row] = craft()->import_history->log($settings->history, $row, $entry->getErrors());
-        
-        } else {
-            
-            // Log entry id's when successful
-            craft()->import_history->version($settings->history, $entry->id);
         
         }
     
@@ -230,85 +224,6 @@ class ImportService extends BaseApplicationComponent
         // Return data array
         return $data;
     
-    }
-    
-    // Prepare reserved EntryModel values
-    public function prepForEntryModel(&$fields, EntryModel $entry) 
-    {
-        
-        // Set author
-        if(isset($fields[ImportModel::HandleAuthor])) {
-            $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
-            unset($fields[ImportModel::HandleAuthor]);
-        } else {
-            $entry->authorId = ($entry->authorId ? $entry->authorId : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
-        }
-        
-        // Set slug
-        if(isset($fields[ImportModel::HandleSlug])) {
-            $entry->slug = ElementHelper::createSlug($fields[ImportModel::HandleSlug]);
-            unset($fields[ImportModel::HandleSlug]);
-        }
-        
-        // Set postdate
-        if(isset($fields[ImportModel::HandlePostDate])) {
-            $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
-            unset($fields[ImportModel::HandlePostDate]);
-        }
-        
-        // Set expiry date
-        if(isset($fields[ImportModel::HandleExpiryDate])) {
-            $entry->expiryDate = DateTime::createFromString($fields[ImportModel::HandleExpiryDate], craft()->timezone);
-            unset($fields[ImportModel::HandleExpiryDate]);
-        }
-        
-        // Set enabled
-        if(isset($fields[ImportModel::HandleEnabled])) {
-            $entry->enabled = (bool)$fields[ImportModel::HandleEnabled];
-            unset($fields[ImportModel::HandleEnabled]);
-        }
-        
-        // Set title
-        if(isset($fields[ImportModel::HandleTitle])) {
-            $entry->getContent()->title = $fields[ImportModel::HandleTitle];
-            unset($fields[ImportModel::HandleTitle]);
-        }
-        
-        // Set parent id
-        if(isset($fields[ImportModel::HandleParent])) {
-           
-           // Get data
-           $data = $fields[ImportModel::HandleParent];
-            
-            // Fresh up $data
-           $data = str_replace("\n", "", $data);
-           $data = str_replace("\r", "", $data);
-           $data = trim($data);
-           
-           // Don't connect empty fields
-           if(!empty($data)) {
-         
-               // Find matching element       
-               $criteria = craft()->elements->getCriteria(ElementType::Entry);
-               $criteria->sectionId = $entry->sectionId;
-
-               // Exact match
-               $criteria->search = '"'.$data.'"';
-               
-               // Return the first found id for connecting
-               if($criteria->total()) {
-               
-                   $entry->parentId = $criteria->first()->id;
-                   
-               }
-           
-           }
-        
-        }
-        
-        // Return entry
-        return $entry;
-                    
     }
     
     // Prepare fields for fieldtypes
