@@ -44,7 +44,6 @@
                                 <option value="postDate"{% if column|lower == 'postdate' or column|lower == 'date' %} selected{% endif %}>{{ "Post Date"|t }}</option>
                                 <option value="expiryDate"{% if column|lower == 'expirydate' or column|lower == 'enddate' %} selected{% endif %}>{{ "Expiry Date"|t }}</option>
                                 <option value="enabled"{% if column|lower == 'enabled' %} selected{% endif %}>{{ "Enabled"|t }}</option>
-                                <option value="status"{% if column|lower == 'status' %} selected{% endif %}>{{ "Status"|t }}</option>
                         {% endif %}
                         {% for tab in craft.fields.getLayoutById(entrytype.fieldLayoutId).getTabs() %}
                                 <optgroup label="{{ tab.name }}">

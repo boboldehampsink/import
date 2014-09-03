@@ -33,6 +33,10 @@ class ImportModel extends BaseModel
     const HandleStatus       = 'status';
     const HandleSlug         = 'slug';
     const HandleParent       = 'parent';
+    const HandleUsername     = 'username';
+    const HandleFirstname    = 'firstName';
+    const HandleLastname     = 'lastName';
+    const HandleEmail        = 'email';
     
     // Fieldtypes
     const FieldTypeEntries    = 'Entries';

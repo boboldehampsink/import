@@ -46,6 +46,36 @@ class Import_UserService extends BaseApplicationComponent
     // Prepare reserved ElementModel values
     public function prepForElementModel(&$fields, UserModel $entry) 
     {
+    
+        // Set username
+        if(isset($fields[ImportModel::HandleUsername])) {
+            $entry->username = $fields[ImportModel::HandleUsername];
+            unset($fields[ImportModel::HandleUsername]);
+        }
+        
+        // Set firstname
+        if(isset($fields[ImportModel::HandleFirstname])) {
+            $entry->firstName = $fields[ImportModel::HandleFirstname];
+            unset($fields[ImportModel::HandleFirstname]);
+        }
+        
+        // Set lastname
+        if(isset($fields[ImportModel::HandleLastname])) {
+            $entry->lastName = $fields[ImportModel::HandleLastname];
+            unset($fields[ImportModel::HandleLastname]);
+        }
+        
+        // Set email
+        if(isset($fields[ImportModel::HandleEmail])) {
+            $entry->email = $fields[ImportModel::HandleEmail];
+            unset($fields[ImportModel::HandleEmail]);
+        }
+        
+        // Set status
+        if(isset($fields[ImportModel::HandleStatus])) {
+            $entry->status = $fields[ImportModel::HandleStatus];
+            unset($fields[ImportModel::HandleStatus]);
+        }
         
         // Return entry
         return $entry;
