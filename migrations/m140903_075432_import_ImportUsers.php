@@ -28,7 +28,8 @@ class m140903_075432_import_ImportUsers extends BaseMigration
 	    craft()->db->createCommand()->addColumnAfter('import_history', 'elementtype', ColumnType::Varchar, 'userId');
 	    
 	    // Fill elementtype column by default
-		craft()->db->createCommand()->update('import_history', array('elementtype' => ElementType::Entry));
+		//craft()->db->createCommand()->update('import_history', array('elementtype' => ElementType::Entry));
+		// ^^ we're not doing this as it affects the dateUpdated table
 	
 		return true;
 		
