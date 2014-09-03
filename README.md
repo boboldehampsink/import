@@ -9,7 +9,8 @@ Features:
  - Append, replace or delete data
    - When replacing or deleting, you can build your own criteria for finding
  - Has a hook "registerImportOperation" to parse special FieldType inputs if you want.
- - Has a hook "registerImportFinish" to run a custom function after finishing.
+ - Has events "onImportFinish" and "onBeforeImportDelete" 
+   - These will notify you when the import finishes or wants to delete an element
  - Uses the Task service to import while you work on.
  - Automatically detects CSV delimiters
  - Will connect Entries (also Structures), Users and Assets by searching for them
@@ -42,6 +43,7 @@ Changelog
 =================
 ###0.8.0###
  - Added the ability to import Users
+ - Changed the "registerImportFinish" hook to "onImportFinish" event
 
 ###0.7.3###
  - Fixed a bug that led to not importing data and not failing import

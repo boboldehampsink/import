@@ -79,13 +79,21 @@ class ImportTask extends BaseTask
             // Finish
             craft()->import->finish($settings, $this->backupFile);
             
-            // Run custom hook on finish
-            craft()->plugins->call('registerImportFinish', array($settings));
+            // Fire an "onImportFinish" event
+            Craft::import('plugins.import.events.ImportFinishEvent');
+            $event = new ImportFinishEvent($this, array('settings' => $settings));
+            $this->onImportFinish($event);
         
         }
     
         return true;
     
+    }
+    
+    // Fires an "onImportFinish" event
+    public function onImportFinish(ImportFinishEvent $event)
+    {
+        $this->raiseEvent('onImportFinish', $event);
     }
 
 }
