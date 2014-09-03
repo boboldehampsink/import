@@ -61,7 +61,7 @@ class ImportService extends BaseApplicationComponent
         $entry = craft()->$service->setModel($settings);
         
         // If unique is non-empty array, we're replacing or deleting
-        if(is_array($settings['unique']) && count($settings['unique'])) {
+        if(is_array($settings['unique']) && count($settings['unique']) > 1) {
             
             // Set criteria according to elementtype
             $criteria = craft()->$service->setCriteria($settings);
