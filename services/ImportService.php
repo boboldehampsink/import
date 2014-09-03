@@ -60,8 +60,8 @@ class ImportService extends BaseApplicationComponent
         $entry->typeId = $settings['entrytype'];
         
         // If unique is non-empty array, we're replacing or deleting
-        if(is_array($settings['unique']) && count($settings['unique'])) {
-        
+        if(is_array($settings['unique']) && count($settings['unique']) > 1) {
+                
             // Match with current data
             $criteria = craft()->elements->getCriteria(ElementType::Entry);
             $criteria->limit = null;
