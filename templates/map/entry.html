@@ -37,14 +37,14 @@
                                 <option value="dont">{{ "Don't import"|t }}</option>
                     {% for entrytype in entrytypes %}
                         {% if loop.first %}
-                                <option value="title"{% if column == 'title' or column == 'name' or column == entrytype.titleLabel %} selected{% endif %}>{{ entrytype.titleLabel }} *</option>
-                                <option value="slug"{% if column == 'slug' %} selected{% endif %}>{{ "Slug"|t }}</option>
-                                <option value="parent"{% if column == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
-                                <option value="authorId"{% if column == 'author' or column == 'admin' %} selected{% endif %}>{{ "Author"|t }}</option>
-                                <option value="postDate"{% if column == 'postdate' or column == 'date' %} selected{% endif %}>{{ "Post Date"|t }}</option>
-                                <option value="expiryDate"{% if column == 'expirydate' or column == 'enddate' %} selected{% endif %}>{{ "Expiry Date"|t }}</option>
-                                <option value="enabled"{% if column == 'enabled' %} selected{% endif %}>{{ "Enabled"|t }}</option>
-                                <option value="status"{% if column == 'status' %} selected{% endif %}>{{ "Status"|t }}</option>
+                                <option value="title"{% if column|lower == 'title' or column|lower == 'name' or column|lower == entrytype.titleLabel|lower %} selected{% endif %}>{{ entrytype.titleLabel }} *</option>
+                                <option value="slug"{% if column|lower == 'slug' %} selected{% endif %}>{{ "Slug"|t }}</option>
+                                <option value="parent"{% if column|lower == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
+                                <option value="authorId"{% if column|lower == 'author' or column|lower == 'admin' %} selected{% endif %}>{{ "Author"|t }}</option>
+                                <option value="postDate"{% if column|lower == 'postdate' or column|lower == 'date' %} selected{% endif %}>{{ "Post Date"|t }}</option>
+                                <option value="expiryDate"{% if column|lower == 'expirydate' or column|lower == 'enddate' %} selected{% endif %}>{{ "Expiry Date"|t }}</option>
+                                <option value="enabled"{% if column|lower == 'enabled' %} selected{% endif %}>{{ "Enabled"|t }}</option>
+                                <option value="status"{% if column|lower == 'status' %} selected{% endif %}>{{ "Status"|t }}</option>
                         {% endif %}
                         {% for tab in craft.fields.getLayoutById(entrytype.fieldLayoutId).getTabs() %}
                                 <optgroup label="{{ tab.name }}">
