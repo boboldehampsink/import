@@ -36,11 +36,14 @@ class ImportTask extends BaseTask
     public function getTotalSteps() 
     {
     
+        // Get settings
+        $settings = $this->getSettings();
+    
         // Delete element template caches before importing
-        craft()->templateCache->deleteCachesByElementType(ElementType::Entry);
+        craft()->templateCache->deleteCachesByElementType($settings->elementtype);
     
         // Take a step for every row
-        return $this->getSettings()->rows;
+        return $settings->rows;
     
     }
     
