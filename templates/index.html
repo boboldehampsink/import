@@ -41,6 +41,7 @@
             <tr>
                 <th scope="col" data-attribute="date">{{ "Filename"|t }}</th>
                 <th scope="col" data-attribute="behavior">{{ "Import behavior"|t }}</th>
+                <th scope="col" data-attribute="elementtype">{{ "Element type"|t }}</th>
                 <th scope="col" data-attribute="rows">{{ "Rows"|t }}</th>
                 <th scope="col" data-attribute="started">{{ "Started"|t }}</th>
                 <th scope="col" data-attribute="finished">{{ "Finished"|t }}</th>
@@ -76,6 +77,7 @@
                         {{ "Delete data"|t }}
                 {% endswitch %}
                 </td>
+                <td data-title="{{ 'Element type'|t }}">{{ item.elementtype|t }}</td>
                 <td data-title="{{ 'Rows'|t }}">{{ item.rows }}</td>
                 <td data-title="{{ 'Started'|t }}">{{ item.dateCreated | datetime }}</td>
                 <td data-title="{{ 'Finished'|t }}">{% if item.status != 'started' %}{{ item.dateUpdated | datetime }}{% endif %}</td>

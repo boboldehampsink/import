@@ -126,15 +126,10 @@ class ImportService extends BaseApplicationComponent
         $entry->setContentFromPost($fields);
         
         // Log
-        if(!craft()->$service->save($entry)) {
+        if(!craft()->$service->save($entry, $settings)) {
         
             // Log errors when unsuccessful
             $this->log[$row] = craft()->import_history->log($settings->history, $row, $entry->getErrors());
-        
-        } else {
-            
-            // Log entry id's when successful
-            craft()->import_history->version($settings->history, $entry->id);
         
         }
     

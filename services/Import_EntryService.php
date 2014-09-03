@@ -5,6 +5,7 @@ class Import_EntryService extends BaseApplicationComponent
 {
 
     public function setModel($settings)
+    {
     
         // Set up new entry model
         $entry = new EntryModel();
@@ -30,11 +31,20 @@ class Import_EntryService extends BaseApplicationComponent
     
     }
     
-    public function save($element)
+    public function save($element, $settings)
     {
         
         // Save user
-        return craft()->entries->saveEntry($element);
+        if(craft()->entries->saveEntry($element)) {
+        
+            // Log entry id's when successful
+            craft()->import_history->version($settings->history, $entry->id);
+            
+            return true;
+            
+        }
+        
+        return false;
     
     }
     
