@@ -101,7 +101,7 @@ class Import_EntryService extends BaseApplicationComponent
         }
         
         // Set enabled
-        $enabled = Import_EntryModel::HandleEnabled
+        $enabled = Import_EntryModel::HandleEnabled;
         if(isset($fields[$enabled])) {
             $entry->$enabled = (bool)$fields[$enabled];
             unset($fields[$enabled]);

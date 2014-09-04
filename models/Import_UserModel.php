@@ -11,5 +11,7 @@ class Import_UserModel extends BaseModel
     const HandleLastname     = 'lastName';
     const HandleEmail        = 'email';
     const HandleStatus       = 'status';
+    const HandleLocale       = 'preferredLocale';
+    const HandlePassword     = 'newPassword';
     
 }
