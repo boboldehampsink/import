@@ -67,35 +67,46 @@ class Import_UserService extends BaseApplicationComponent
     {
     
         // Set username
-        if(isset($fields[ImportModel::HandleUsername])) {
-            $entry->username = $fields[ImportModel::HandleUsername];
-            unset($fields[ImportModel::HandleUsername]);
-        } elseif(isset($fields[ImportModel::HandleEmail])) {
-            $entry->username = $fields[ImportModel::HandleEmail];
+        $username = Import_UserModel::HandleUsername;
+        if(isset($fields[$username])) {
+            $entry->$username = $fields[$username];
+            unset($fields[$username]);
+        } elseif(isset($fields[$username])) {
+            $entry->$username = $fields[$username];
+        }
+        
+        // Set photo
+        $photo = Import_UserModel::HandlePhoto;
+        if(isset($fields[$photo])) {
+            $entry->$photo = $fields[$photo];
         }
         
         // Set firstname
-        if(isset($fields[ImportModel::HandleFirstname])) {
-            $entry->firstName = $fields[ImportModel::HandleFirstname];
-            unset($fields[ImportModel::HandleFirstname]);
+        $firstName = Import_UserModel::HandleFirstname;
+        if(isset($fields[$firstName])) {
+            $entry->$firstName = $fields[$firstName];
+            unset($fields[$firstName]);
         }
         
         // Set lastname
-        if(isset($fields[ImportModel::HandleLastname])) {
-            $entry->lastName = $fields[ImportModel::HandleLastname];
-            unset($fields[ImportModel::HandleLastname]);
+        $lastName = Import_UserModel::HandleLastname;
+        if(isset($fields[$lastName])) {
+            $entry->$lastName = $fields[$lastName];
+            unset($fields[$lastName]);
         }
         
         // Set email
-        if(isset($fields[ImportModel::HandleEmail])) {
-            $entry->email = $fields[ImportModel::HandleEmail];
-            unset($fields[ImportModel::HandleEmail]);
+        $email = Import_UserModel::HandleEmail;
+        if(isset($fields[$email])) {
+            $entry->$email = $fields[$email];
+            unset($fields[$email]);
         }
         
         // Set status
-        if(isset($fields[ImportModel::HandleStatus])) {
-            $entry->status = $fields[ImportModel::HandleStatus];
-            unset($fields[ImportModel::HandleStatus]);
+        $status = Import_UserModel::HandleStatus;
+        if(isset($fields[$status])) {
+            $entry->$status = $fields[$status];
+            unset($fields[$status]);
         }
         
         // Return entry
