@@ -109,6 +109,20 @@ class Import_UserService extends BaseApplicationComponent
             unset($fields[$status]);
         }
         
+        // Set locale
+        $locale = Import_UserModel::HandleLocale;
+        if(isset($fields[$locale])) {
+            $entry->$locale = $fields[$locale];
+            unset($fields[$locale]);
+        }
+        
+        // Set password
+        $password = Import_UserModel::HandlePassword;
+        if(isset($fields[$password])) {
+            $entry->$password = $fields[$password];
+            unset($fields[$password]);
+        }
+        
         // Return entry
         return $entry;
                     
