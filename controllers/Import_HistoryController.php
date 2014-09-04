@@ -58,4 +58,36 @@ class Import_HistoryController extends BaseController
     
     }
     
+    public function actionDelete()
+    {
+    
+        // Get history id
+        $history = craft()->request->getParam('id');
+        
+        // Get history
+        $model = Import_HistoryRecord::model()->findById($history);
+        
+        // Notify user
+        craft()->userSession->setNotice(Craft::t('The import history of {file} has been deleted.', array(
+            'file' => $model->file
+        )));
+        
+        // Set criteria
+        $criteria = new \CDbCriteria;
+        $criteria->condition = 'historyId = :history_id';
+        $criteria->params = array(
+            ':history_id' => $history,
+        );
+        
+        // Delete attached logs
+        Import_LogRecord::model()->deleteAll($criteria);
+        
+        // Delete history
+        $model->delete();
+        
+        // Redirect to history
+        $this->redirect('import/history');
+    
+    }
+    
 }

@@ -48,6 +48,7 @@
                 <th scope="col" data-attribute="user">{{ "User"|t }}</th>
                 <th scope="col" data-attribute="revert">{{ "Revert"|t }}</th>
                 <th scope="col" data-attribute="download">{{ "Download"|t }}</th>
+                <td class="thin"></td>
             </tr>
         </thead>
         <tbody>
@@ -98,6 +99,9 @@
                     {% else %}
                         <a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "The original file is not available for downloading"|t }}')">{{ 'Download'|t }}</a>
                     {% endif %}
+                </td>
+                <td class="thin">
+                    <a class="delete icon" href="{{ actionUrl('import/history/delete', {'id': item.id }) }}" title="{{ "Delete"|t }}" role="button" onclick="return confirm('{{ "Are you sure you want to delete the history of" }} {{ item.file }}')"></a>
                 </td>
             </tr>
         {% endfor %}
