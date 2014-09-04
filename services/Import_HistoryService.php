@@ -76,7 +76,7 @@ class Import_HistoryService extends BaseApplicationComponent
     
             $log = new Import_LogRecord();
             $log->historyId = $history;
-            $log->line = $line + 1;
+            $log->line = $line + 2;
             $log->errors = $errors;
             
             $log->save(false);
