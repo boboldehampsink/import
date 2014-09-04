@@ -23,20 +23,6 @@ class ImportModel extends BaseModel
     const StatusStarted  = 'started';
     const StatusFinished = 'finished';
     const StatusReverted = 'reverted';
-     
-    // Handles
-    const HandleTitle        = 'title';
-    const HandleAuthor       = 'authorId';
-    const HandlePostDate     = 'postDate';
-    const HandleExpiryDate   = 'expiryDate';
-    const HandleEnabled      = 'enabled';
-    const HandleStatus       = 'status';
-    const HandleSlug         = 'slug';
-    const HandleParent       = 'parent';
-    const HandleUsername     = 'username';
-    const HandleFirstname    = 'firstName';
-    const HandleLastname     = 'lastName';
-    const HandleEmail        = 'email';
     
     // Fieldtypes
     const FieldTypeEntries    = 'Entries';
@@ -55,7 +41,20 @@ class ImportModel extends BaseModel
     protected function defineAttributes() 
     {
         return array(
-            'filetype' => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Filetype'), 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth))
+            'filetype' => array(AttributeType::Enum, 
+                'required' => true, 
+                'label' => Craft::t('Filetype'), 
+                'values' => array(
+                    self::TypeCSV, 
+                    self::TypeCSVWin, 
+                    self::TypeCSVIE, 
+                    self::TypeCSVApp, 
+                    self::TypeCSVExc, 
+                    self::TypeCSVOff, 
+                    self::TypeCSVOff2, 
+                    self::TypeCSVOth
+                )
+            )
         );
     }
     

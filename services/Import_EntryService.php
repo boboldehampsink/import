@@ -71,48 +71,55 @@ class Import_EntryService extends BaseApplicationComponent
     {
         
         // Set author
-        if(isset($fields[ImportModel::HandleAuthor])) {
-            $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
-            unset($fields[ImportModel::HandleAuthor]);
+        $author = Import_EntryModel::HandleAuthor;
+        if(isset($fields[$author])) {
+            $entry->$author = intval($fields[$author]);
+            unset($fields[$author]);
         } else {
-            $entry->authorId = ($entry->authorId ? $entry->authorId : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
+            $entry->$author = ($entry->$author ? $entry->$author : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
         }
         
         // Set slug
-        if(isset($fields[ImportModel::HandleSlug])) {
-            $entry->slug = ElementHelper::createSlug($fields[ImportModel::HandleSlug]);
-            unset($fields[ImportModel::HandleSlug]);
+        $slug = Import_EntryModel::HandleSlug;
+        if(isset($fields[$slug])) {
+            $entry->$slug = ElementHelper::createSlug($fields[$slug]);
+            unset($fields[$slug]);
         }
         
         // Set postdate
-        if(isset($fields[ImportModel::HandlePostDate])) {
-            $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
-            unset($fields[ImportModel::HandlePostDate]);
+        $postDate = Import_EntryModel::HandlePostDate;
+        if(isset($fields[$postDate])) {
+            $entry->$postDate = DateTime::createFromString($fields[$postDate], craft()->timezone);
+            unset($fields[$postDate]);
         }
         
         // Set expiry date
-        if(isset($fields[ImportModel::HandleExpiryDate])) {
-            $entry->expiryDate = DateTime::createFromString($fields[ImportModel::HandleExpiryDate], craft()->timezone);
-            unset($fields[ImportModel::HandleExpiryDate]);
+        $expiryDate = Import_EntryModel::HandleExpiryDate;
+        if(isset($fields[$expiryDate])) {
+            $entry->$expiryDate = DateTime::createFromString($fields[$expiryDate], craft()->timezone);
+            unset($fields[$expiryDate]);
         }
         
         // Set enabled
-        if(isset($fields[ImportModel::HandleEnabled])) {
-            $entry->enabled = (bool)$fields[ImportModel::HandleEnabled];
-            unset($fields[ImportModel::HandleEnabled]);
+        $enabled = Import_EntryModel::HandleEnabled
+        if(isset($fields[$enabled])) {
+            $entry->$enabled = (bool)$fields[$enabled];
+            unset($fields[$enabled]);
         }
         
         // Set title
-        if(isset($fields[ImportModel::HandleTitle])) {
-            $entry->getContent()->title = $fields[ImportModel::HandleTitle];
-            unset($fields[ImportModel::HandleTitle]);
+        $title = Import_EntryModel::HandleTitle;
+        if(isset($fields[$title])) {
+            $entry->getContent()->$title = $fields[$title];
+            unset($fields[$title]);
         }
         
         // Set parent id
-        if(isset($fields[ImportModel::HandleParent])) {
+        $parent = Import_EntryModel::HandleParent;
+        if(isset($fields[$parent])) {
            
            // Get data
-           $data = $fields[ImportModel::HandleParent];
+           $data = $fields[$parent];
             
             // Fresh up $data
            $data = str_replace("\n", "", $data);
@@ -132,7 +139,7 @@ class Import_EntryService extends BaseApplicationComponent
                // Return the first found id for connecting
                if($criteria->total()) {
                
-                   $entry->parentId = $criteria->first()->id;
+                   $entry->$parent = $criteria->first()->id;
                    
                }
            
