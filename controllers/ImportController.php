@@ -98,6 +98,16 @@ class ImportController extends BaseController
         
         // Create history
         $history = craft()->import_history->start((object)$settings);
+        
+        // Determine new folder to save original importfile
+        $folder = dirname($file) . '/' . $history . '/';
+        IOHelper::ensureFolderExists($folder);
+        
+        // Move the file to its history folder
+        IOHelper::move($file, $folder . basename($file));
+        
+        // Update the settings with the new file location
+        $settings['file'] = $folder . basename($file);
 
         // Create the import task
         $task = craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), array_merge($settings, array('history' => $history)));
