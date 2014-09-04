@@ -18,9 +18,9 @@ Features:
  - View your import history
  - Ability to revert imports
  
-Todo:
- - Import more ElementTypes (currently only Entries and Users)
- - Support JSON and XML
+Roadmap:
+ - Import more ElementTypes (0.8)
+ - Support JSON and XML (0.9)
  
 Important:
 The plugin's folder should be named "import"
@@ -43,6 +43,7 @@ Changelog
 =================
 ###0.8.0###
  - Added the ability to import Users
+ - Added the ability to download the originally uploaded file
  - Changed the "registerImportFinish" hook to "onImportFinish" event
 
 ###0.7.3###
