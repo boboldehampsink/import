@@ -44,6 +44,7 @@ Changelog
 ###0.8.0###
  - Added the ability to import Users
  - Added the ability to download the originally uploaded file
+ - Added the ability to delete import history
  - Changed the "registerImportFinish" hook to "onImportFinish" event
 
 ###0.7.3###
