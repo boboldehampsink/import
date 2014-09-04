@@ -1,0 +1,27 @@
+<tbody class="type category">
+    <tr class="importCategoryGroup">
+        <td>
+            <div class="field">
+                <div class="heading">
+                    <label>{{ "Group"|t }}</label>
+                    <div class="instructions">
+                        <p>{{ "Choose the category group you want to import to."|t }}</p>                
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="field">
+                <div class="input">
+                    <div class="select">
+                        <select name="import[elementvars][group]" id="importCategoryGroup" disabled>
+                        {% for group in craft.import.getGroups('Category') %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</tbody>

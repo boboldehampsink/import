@@ -24,98 +24,62 @@ class ImportController extends BaseController
     }
 
     // Upload file and process it for mapping
-    public function actionUploadFile() 
+    public function actionUpload() 
     {
-    
-        // Only post requests
-        $this->requirePostRequest();
+        
+        // Get import post
+        $import = craft()->request->getRequiredPost('import');
     
         // Get file
-        $file = \CUploadedFile::getInstanceByName('importFile');
+        $file = \CUploadedFile::getInstanceByName('file');
+        
+        // Determine folder
+        $folder = craft()->path->getStoragePath() . 'import/';
+        
+        // Ensure folder exists
+        IOHelper::ensureFolderExists($folder);
+        
+        // Get filepath - save in storage folder
+        $path = $folder . $file->getName();
  
         // Save file to Craft's temp folder for later use
-        $file->saveAs(craft()->path->getTempUploadsPath().$file->getName());
-        
-        // Get element type
-        $type = craft()->request->getParam('importType');
-         
-        // Entries / get section
-        $section = craft()->request->getPost('importSection');
-        $entrytype = craft()->request->getPost('importEntryType');
-        
-        // Users / get groups
-        $groups = craft()->request->getParam('importGroups');
-        
-        // Get behavior
-        $behavior = craft()->request->getPost('importBehavior');
-        
-        // Send e-mail?
-        $email = craft()->request->getPost('importEmail');
-        
-        // Backup?
-        $backup = craft()->request->getPost('importBackup');
+        $file->saveAs($path);
         
         // Put vars in model
-        $import              = new ImportModel();
-        $import->file        = craft()->path->getTempUploadsPath().$file->getName();
-        $import->elementtype = $type;
-        $import->type        = $file->getType();
-        $import->section     = $section;
-        $import->entrytype   = $entrytype;
-        $import->groups      = $groups;
-        $import->behavior    = $behavior;
-        $import->email       = $email;
-        $import->backup      = $backup;
+        $model           = new ImportModel();
+        $model->filetype = $file->getType();
         
-        // Validate model
-        if($import->validate()) {
+        // Validate filetype
+        if($model->validate()) {
         
             // Get columns
-            $columns = craft()->import->columns($import->file);
+            $columns = craft()->import->columns($path);
             
             // Send variables to template and display
-            $this->renderTemplate('import/map', array(
+            $this->renderTemplate('import/_map', array(
                 'import'    => $import,
+                'file'      => $path,
                 'columns'   => $columns
             ));
         
         } else {
         
             // Not validated, show error
-            craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$import->type);
+            craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
             
         }
     
     }
     
     // Start import task
-    public function actionImportFile() 
+    public function actionImport() 
     {
     
-        // Only post requests
-        $this->requirePostRequest();
-        
-        // Get element type
-        $type = craft()->request->getParam('type');
-        
-        // Entries / get section
-        $section = craft()->request->getParam('section');
-        $entrytype = craft()->request->getParam('entrytype');
-        
-        // Users / get groups
-        $groups = craft()->request->getParam('groups');
-        
-        // Get behavior
-        $behavior = craft()->request->getParam('behavior');
+        // Get import post
+        $settings = craft()->request->getRequiredPost('import');
         
         // Get file
         $file = craft()->request->getParam('file');
-        
-        // Email?
-        $email = craft()->request->getParam('email');
-        
-        // Backup?
-        $backup = craft()->request->getParam('backup');
         
         // Get mapping fields
         $map = craft()->request->getParam('fields');
@@ -124,20 +88,13 @@ class ImportController extends BaseController
         // Get rows/steps from file
         $rows = count(craft()->import->data($file));
         
-        // Define settings
-        $settings = array(
+        // Set more settings
+        $settings = array_merge(array(
             'file'        => $file,
             'rows'        => $rows,
             'map'         => $map,
-            'unique'      => $unique,
-            'elementtype' => $type,
-            'section'     => $section,
-            'entrytype'   => $entrytype,
-            'groups'      => $groups,
-            'behavior'    => $behavior,
-            'email'       => $email,
-            'backup'      => $backup
-        );
+            'unique'      => $unique
+        ), $settings);
         
         // Create history
         $history = craft()->import_history->start((object)$settings);
@@ -148,8 +105,8 @@ class ImportController extends BaseController
         // Notify user
         craft()->userSession->setNotice(Craft::t('Import process started.'));
         
-        // Redirect to index
-        $this->redirect('import?task=' . $task->id);
+        // Redirect to history
+        $this->redirect('import/history?task=' . $task->id);
     
     }
     

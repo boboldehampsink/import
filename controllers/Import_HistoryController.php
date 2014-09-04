@@ -28,8 +28,8 @@ class Import_HistoryController extends BaseController
         // Notify user
         craft()->userSession->setNotice(Craft::t('Revert import process started.'));
         
-        // Redirect to index
-        $this->redirect('import');
+        // Redirect to history
+        $this->redirect('import/history');
     
     }
     

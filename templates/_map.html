@@ -1,0 +1,37 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Import"|t %}
+
+{% set tabs = {
+    overview: { label: "Import"|t, url: url('import') },
+    history:  { label: "History"|t, url: url('import/history') },
+} %}
+
+{% includeJsResource 'import/js/import.js' %}
+
+{% import "_includes/forms" as forms %}
+
+{% set content %}
+    <form method="post" action="" class="centered" accept-charset="utf-8">
+        <input type="hidden" name="action" value="import/import">
+        <input type="hidden" name="file" value="{{ file }}">
+        <input type="hidden" name="unique[]" value="">
+        
+        {% for key, value in import if key != 'elementvars' %}
+            <input type="hidden" name="import[{{ key }}]" value="{{ value }}">
+        {% endfor %}
+        
+        {% for key, value in import.elementvars %}
+            {% if value is iterable %}
+                {% for subvalue in value %}
+                    <input type="hidden" name="import[elementvars][{{ key }}][]" value="{{ subvalue }}">
+                {% endfor %}
+            {% else %}
+                <input type="hidden" name="import[elementvars][{{ key }}]" value="{{ value }}">
+            {% endif %}
+        {% endfor %}
+        
+        {% include 'import/types/' ~ import.type|lower ~ '/_map' %}
+        
+    </form>
+{% endset %}

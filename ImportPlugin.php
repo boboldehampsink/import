@@ -33,7 +33,7 @@ class ImportPlugin extends BasePlugin
     function registerCpRoutes() 
     {
         return array(
-            'import/(?P<historyId>\d+)' => 'import/_history'
+            'import/history/(?P<historyId>\d+)' => 'import/history/_log'
         );
     
     }

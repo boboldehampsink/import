@@ -2,18 +2,17 @@
 
 {% set crumbs = [
     { label: "Import"|t, url: url('import') },
-    { label: "Import history"|t, url: url('import/' ~ historyId) }
+    { label: "Import history"|t, url: url('import/history/' ~ historyId) }
 ] %}
 
 {% set title = "Import"|t %}
 
 {% set tabs = {
-    overview: { label: "Import history"|t, url: url('import') },
-    upload: { label: "Upload file"|t, url: url('import/upload') },
-    map:    { label: "Map fields"|t, url: '', class: 'disabled' }
+    overview: { label: "Import"|t, url: url('import') },
+    history:  { label: "History"|t, url: url('import/history') },
 } %}
 
-{% set selectedTab = 'overview' %}
+{% set selectedTab = 'history' %}
 
 {% set content %}
     

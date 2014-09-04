@@ -5,10 +5,13 @@ $(function() {
         // Show the fields that match the import type
         $('#types').change(function() {
         
-            $('.type').hide();
-            $('.' + $(this).val().toLowerCase()).show();     
+            $('.type').hide().find('input, select').prop('disabled', true);
+            $('.' + $(this).val().toLowerCase()).show().find('input, select').prop('disabled', false);     
             
         });
+        
+        // Trigger change on load
+        $('#types').trigger('change');
         
         // Find entry types by chosen section
         $(document).on('change', '#sections', function() {

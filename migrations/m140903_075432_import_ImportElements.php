@@ -4,7 +4,7 @@ namespace Craft;
 /**
  * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
  */
-class m140903_075432_import_ImportUsers extends BaseMigration
+class m140903_075432_import_ImportElements extends BaseMigration
 {
 	/**
 	 * Any migration code in here is wrapped inside of a transaction.
@@ -25,10 +25,10 @@ class m140903_075432_import_ImportUsers extends BaseMigration
 	    craft()->db->createCommand()->dropColumn('import_history', 'entrytypeId');
 	    
 	    // Add elementtype column
-	    craft()->db->createCommand()->addColumnAfter('import_history', 'elementtype', ColumnType::Varchar, 'userId');
+	    craft()->db->createCommand()->addColumnAfter('import_history', 'type', ColumnType::Varchar, 'userId');
 	    
-	    // Fill elementtype column by default
-		//craft()->db->createCommand()->update('import_history', array('elementtype' => ElementType::Entry));
+	    // Fill type column by default
+		//craft()->db->createCommand()->update('import_history', array('type' => ElementType::Entry));
 		// ^^ we're not doing this as it affects the dateUpdated table
 	
 		return true;

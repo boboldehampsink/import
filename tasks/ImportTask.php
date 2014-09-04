@@ -14,10 +14,8 @@ class ImportTask extends BaseTask
             'rows'        => AttributeType::Number,
             'map'         => AttributeType::Mixed,
             'unique'      => AttributeType::Mixed,
-            'elementtype' => AttributeType::String,
-            'section'     => AttributeType::Number,
-            'entrytype'   => AttributeType::Number,
-            'groups'      => AttributeType::Mixed,
+            'type'        => AttributeType::String,
+            'elementvars' => AttributeType::Mixed,
             'behavior'    => AttributeType::Name,
             'email'       => AttributeType::Email,
             'backup'      => AttributeType::Bool,
@@ -40,7 +38,7 @@ class ImportTask extends BaseTask
         $settings = $this->getSettings();
     
         // Delete element template caches before importing
-        craft()->templateCache->deleteCachesByElementType($settings->elementtype);
+        craft()->templateCache->deleteCachesByElementType($settings->type);
     
         // Take a step for every row
         return $settings->rows;

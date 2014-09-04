@@ -4,13 +4,31 @@ namespace Craft;
 class Import_EntryService extends BaseApplicationComponent 
 {
 
+    public function getGroups()
+    {
+    
+        // Get editable sections for user
+        $editable = craft()->sections->getEditableSections();
+        
+        // Get sections but not singles
+        $sections = array();
+        foreach($editable as $section) {
+            if($section->type != SectionType::Single) {
+                $sections[] = $section;
+            }
+        }
+        
+        return $sections;
+    
+    }
+
     public function setModel($settings)
     {
     
         // Set up new entry model
         $entry = new EntryModel();
-        $entry->sectionId = $settings['section'];
-        $entry->typeId = $settings['entrytype'];
+        $entry->sectionId = $settings['elementvars']['section'];
+        $entry->typeId = $settings['elementvars']['entrytype'];
         
         return $entry;    
     
@@ -25,7 +43,7 @@ class Import_EntryService extends BaseApplicationComponent
         $criteria->status = isset($settings['map']['status']) ? $settings['map']['status'] : null;
     
         // Look in same section when replacing
-        $criteria->sectionId = $settings['section'];
+        $criteria->sectionId = $settings['elementvars']['section'];
     
         return $criteria;
     

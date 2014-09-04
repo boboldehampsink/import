@@ -4,6 +4,25 @@ namespace Craft;
 class Import_UserService extends BaseApplicationComponent 
 {
 
+
+    public function getGroups()
+    {
+    
+        // Get usergroups
+        $groups = craft()->userGroups->getAllGroups();
+        
+        // Return when groups found
+        if(count($groups)) {
+        
+            return $groups;
+            
+        }
+        
+        // Still return true when no groups found
+        return true;
+    
+    }
+
     public function setModel($settings)
     {
     
@@ -33,7 +52,7 @@ class Import_UserService extends BaseApplicationComponent
         if(craft()->users->saveUser($element)) {
         
             // Assign to groups
-            craft()->userGroups->assignUserToGroups($element->id, $settings->groups);
+            craft()->userGroups->assignUserToGroups($element->id, $settings['elementvars']['groups']);
         
             return true;
         

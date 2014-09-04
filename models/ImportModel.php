@@ -51,18 +51,12 @@ class ImportModel extends BaseModel
     const DelimiterComma     = ',';
     const DelimiterPipe      = '|';
 
+    // Use model validation to validate filetype
     protected function defineAttributes() 
     {
         return array(
-            'elementtype' => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Element Type'), 'values' => array(ElementType::Entry, ElementType::User)),
-            'section'     => array(AttributeType::Number, 'label' => Craft::t('Section')),
-            'entrytype'   => array(AttributeType::Number, 'label' => Craft::t('Entrytype')),
-            'groups'      => array(AttributeType::Mixed, 'label' => Craft::t('Groups')),
-            'behavior'    => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Behavior'), 'values' => array(self::BehaviorAppend, self::BehaviorReplace, self::BehaviorDelete)),
-            'file'        => array(AttributeType::String, 'required' => true, 'label' => Craft::t('File')),
-            'type'        => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Filetype'), 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth)),
-            'email'       => array(AttributeType::Bool, 'label' => Craft::t('Send e-mail notification')),
-            'backup'      => array(AttributeType::Bool, 'label' => Craft::t('Backup Database'))
+            'filetype' => array(AttributeType::Enum, 'required' => true, 'label' => Craft::t('Filetype'), 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth))
         );
     }
+    
 }

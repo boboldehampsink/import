@@ -47,7 +47,7 @@ class ImportService extends BaseApplicationComponent
         }
         
         // Check what service we're gonna need
-        $service = 'import_' . strtolower($settings['elementtype']);
+        $service = 'import_' . strtolower($settings['type']);
             
         // Map data to fields
         $fields = array_combine($settings['map'], $data);

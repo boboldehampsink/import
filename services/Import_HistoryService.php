@@ -57,7 +57,7 @@ class Import_HistoryService extends BaseApplicationComponent
     
         $history              = new Import_HistoryRecord();
         $history->userId      = craft()->userSession->getUser()->id;
-        $history->elementtype = $settings->elementtype;
+        $history->type        = $settings->type;
         $history->file        = basename($settings->file);
         $history->rows        = $settings->rows;
         $history->behavior    = $settings->behavior;

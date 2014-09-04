@@ -1,0 +1,53 @@
+{% set sections = craft.import.getGroups('Entry') %}
+<tbody class="type entry">
+    <tr class="importSection">
+        <td>
+            <div class="field">
+                <div class="heading">
+                    <label>{{ "Section"|t }}</label>
+                    <div class="instructions">
+                        <p>{{ "Choose the section you want to import to."|t }}</p>                
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="field">
+                <div class="input">
+                    <div class="select">
+                        <select name="import[elementvars][section]" id="sections" disabled>
+                        {% for section in sections %}
+                            <option value="{{ section.id }}">{{ section.name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="importEntryType">
+        <td>
+            <div class="field">
+                <div class="heading">
+                    <label>{{ "Entrytype"|t }}</label>
+                    <div class="instructions">
+                        <p>{{ "Choose the entrytype you want to import to."|t }}</p>                
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="field">
+                <div class="input">
+                    <div class="select">
+                        <select name="import[elementvars][entryType]" id="entrytypes" disabled>
+                        {% for entrytype in sections[0].getEntryTypes() %}
+                            <option value="{{ entrytype.id }}">{{ entrytype.name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</tbody>

@@ -1,0 +1,97 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Import"|t %}
+
+{% set tabs = {
+    overview: { label: "Import"|t, url: url('import') },
+    history:  { label: "History"|t, url: url('import/history') },
+} %}
+
+{% set selectedTab = 'history' %}
+
+{% if craft.request.getParam('task') %}
+
+    {% set javascript %}
+    $(function() {
+        setTimeout(function() {
+            if(!$('#taskicon').length) {
+                window.location.reload();
+            } else {
+                $('#taskicon').trigger('click');
+                var taskCheck = setInterval(function() {
+                    if((Craft.cp.runningTaskInfo && Craft.cp.runningTaskInfo.id != {{ craft.request.getParam('task') }}) || Craft.cp.runningTaskInfo === null) {
+                        clearInterval(taskCheck);
+                        window.location.href = 'history';
+                    }
+                }, 500);
+            }
+        }, 500);
+    });
+    {% endset %}
+    
+    {% includeJs javascript %}
+
+{% endif %}
+
+{% set content %}
+<div class="main">
+<div class="tableview">
+    <table class="data fullwidth" id="history">
+        <thead>
+            <tr>
+                <th scope="col" data-attribute="date">{{ "Filename"|t }}</th>
+                <th scope="col" data-attribute="behavior">{{ "Import behavior"|t }}</th>
+                <th scope="col" data-attribute="type">{{ "Type"|t }}</th>
+                <th scope="col" data-attribute="rows">{{ "Rows"|t }}</th>
+                <th scope="col" data-attribute="started">{{ "Started"|t }}</th>
+                <th scope="col" data-attribute="finished">{{ "Finished"|t }}</th>
+                <th scope="col" data-attribute="totaltime">{{ "Total time"|t }}</th>
+                <th scope="col" data-attribute="user">{{ "User"|t }}</th>
+                <th scope="col" data-attribute="revert">{{ "Revert"|t }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in craft.import.history %}
+            <tr>
+                <td scope="row" data-title="{{ 'Filename'|t }}">
+                    <div class="element" data-id="{{ item.id }}" data-status="{% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}" data-label="{{ item.file }}">
+                        <div class="label">
+                            <span class="status {% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}"></span>
+                            <span class="title">
+                            {% if item.status != 'started' %}
+                                <a href="history/{{ item.id }}">{{ item.file }}</a>
+                            {% else %}
+                                {{ item.file }}
+                            {% endif %}
+                            </span>
+                        </div>
+                    </div>                
+                </td>
+                <td data-title="{{ 'Import behavior'|t }}">
+                {% switch item.behavior %}
+                    {% case 'append' %}
+                        {{ "Append data"|t }}
+                    {% case 'replace' %}
+                        {{ "Replace data"|t }}
+                    {% case 'delete' %}
+                        {{ "Delete data"|t }}
+                {% endswitch %}
+                </td>
+                <td data-title="{{ 'Type'|t }}">{% if item.type %}{{ item.type|t }}{% else %}{{ "Entry"|t }}{% endif %}</td>
+                <td data-title="{{ 'Rows'|t }}">{{ item.rows }}</td>
+                <td data-title="{{ 'Started'|t }}">{{ item.dateCreated | datetime }}</td>
+                <td data-title="{{ 'Finished'|t }}">{% if item.status != 'started' %}{{ item.dateUpdated | datetime }}{% endif %}</td>
+                <td data-title="{{ 'Total time'|t }}">{% if item.status != 'started' %}{{ item.dateCreated.diff(item.dateUpdated).humanDuration() }}{% endif %}</td>
+                <td data-title="{{ 'User'|t }}">
+                    <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
+                </td>
+                <td data-title="{{ 'Revert'|t }}">
+                    {% if item.status == 'finished' and (item.type == 'Entry' or not item.type)  %}<a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>{% else %}<a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "Reverting is not available for this type"|t }}')">{{ 'Revert'|t }}</a>{% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+{% endset %}
