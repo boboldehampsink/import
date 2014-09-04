@@ -70,6 +70,8 @@ class Import_UserService extends BaseApplicationComponent
         if(isset($fields[ImportModel::HandleUsername])) {
             $entry->username = $fields[ImportModel::HandleUsername];
             unset($fields[ImportModel::HandleUsername]);
+        } elseif(isset($fields[ImportModel::HandleEmail])) {
+            $entry->username = $fields[ImportModel::HandleEmail];
         }
         
         // Set firstname
