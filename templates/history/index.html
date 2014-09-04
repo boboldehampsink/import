@@ -47,6 +47,7 @@
                 <th scope="col" data-attribute="totaltime">{{ "Total time"|t }}</th>
                 <th scope="col" data-attribute="user">{{ "User"|t }}</th>
                 <th scope="col" data-attribute="revert">{{ "Revert"|t }}</th>
+                <th scope="col" data-attribute="download">{{ "Download"|t }}</th>
             </tr>
         </thead>
         <tbody>
@@ -85,7 +86,18 @@
                     <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
                 </td>
                 <td data-title="{{ 'Revert'|t }}">
-                    {% if item.status == 'finished' and (item.type == 'Entry' or not item.type)  %}<a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>{% else %}<a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "Reverting is not available for this type"|t }}')">{{ 'Revert'|t }}</a>{% endif %}
+                    {% if item.status == 'finished' and (item.type == 'Entry' or item.type is empty)  %}
+                        <a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>
+                    {% else %}
+                        <a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "Reverting is not available for this type"|t }}')">{{ 'Revert'|t }}</a>
+                    {% endif %}
+                </td>
+                <td data-title="{{ 'Download'|t }}">
+                    {% if item.type is not empty %}
+                        <a href="{{ actionUrl('import/history/download', {'id': item.id }) }}" class="btn small">{{ 'Download'|t }}</a>
+                    {% else %}
+                        <a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "The original file is not available for downloading"|t }}')">{{ 'Download'|t }}</a>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}

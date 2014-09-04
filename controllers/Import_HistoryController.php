@@ -33,4 +33,29 @@ class Import_HistoryController extends BaseController
     
     }
     
+    public function actionDownload()
+    {
+    
+        // Get history id
+        $history = craft()->request->getParam('id');
+        
+        // Get history
+        $model = Import_HistoryRecord::model()->findById($history);
+        
+        // Get filepath
+        $path = craft()->path->getStoragePath() . 'import/' . $history . '/' . $model->file;
+        
+        // Check if file exists
+        if(file_exists($path)) {
+        
+            // Send the file to the browser
+            craft()->request->sendFile($model->file, IOHelper::getFileContents($path), array('forceDownload' => true));
+        
+        }
+        
+        // Not found, = 404
+        throw new HttpException(404);
+    
+    }
+    
 }
