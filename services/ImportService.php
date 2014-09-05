@@ -385,8 +385,8 @@ class ImportService extends BaseApplicationComponent
                     // Fresh up $data
                     $data = trim($data);
                     
-                    // Parse as float
-                    $data = floatval($data);
+                    // Parse as number
+                    $data = LocalizationHelper::normalizeNumber($data);
                     
                     break;
             
