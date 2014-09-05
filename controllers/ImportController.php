@@ -97,7 +97,10 @@ class ImportController extends BaseController
         ), $settings);
         
         // Create history
-        $history = craft()->import_history->start((object)$settings);
+        $history = craft()->import_history->start($settings);
+        
+        // Add history to settings
+        $settings['history'] = $history;
         
         // Determine new folder to save original importfile
         $folder = dirname($file) . '/' . $history . '/';
@@ -108,9 +111,12 @@ class ImportController extends BaseController
         
         // Update the settings with the new file location
         $settings['file'] = $folder . basename($file);
+        
+        // UNCOMMENT FOR DEBUGGING
+        //craft()->import->debug($settings, $history, 1);
 
         // Create the import task
-        $task = craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), array_merge($settings, array('history' => $history)));
+        $task = craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), $settings);
         
         // Notify user
         craft()->userSession->setNotice(Craft::t('Import process started.'));

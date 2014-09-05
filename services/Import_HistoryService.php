@@ -57,10 +57,10 @@ class Import_HistoryService extends BaseApplicationComponent
     
         $history              = new Import_HistoryRecord();
         $history->userId      = craft()->userSession->getUser()->id;
-        $history->type        = $settings->type;
-        $history->file        = basename($settings->file);
-        $history->rows        = $settings->rows;
-        $history->behavior    = $settings->behavior;
+        $history->type        = $settings['type'];
+        $history->file        = basename($settings['file']);
+        $history->rows        = $settings['rows'];
+        $history->behavior    = $settings['behavior'];
         $history->status      = ImportModel::StatusStarted;
         
         $history->save(false);

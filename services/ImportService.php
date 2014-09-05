@@ -41,7 +41,7 @@ class ImportService extends BaseApplicationComponent
         if(count($settings['map']) != count($data)) {
         
             // Log errors when unsuccessful
-            $this->log[$row] = craft()->import_history->log($settings->history, $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));            
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));            
             return;
         
         }
@@ -129,7 +129,7 @@ class ImportService extends BaseApplicationComponent
         if(!craft()->$service->save($entry, $settings)) {
         
             // Log errors when unsuccessful
-            $this->log[$row] = craft()->import_history->log($settings->history, $row, $entry->getErrors());
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, $entry->getErrors());
         
         }
     
@@ -138,13 +138,13 @@ class ImportService extends BaseApplicationComponent
     public function finish($settings, $backup) 
     {
     
-        craft()->import_history->end($settings->history, ImportModel::StatusFinished);
+        craft()->import_history->end($settings['history'], ImportModel::StatusFinished);
         
-        if($settings->email) {
+        if($settings['email']) {
         
             // Gather results
             $results = array(
-                'success' => $settings->rows,
+                'success' => $settings['rows'],
                 'errors' => array()
             );
             
@@ -162,7 +162,7 @@ class ImportService extends BaseApplicationComponent
             $email->toEmail = $emailSettings['emailAddress'];
             
             // Zip the backup
-            if($settings->backup && IOHelper::fileExists($backup)) {
+            if($settings['backup'] && IOHelper::fileExists($backup)) {
                 $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
                 if(IOHelper::fileExists($destZip)) {
                     IOHelper::deleteFile($destZip, true);
@@ -184,45 +184,6 @@ class ImportService extends BaseApplicationComponent
             craft()->email->sendEmail($email);
             
         }
-    
-    }
-
-    // Special function that handles csv delimiter detection
-    protected function _open($file) 
-    {
-    
-        $data = array();
-        
-        // Open file into rows
-        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
-        // Detect delimiter from first row
-        $delimiters = array();
-        $delimiters[ImportModel::DelimiterSemicolon] = substr_count($lines[0], ImportModel::DelimiterSemicolon);
-        $delimiters[ImportModel::DelimiterComma]     = substr_count($lines[0], ImportModel::DelimiterComma);
-        $delimiters[ImportModel::DelimiterPipe]      = substr_count($lines[0], ImportModel::DelimiterPipe);
-        
-        // Sort by delimiter with most occurences
-        arsort($delimiters, SORT_NUMERIC);
-        
-        // Give me the keys
-        $delimiters = array_keys($delimiters);
-        
-        // Use first key -> this is the one with most occurences
-        $delimiter = array_shift($delimiters);
-        
-        // Open file and parse csv rows
-        $handle = fopen($file, 'r');        
-        while(($row = fgetcsv($handle, 0, $delimiter)) !== false) {
-        
-            // Add row to data array
-            $data[] = $row;
-        
-        }
-        fclose($handle);
-        
-        // Return data array
-        return $data;
     
     }
     
@@ -407,6 +368,67 @@ class ImportService extends BaseApplicationComponent
         
         }
                                 
+        return $data;
+    
+    }
+    
+    public function debug($settings, $history, $step)
+    {
+        
+        // Open file
+        $data = $this->data($settings['file']);
+        
+        // Adjust settings for one row
+        $model = Import_HistoryRecord::model()->findById($history);
+        $model->rows = 1;
+        $model->save();
+        
+        // Import row
+        $this->row($step, $data[$step], $settings);
+        
+        // Finish
+        $this->finish($settings, false);
+        
+        // Redirect to history
+        craft()->request->redirect('import/history');
+    
+    }
+    
+    // Special function that handles csv delimiter detection
+    protected function _open($file) 
+    {
+    
+        $data = array();
+        
+        // Open file into rows
+        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        
+        // Detect delimiter from first row
+        $delimiters = array();
+        $delimiters[ImportModel::DelimiterSemicolon] = substr_count($lines[0], ImportModel::DelimiterSemicolon);
+        $delimiters[ImportModel::DelimiterComma]     = substr_count($lines[0], ImportModel::DelimiterComma);
+        $delimiters[ImportModel::DelimiterPipe]      = substr_count($lines[0], ImportModel::DelimiterPipe);
+        
+        // Sort by delimiter with most occurences
+        arsort($delimiters, SORT_NUMERIC);
+        
+        // Give me the keys
+        $delimiters = array_keys($delimiters);
+        
+        // Use first key -> this is the one with most occurences
+        $delimiter = array_shift($delimiters);
+        
+        // Open file and parse csv rows
+        $handle = fopen($file, 'r');        
+        while(($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+        
+            // Add row to data array
+            $data[] = $row;
+        
+        }
+        fclose($handle);
+        
+        // Return data array
         return $data;
     
     }
