@@ -23,16 +23,6 @@ class ImportModel extends BaseModel
     const StatusStarted  = 'started';
     const StatusFinished = 'finished';
     const StatusReverted = 'reverted';
-     
-    // Handles
-    const HandleTitle        = 'title';
-    const HandleAuthor       = 'authorId';
-    const HandlePostDate     = 'postDate';
-    const HandleExpiryDate   = 'expiryDate';
-    const HandleEnabled      = 'enabled';
-    const HandleStatus       = 'status';
-    const HandleSlug         = 'slug';
-    const HandleParent       = 'parent';
     
     // Fieldtypes
     const FieldTypeEntries    = 'Entries';
@@ -41,22 +31,32 @@ class ImportModel extends BaseModel
     const FieldTypeUsers      = 'Users';
     const FieldTypeRichText   = 'RichText';
     const FieldTypeNumber     = 'Number';
+    const FieldTypeDate       = 'Date';
     
     // Delimiters
     const DelimiterSemicolon = ';';
     const DelimiterComma     = ',';
     const DelimiterPipe      = '|';
 
+    // Use model validation to validate filetype
     protected function defineAttributes() 
     {
         return array(
-            'section'   => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Section')),
-            'entrytype' => array(AttributeType::Number, 'required' => true, 'label' => Craft::t('Entrytype')),
-            'behavior'  => array(AttributeType::Enum, 'required' => true, 'values' => array(self::BehaviorAppend, self::BehaviorReplace, self::BehaviorDelete)),
-            'file'      => array(AttributeType::String, 'required' => true, 'label' => Craft::t('File')),
-            'type'      => array(AttributeType::Enum, 'required' => true, 'values' => array(self::TypeCSV, self::TypeCSVWin, self::TypeCSVIE, self::TypeCSVApp, self::TypeCSVExc, self::TypeCSVOff, self::TypeCSVOff2, self::TypeCSVOth)),
-            'email'     => array(AttributeType::Bool, 'label' => Craft::t('Send e-mail notification')),
-            'backup'    => array(AttributeType::Bool, 'label' => Craft::t('Backup Database'))
+            'filetype' => array(AttributeType::Enum, 
+                'required' => true, 
+                'label' => Craft::t('Filetype'), 
+                'values' => array(
+                    self::TypeCSV, 
+                    self::TypeCSVWin, 
+                    self::TypeCSVIE, 
+                    self::TypeCSVApp, 
+                    self::TypeCSVExc, 
+                    self::TypeCSVOff, 
+                    self::TypeCSVOff2, 
+                    self::TypeCSVOth
+                )
+            )
         );
     }
+    
 }

@@ -55,14 +55,13 @@ class Import_HistoryService extends BaseApplicationComponent
     public function start($settings) 
     {
     
-        $history = new Import_HistoryRecord();
-        $history->userId = craft()->userSession->getUser()->id;
-        $history->sectionId = $settings->section;
-        $history->entrytypeId = $settings->entrytype;
-        $history->file = basename($settings->file);
-        $history->rows = $settings->rows;
-        $history->behavior = $settings->behavior;
-        $history->status = ImportModel::StatusStarted;
+        $history              = new Import_HistoryRecord();
+        $history->userId      = craft()->userSession->getUser()->id;
+        $history->type        = $settings['type'];
+        $history->file        = basename($settings['file']);
+        $history->rows        = $settings['rows'];
+        $history->behavior    = $settings['behavior'];
+        $history->status      = ImportModel::StatusStarted;
         
         $history->save(false);
                 
@@ -77,7 +76,7 @@ class Import_HistoryService extends BaseApplicationComponent
     
             $log = new Import_LogRecord();
             $log->historyId = $history;
-            $log->line = $line + 1;
+            $log->line = $line + 2;
             $log->errors = $errors;
             
             $log->save(false);

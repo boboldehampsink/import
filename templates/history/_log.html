@@ -2,18 +2,17 @@
 
 {% set crumbs = [
     { label: "Import"|t, url: url('import') },
-    { label: "Import history"|t, url: url('import/' ~ historyId) }
+    { label: "Import history"|t, url: url('import/history/' ~ historyId) }
 ] %}
 
 {% set title = "Import"|t %}
 
 {% set tabs = {
-    overview: { label: "Import history"|t, url: url('import') },
-    upload: { label: "Upload file"|t, url: url('import/upload') },
-    map:    { label: "Map fields"|t, url: '', class: 'disabled' }
+    overview: { label: "Import"|t, url: url('import') },
+    history:  { label: "History"|t, url: url('import/history') },
 } %}
 
-{% set selectedTab = 'overview' %}
+{% set selectedTab = 'history' %}
 
 {% set content %}
     
@@ -28,7 +27,7 @@
         {% for line, errors in craft.import.log(historyId) %}
             <tr>
                 <td data-title="{{ 'Line'|t }}">{{ line }}</td>
-                <td data-title="{{ 'Errors'|t }}">{% for error in errors %}{{ error | join(', ') }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+                <td data-title="{{ 'Errors'|t }}">{% for field, error in errors %}{{ error | join(', ') }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
             </tr>
         {% endfor %}
         </tbody>

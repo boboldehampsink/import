@@ -10,16 +10,16 @@ class ImportTask extends BaseTask
     {
     
         return array(
-            'file'      => AttributeType::Name,
-            'rows'      => AttributeType::Number,
-            'map'       => AttributeType::Mixed,
-            'unique'    => AttributeType::Mixed,
-            'section'   => AttributeType::Number,
-            'entrytype' => AttributeType::Number,
-            'behavior'  => AttributeType::Name,
-            'email'     => AttributeType::Email,
-            'backup'    => AttributeType::Bool,
-            'history'   => AttributeType::Number
+            'file'        => AttributeType::Name,
+            'rows'        => AttributeType::Number,
+            'map'         => AttributeType::Mixed,
+            'unique'      => AttributeType::Mixed,
+            'type'        => AttributeType::String,
+            'elementvars' => AttributeType::Mixed,
+            'behavior'    => AttributeType::Name,
+            'email'       => AttributeType::Email,
+            'backup'      => AttributeType::Bool,
+            'history'     => AttributeType::Number
         );
     
     }
@@ -34,11 +34,14 @@ class ImportTask extends BaseTask
     public function getTotalSteps() 
     {
     
+        // Get settings
+        $settings = $this->getSettings();
+    
         // Delete element template caches before importing
-        craft()->templateCache->deleteCachesByElementType(ElementType::Entry);
+        craft()->templateCache->deleteCachesByElementType($settings->type);
     
         // Take a step for every row
-        return $this->getSettings()->rows;
+        return $settings->rows;
     
     }
     
@@ -74,13 +77,21 @@ class ImportTask extends BaseTask
             // Finish
             craft()->import->finish($settings, $this->backupFile);
             
-            // Run custom hook on finish
-            craft()->plugins->call('registerImportFinish', array($settings));
+            // Fire an "onImportFinish" event
+            Craft::import('plugins.import.events.ImportFinishEvent');
+            $event = new ImportFinishEvent($this, array('settings' => $settings));
+            $this->onImportFinish($event);
         
         }
     
         return true;
     
+    }
+    
+    // Fires an "onImportFinish" event
+    public function onImportFinish(ImportFinishEvent $event)
+    {
+        $this->raiseEvent('onImportFinish', $event);
     }
 
 }

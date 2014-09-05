@@ -53,11 +53,11 @@ class ImportTest extends BaseTest
         
     }
     
-    public function testPrepForEntryModel()
+    public function testPrepForElementModel()
     {
     
         $fields = array('title' => 'test');
-        $entry = $this->importService->prepForEntryModel($fields, new EntryModel());
+        $entry = $this->importService->prepForElementModel($fields, new EntryModel());
         
         $this->assertTrue($entry instanceOf EntryModel);
         

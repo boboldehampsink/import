@@ -41,10 +41,13 @@ class ImportService extends BaseApplicationComponent
         if(count($settings['map']) != count($data)) {
         
             // Log errors when unsuccessful
-            $this->log[$row] = craft()->import_history->log($settings->history, $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));            
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));            
             return;
         
         }
+        
+        // Check what service we're gonna need
+        $service = 'import_' . strtolower($settings['type']);
             
         // Map data to fields
         $fields = array_combine($settings['map'], $data);
@@ -54,22 +57,18 @@ class ImportService extends BaseApplicationComponent
             unset($fields['dont']);
         }
         
-        // Set up new entry model
-        $entry = new EntryModel();
-        $entry->sectionId = $settings['section'];
-        $entry->typeId = $settings['entrytype'];
+        // Set up a model to save according to element type
+        $entry = craft()->$service->setModel($settings);
         
         // If unique is non-empty array, we're replacing or deleting
         if(is_array($settings['unique']) && count($settings['unique']) > 1) {
-                
-            // Match with current data
-            $criteria = craft()->elements->getCriteria(ElementType::Entry);
-            $criteria->limit = null;
-            $criteria->status = isset($settings['map']['status']) ? $settings['map']['status'] : null;
-            $criteria->sectionId = $settings['section'];
             
+            // Set criteria according to elementtype
+            $criteria = craft()->$service->setCriteria($settings);
+                        
+            // Set up criteria model for matching        
             foreach($settings['map'] as $key => $value) {
-                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
+                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1) {
                     $criteria->$settings['map'][$key] = $fields[$value];
                 }
             } 
@@ -80,19 +79,19 @@ class ImportService extends BaseApplicationComponent
                 // If we're deleting
                 if($settings['behavior'] == ImportModel::BehaviorDelete) {
                 
-                    // Get id's of elements to delete
-                    $elementIds = $criteria->ids();
+                    // Get elements to delete
+                    $elements = $criteria->find();
                 
                     // Fire an 'onBeforeImportDelete' event
                     Craft::import('plugins.import.events.ImportDeleteEvent');
-                    $event = new ImportDeleteEvent($this, array('elementIds' => $elementIds));
+                    $event = new ImportDeleteEvent($this, array('elements' => $elements));
                     $this->onBeforeImportDelete($event);
                     
                     // Give event the chance to blow off deletion
                     if($event->proceed) {
                                 
                         // Do it
-                        craft()->elements->deleteElementById($elementIds);
+                        craft()->$service->delete($elements);
                         
                     }
                     
@@ -115,27 +114,40 @@ class ImportService extends BaseApplicationComponent
         
         }
         
-        // Prepare entry model
-        $entry = $this->prepForEntryModel($fields, $entry);
+        // Prepare element model
+        $entry = craft()->$service->prepForElementModel($fields, $entry);
         
-        // Hook to prepare as appropriate fieldtypes
-        array_walk($fields, function(&$data, $handle) {
-            return craft()->plugins->call('registerImportOperation', array(&$data, $handle));
-        });
+        try {
+        
+            // Hook to prepare as appropriate fieldtypes
+            array_walk($fields, function(&$data, $handle) {
+                return craft()->plugins->call('registerImportOperation', array(&$data, $handle));
+            });
+        
+        } catch(Exception $e) {
+        
+            // Something went terribly wrong, assume its only this row
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+        
+        }
         
         // Set fields on entry model
         $entry->setContentFromPost($fields);
         
-        // Save entry
-        if(!craft()->entries->saveEntry($entry)) {
+        try {
         
-            // Log errors when unsuccessful
-            $this->log[$row] = craft()->import_history->log($settings->history, $row, $entry->getErrors());
-        
-        } else {
+            // Log
+            if(!craft()->$service->save($entry, $settings)) {
             
-            // Log entry id's when successful
-            craft()->import_history->version($settings->history, $entry->id);
+                // Log errors when unsuccessful
+                $this->log[$row] = craft()->import_history->log($settings['history'], $row, $entry->getErrors());
+            
+            }
+            
+        } catch(Exception $e) {
+        
+            // Something went terribly wrong, assume its only this row
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
         
         }
     
@@ -144,13 +156,13 @@ class ImportService extends BaseApplicationComponent
     public function finish($settings, $backup) 
     {
     
-        craft()->import_history->end($settings->history, ImportModel::StatusFinished);
+        craft()->import_history->end($settings['history'], ImportModel::StatusFinished);
         
-        if($settings->email) {
+        if($settings['email']) {
         
             // Gather results
             $results = array(
-                'success' => $settings->rows,
+                'success' => $settings['rows'],
                 'errors' => array()
             );
             
@@ -168,7 +180,7 @@ class ImportService extends BaseApplicationComponent
             $email->toEmail = $emailSettings['emailAddress'];
             
             // Zip the backup
-            if($settings->backup && IOHelper::fileExists($backup)) {
+            if($settings['backup'] && IOHelper::fileExists($backup)) {
                 $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
                 if(IOHelper::fileExists($destZip)) {
                     IOHelper::deleteFile($destZip, true);
@@ -191,124 +203,6 @@ class ImportService extends BaseApplicationComponent
             
         }
     
-    }
-
-    // Special function that handles csv delimiter detection
-    protected function _open($file) 
-    {
-    
-        $data = array();
-        
-        // Open file into rows
-        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
-        // Detect delimiter from first row
-        $delimiters = array();
-        $delimiters[ImportModel::DelimiterSemicolon] = substr_count($lines[0], ImportModel::DelimiterSemicolon);
-        $delimiters[ImportModel::DelimiterComma]     = substr_count($lines[0], ImportModel::DelimiterComma);
-        $delimiters[ImportModel::DelimiterPipe]      = substr_count($lines[0], ImportModel::DelimiterPipe);
-        
-        // Sort by delimiter with most occurences
-        arsort($delimiters, SORT_NUMERIC);
-        
-        // Give me the keys
-        $delimiters = array_keys($delimiters);
-        
-        // Use first key -> this is the one with most occurences
-        $delimiter = array_shift($delimiters);
-        
-        // Open file and parse csv rows
-        $handle = fopen($file, 'r');        
-        while(($row = fgetcsv($handle, 0, $delimiter)) !== false) {
-        
-            // Add row to data array
-            $data[] = $row;
-        
-        }
-        fclose($handle);
-        
-        // Return data array
-        return $data;
-    
-    }
-    
-    // Prepare reserved EntryModel values
-    public function prepForEntryModel(&$fields, EntryModel $entry) 
-    {
-        
-        // Set author
-        if(isset($fields[ImportModel::HandleAuthor])) {
-            $entry->authorId = intval($fields[ImportModel::HandleAuthor]);
-            unset($fields[ImportModel::HandleAuthor]);
-        } else {
-            $entry->authorId = ($entry->authorId ? $entry->authorId : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
-        }
-        
-        // Set slug
-        if(isset($fields[ImportModel::HandleSlug])) {
-            $entry->slug = ElementHelper::createSlug($fields[ImportModel::HandleSlug]);
-            unset($fields[ImportModel::HandleSlug]);
-        }
-        
-        // Set postdate
-        if(isset($fields[ImportModel::HandlePostDate])) {
-            $entry->postDate = DateTime::createFromString($fields[ImportModel::HandlePostDate], craft()->timezone);
-            unset($fields[ImportModel::HandlePostDate]);
-        }
-        
-        // Set expiry date
-        if(isset($fields[ImportModel::HandleExpiryDate])) {
-            $entry->expiryDate = DateTime::createFromString($fields[ImportModel::HandleExpiryDate], craft()->timezone);
-            unset($fields[ImportModel::HandleExpiryDate]);
-        }
-        
-        // Set enabled
-        if(isset($fields[ImportModel::HandleEnabled])) {
-            $entry->enabled = (bool)$fields[ImportModel::HandleEnabled];
-            unset($fields[ImportModel::HandleEnabled]);
-        }
-        
-        // Set title
-        if(isset($fields[ImportModel::HandleTitle])) {
-            $entry->getContent()->title = $fields[ImportModel::HandleTitle];
-            unset($fields[ImportModel::HandleTitle]);
-        }
-        
-        // Set parent id
-        if(isset($fields[ImportModel::HandleParent])) {
-           
-           // Get data
-           $data = $fields[ImportModel::HandleParent];
-            
-            // Fresh up $data
-           $data = str_replace("\n", "", $data);
-           $data = str_replace("\r", "", $data);
-           $data = trim($data);
-           
-           // Don't connect empty fields
-           if(!empty($data)) {
-         
-               // Find matching element       
-               $criteria = craft()->elements->getCriteria(ElementType::Entry);
-               $criteria->sectionId = $entry->sectionId;
-
-               // Exact match
-               $criteria->search = '"'.$data.'"';
-               
-               // Return the first found id for connecting
-               if($criteria->total()) {
-               
-                   $entry->parentId = $criteria->first()->id;
-                   
-               }
-           
-           }
-        
-        }
-        
-        // Return entry
-        return $entry;
-                    
     }
     
     // Prepare fields for fieldtypes
@@ -470,8 +364,21 @@ class ImportService extends BaseApplicationComponent
                     // Fresh up $data
                     $data = trim($data);
                     
+                    // Parse as number
+                    $data = LocalizationHelper::normalizeNumber($data);
+                    
                     // Parse as float
                     $data = floatval($data);
+                                        
+                    break;
+                    
+                case ImportModel::FieldTypeDate:
+                
+                    // Fresh up data
+                    $data = trim($data);
+                    
+                    // Parse date from string
+                    $data = DateTime::createFromString($data, craft()->timezone);
                     
                     break;
             
@@ -479,6 +386,67 @@ class ImportService extends BaseApplicationComponent
         
         }
                                 
+        return $data;
+    
+    }
+    
+    public function debug($settings, $history, $step)
+    {
+        
+        // Open file
+        $data = $this->data($settings['file']);
+        
+        // Adjust settings for one row
+        $model = Import_HistoryRecord::model()->findById($history);
+        $model->rows = 1;
+        $model->save();
+        
+        // Import row
+        $this->row($step, $data[$step], $settings);
+        
+        // Finish
+        $this->finish($settings, false);
+        
+        // Redirect to history
+        craft()->request->redirect('import/history');
+    
+    }
+    
+    // Special function that handles csv delimiter detection
+    protected function _open($file) 
+    {
+    
+        $data = array();
+        
+        // Open file into rows
+        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        
+        // Detect delimiter from first row
+        $delimiters = array();
+        $delimiters[ImportModel::DelimiterSemicolon] = substr_count($lines[0], ImportModel::DelimiterSemicolon);
+        $delimiters[ImportModel::DelimiterComma]     = substr_count($lines[0], ImportModel::DelimiterComma);
+        $delimiters[ImportModel::DelimiterPipe]      = substr_count($lines[0], ImportModel::DelimiterPipe);
+        
+        // Sort by delimiter with most occurences
+        arsort($delimiters, SORT_NUMERIC);
+        
+        // Give me the keys
+        $delimiters = array_keys($delimiters);
+        
+        // Use first key -> this is the one with most occurences
+        $delimiter = array_shift($delimiters);
+        
+        // Open file and parse csv rows
+        $handle = fopen($file, 'r');        
+        while(($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+        
+            // Add row to data array
+            $data[] = $row;
+        
+        }
+        fclose($handle);
+        
+        // Return data array
         return $data;
     
     }

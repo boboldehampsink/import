@@ -1,0 +1,25 @@
+<tbody class="type user" style="display: none">
+    <tr>
+        <td>
+            <div class="field">
+                <div class="heading">
+                    <label>{{ "Group"|t }}</label>
+                    <div class="instructions">
+                        <p>{{ "Choose the groups you want to import into."|t }}</p>                
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+        {% for group in craft.import.getGroups('User') %}
+            {{ forms.checkboxField({
+                label: group.name,
+                name: "import[elementvars][groups][]",
+                checked: true,
+                value: group.id,
+                disabled: true
+            }) }}
+        {% endfor %}
+        </td>
+    </tr>
+</tbody>

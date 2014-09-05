@@ -3,92 +3,148 @@
 {% set title = "Import"|t %}
 
 {% set tabs = {
-    overview: { label: "Import history"|t, url: url('import') },
-    upload: { label: "Upload file"|t, url: url('import/upload') },
-    map:    { label: "Map fields"|t, url: '', class: 'disabled' }
+    overview: { label: "Import"|t, url: url('import') },
+    history:  { label: "History"|t, url: url('import/history') },
 } %}
 
 {% set selectedTab = 'overview' %}
 
-{% if craft.request.getParam('task') %}
+{% includeJsResource 'import/js/import.js' %}
 
-    {% set javascript %}
-    $(function() {
-        setTimeout(function() {
-            if(!$('#taskicon').length) {
-                window.location.reload();
-            } else {
-                $('#taskicon').trigger('click');
-                var taskCheck = setInterval(function() {
-                    if((Craft.cp.runningTaskInfo && Craft.cp.runningTaskInfo.id != {{ craft.request.getParam('task') }}) || Craft.cp.runningTaskInfo === null) {
-                        clearInterval(taskCheck);
-                        window.location.href = 'import';
-                    }
-                }, 500);
-            }
-        }, 500);
-    });
-    {% endset %}
-    
-    {% includeJs javascript %}
-
-{% endif %}
+{% import "_includes/forms" as forms %}
 
 {% set content %}
-    
-    <table class="data fullwidth" id="history">
-        <thead>
-            <tr>
-                <th scope="col" data-attribute="date">{{ "Filename"|t }}</th>
-                <th scope="col" data-attribute="behavior">{{ "Import behavior"|t }}</th>
-                <th scope="col" data-attribute="rows">{{ "Rows"|t }}</th>
-                <th scope="col" data-attribute="started">{{ "Started"|t }}</th>
-                <th scope="col" data-attribute="finished">{{ "Finished"|t }}</th>
-                <th scope="col" data-attribute="totaltime">{{ "Total time"|t }}</th>
-                <th scope="col" data-attribute="user">{{ "User"|t }}</th>
-                <th scope="col" data-attribute="revert">{{ "Revert"|t }}</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for item in craft.import.history %}
-            <tr>
-                <td scope="row" data-title="{{ 'Filename'|t }}">
-                    <div class="element" data-id="{{ item.id }}" data-status="{% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}" data-label="{{ item.file }}">
-                        <div class="label">
-                            <span class="status {% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}"></span>
-                            <span class="title">
-                            {% if item.status != 'started' %}
-                                <a href="import/{{ item.id }}">{{ item.file }}</a>
-                            {% else %}
-                                {{ item.file }}
-                            {% endif %}
-                            </span>
-                        </div>
-                    </div>                
-                </td>
-                <td data-title="{{ 'Import behavior'|t }}">
-                {% switch item.behavior %}
-                    {% case 'append' %}
-                        {{ "Append data"|t }}
-                    {% case 'replace' %}
-                        {{ "Replace data"|t }}
-                    {% case 'delete' %}
-                        {{ "Delete data"|t }}
-                {% endswitch %}
-                </td>
-                <td data-title="{{ 'Rows'|t }}">{{ item.rows }}</td>
-                <td data-title="{{ 'Started'|t }}">{{ item.dateCreated | datetime }}</td>
-                <td data-title="{{ 'Finished'|t }}">{% if item.status != 'started' %}{{ item.dateUpdated | datetime }}{% endif %}</td>
-                <td data-title="{{ 'Total time'|t }}">{% if item.status != 'started' %}{{ item.dateCreated.diff(item.dateUpdated).humanDuration() }}{% endif %}</td>
-                <td data-title="{{ 'User'|t }}">
-                    <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
-                </td>
-                <td data-title="{{ 'Revert'|t }}">
-                    {% if item.status == 'finished' %}<a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>{% endif %}
-                </td>
-            </tr>
+    <form id="import-form" method="post" class="centered" accept-charset="UTF-8" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="import/upload">
+        
+        {% set elementTypes = {} %}
+        {% for elementType, properties in craft.elements.getAllElementTypes if craft.import.getGroups(elementType) %}
+            {% set elementTypes = elementTypes|merge([elementType]) %}
         {% endfor %}
-        </tbody>
-    </table>
-    
+        
+        <table class="data">
+            <thead class="importType">
+                <tr>
+                    <td>
+                        <div class="field">
+                            <div class="heading">
+                                <label>{{ "Type"|t }}</label>
+                                <div class="instructions">
+                                    <p>{{ "Choose the type you want to import into."|t }}</p>                
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="input">
+                                <div class="select">
+                                    <select name="import[type]" id="types">
+                                    {% for elementType in elementTypes %}
+                                        <option value="{{ elementType }}">{{ elementType|t }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            
+            {% for elementType in elementTypes %}
+                {% include 'import/types/' ~ elementType|lower ~ '/_upload' %}
+            {% endfor %}
+            
+            <tbody>
+                <tr class="importBehavior">
+                    <td>
+                        <div class="field">
+                            <div class="heading">
+                                <label>{{ "Import behavior"|t }}</label>
+                                <div class="instructions">
+                                    <p>{{ "Choose the behaviour you want to import with."|t }}</p>                
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="input">
+                                <div class="select">
+                                    <select name="import[behavior]" id="behaviors">
+                                        {% if currentUser.can('append') %}<option value="append">{{ "Append data"|t }}</option>{% endif %}
+                                        {% if currentUser.can('replace') %}<option value="replace">{{ "Replace data"|t }}</option>{% endif %}
+                                        {% if currentUser.can('delete') %}<option value="delete">{{ "Delete data"|t }}</option>{% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="importFile">
+                    <td>
+                        <div class="field">
+                            <div class="heading">
+                                <label>{{ "File"|t }}</label>
+                                <div class="instructions">
+                                    <p>{{ "Choose the file you want to import.<br />Valid file formats: CSV"|t|raw }}</p>                
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="input">
+                                <input type="file" name="file">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="importEmail">
+                    <td>
+                        <div class="field">
+                            <div class="heading">
+                                <label>{{ "Send e-mail notification"|t }}</label>
+                                <div class="instructions">
+                                    <p>{{ "Send an e-mail summary when the import process is completed."|t }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="input">
+                                <input type="hidden" name="import[email]" value="0">
+                                <input type="checkbox" name="import[email]" value="1" id="email" />
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="importBackup">
+                    <td>
+                        <div class="field">
+                            <div class="heading">
+                                <label>{{ "Backup Database"|t }}</label>
+                                <div class="instructions">
+                                    <p>{{ "Backup database before importing"|t }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="input">
+                                <input type="hidden" name="import[backup]" value="0">
+                                <input type="checkbox" name="import[backup]" value="1" id="backup" disabled />
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Next'|t }}"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </form>
 {% endset %}
