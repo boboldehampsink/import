@@ -388,6 +388,9 @@ class ImportService extends BaseApplicationComponent
                     // Parse as number
                     $data = LocalizationHelper::normalizeNumber($data);
                     
+                    // Parse as float
+                    $data = floatval($data);
+                                        
                     break;
                     
                 case ImportModel::FieldTypeDate:
