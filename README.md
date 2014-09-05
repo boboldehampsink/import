@@ -47,7 +47,7 @@ Changelog
  - Added the ability to delete import history
  - Parse numbers while respecting locales
  - Added Date FieldType parsing
- - Show field handle that gave the error (if any)
+ - Smoother error handling
  - Changed the "registerImportFinish" hook to "onImportFinish" event
  - Improved UI
 
