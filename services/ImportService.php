@@ -68,7 +68,7 @@ class ImportService extends BaseApplicationComponent
                         
             // Set up criteria model for matching        
             foreach($settings['map'] as $key => $value) {
-                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && $settings['unique'][$key] == 1) {
+                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1) {
                     $criteria->$settings['map'][$key] = $fields[$value];
                 }
             } 
@@ -91,7 +91,7 @@ class ImportService extends BaseApplicationComponent
                     if($event->proceed) {
                                 
                         // Do it
-                        craft()->elements->deleteElementById($elementIds);
+                        craft()->$service->delete($elementIds);
                         
                     }
                     

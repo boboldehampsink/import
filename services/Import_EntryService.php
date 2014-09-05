@@ -49,6 +49,14 @@ class Import_EntryService extends BaseApplicationComponent
     
     }
     
+    public function delete($ids)
+    {
+    
+        // Delete entry
+        craft()->entries->deleteEntry($ids);
+    
+    }
+    
     public function save(&$element, $settings)
     {
         

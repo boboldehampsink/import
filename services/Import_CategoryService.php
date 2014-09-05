@@ -38,6 +38,14 @@ class Import_CategoryService extends BaseApplicationComponent
     
     }
     
+    public function delete($ids)
+    {
+    
+        // Delete categories
+        craft()->categories->deleteCategory($ids);
+    
+    }
+    
     public function save(&$element, $settings)
     {
         
