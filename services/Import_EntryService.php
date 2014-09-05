@@ -64,7 +64,7 @@ class Import_EntryService extends BaseApplicationComponent
         if(craft()->entries->saveEntry($element)) {
         
             // Log entry id's when successful
-            craft()->import_history->version($settings->history, $entry->id);
+            craft()->import_history->version($settings['history'], $element->id);
             
             return true;
             
