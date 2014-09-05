@@ -87,10 +87,10 @@
                     <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
                 </td>
                 <td data-title="{{ 'Revert'|t }}">
-                    {% if item.status == 'finished' and (item.type == 'Entry' or item.type is empty)  %}
+                    {% if item.status == 'finished' and (item.type == 'Entry' or item.type is empty) and item.behavior != 'delete' %}
                         <a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>
                     {% else %}
-                        <a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "Reverting is not available for this type"|t }}')">{{ 'Revert'|t }}</a>
+                        <a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "Reverting is not available for this type or behavior"|t }}')">{{ 'Revert'|t }}</a>
                     {% endif %}
                 </td>
                 <td data-title="{{ 'Download'|t }}">
