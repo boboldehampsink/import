@@ -49,11 +49,11 @@ class Import_EntryService extends BaseApplicationComponent
     
     }
     
-    public function delete($ids)
+    public function delete($elements)
     {
     
         // Delete entry
-        craft()->entries->deleteEntry($ids);
+        craft()->entries->deleteEntry($elements);
     
     }
     
