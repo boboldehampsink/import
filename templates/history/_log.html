@@ -27,7 +27,7 @@
         {% for line, errors in craft.import.log(historyId) %}
             <tr>
                 <td data-title="{{ 'Line'|t }}">{{ line }}</td>
-                <td data-title="{{ 'Errors'|t }}">{% for error in errors %}{{ error | join(', ') }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+                <td data-title="{{ 'Errors'|t }}">{% for field, error in errors %}{{ field|capitalize }}: {{ error | join(', ') }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
             </tr>
         {% endfor %}
         </tbody>
