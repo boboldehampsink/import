@@ -31,6 +31,7 @@ class ImportModel extends BaseModel
     const FieldTypeUsers      = 'Users';
     const FieldTypeRichText   = 'RichText';
     const FieldTypeNumber     = 'Number';
+    const FieldTypeDate       = 'Date';
     
     // Delimiters
     const DelimiterSemicolon = ';';

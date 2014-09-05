@@ -389,6 +389,16 @@ class ImportService extends BaseApplicationComponent
                     $data = LocalizationHelper::normalizeNumber($data);
                     
                     break;
+                    
+                case ImportModel::FieldTypeDate:
+                
+                    // Fresh up data
+                    $data = trim($data);
+                    
+                    // Parse date from string
+                    $data = DateTime::createFromString($data, craft()->timezone);
+                    
+                    break;
             
             }
         
