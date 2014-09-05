@@ -45,6 +45,7 @@ Changelog
  - Added the ability to import Users and Categories
  - Added the ability to download the originally uploaded file
  - Added the ability to delete import history
+ - Parse numbers while respecting locales
  - Changed the "registerImportFinish" hook to "onImportFinish" event
 
 ###0.7.3###
