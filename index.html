@@ -36,6 +36,7 @@
 <p>Features:</p>
 
 <ul>
+<li>Import Entries, Users and Categories</li>
 <li>Map CSV columns onto Fields</li>
 <li>Append, replace or delete data
 
@@ -44,20 +45,23 @@
 </ul>
 </li>
 <li>Has a hook "registerImportOperation" to parse special FieldType inputs if you want.</li>
-<li>Has a hook "registerImportFinish" to run a custom function after finishing.</li>
+<li>Has events "onImportFinish" and "onBeforeImportDelete" 
+
+<ul>
+<li>These will notify you when the import finishes or wants to delete an element</li>
+</ul>
+</li>
 <li>Uses the Task service to import while you work on.</li>
 <li>Automatically detects CSV delimiters</li>
 <li>Will connect Entries (also Structures), Users and Assets by searching for them</li>
 <li>Will send a summary email when the task if finished</li>
 <li>View your import history</li>
 <li>Ability to revert imports</li>
-</ul><p>Todo:</p>
+</ul><p>Roadmap:</p>
 
 <ul>
-<li>Import all ElementTypes (currently only Entries)</li>
-<li>Support JSON and XML</li>
-<li>Import a fixed value in absence of data</li>
-<li>More info in the import summary mail</li>
+<li>Import more ElementTypes (Tags, Globals, Assets?) (0.8)</li>
+<li>Support JSON and XML (0.9)</li>
 </ul><p>Important:
 The plugin's folder should be named "import"</p>
 
@@ -80,6 +84,23 @@ The plugin's folder should be named "import"</p>
 <a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h1>
 
 <h3>
+<a name="080" class="anchor" href="#080"><span class="octicon octicon-link"></span></a>0.8.0</h3>
+
+<ul>
+<li>Added the ability to import Users and Categories</li>
+<li>Added the ability to download the originally uploaded file</li>
+<li>Added the ability to delete import history</li>
+<li>Parse numbers while respecting locales</li>
+<li>Added Date FieldType parsing</li>
+<li>Smoother error handling</li>
+<li>Changed the "registerImportFinish" hook to "onImportFinish" event</li>
+<li>Improved UI</li>
+</ul><h3>
+<a name="073" class="anchor" href="#073"><span class="octicon octicon-link"></span></a>0.7.3</h3>
+
+<ul>
+<li>Fixed a bug that led to not importing data and not failing import</li>
+</ul><h3>
 <a name="072" class="anchor" href="#072"><span class="octicon octicon-link"></span></a>0.7.2</h3>
 
 <ul>
