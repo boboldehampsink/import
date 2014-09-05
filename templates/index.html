@@ -41,7 +41,7 @@
                                 <div class="select">
                                     <select name="import[type]" id="types">
                                     {% for elementType in elementTypes %}
-                                        <option value="{{ elementType }}">{{ elementType }}</option>
+                                        <option value="{{ elementType }}">{{ elementType|t }}</option>
                                     {% endfor %}
                                     </select>
                                 </div>
