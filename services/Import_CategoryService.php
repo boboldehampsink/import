@@ -42,7 +42,7 @@ class Import_CategoryService extends BaseApplicationComponent
     {
     
         // Delete categories
-        craft()->categories->deleteCategory($elements);
+        return craft()->categories->deleteCategory($elements);
     
     }
     

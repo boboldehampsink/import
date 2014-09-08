@@ -53,7 +53,7 @@ class Import_EntryService extends BaseApplicationComponent
     {
     
         // Delete entry
-        craft()->entries->deleteEntry($elements);
+        return craft()->entries->deleteEntry($elements);
     
     }
     

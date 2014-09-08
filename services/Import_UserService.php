@@ -48,12 +48,20 @@ class Import_UserService extends BaseApplicationComponent
     public function delete($elements)
     {
     
+        $return = true;
+    
         // Delete users
         foreach($elements as $element) {
         
-            craft()->users->deleteUser($element);
+            if(!craft()->users->deleteUser($element)) {
+            
+                $return = false;
+            
+            }
             
         }
+        
+        return $return;
     
     }
     
