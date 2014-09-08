@@ -89,14 +89,22 @@ class ImportService extends BaseApplicationComponent
                     
                     // Give event the chance to blow off deletion
                     if($event->proceed) {
+                    
+                        try {
                                 
-                        // Do it
-                        if(!craft()->$service->delete($elements)) {
+                            // Do it
+                            if(!craft()->$service->delete($elements)) {
+                            
+                                // Log errors when unsuccessful
+                                $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));            
+                                    
+                            }
+                            
+                        } catch(Exception $e) {
                         
-                            // Log errors when unsuccessful
-                            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));            
-                            return;
-                                
+                            // Something went terribly wrong, assume its only this row
+                            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+                        
                         }
                         
                     }
