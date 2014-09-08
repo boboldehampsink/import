@@ -13,7 +13,7 @@ Features:
    - These will notify you when the import finishes or wants to delete an element
  - Uses the Task service to import while you work on.
  - Automatically detects CSV delimiters
- - Will connect Entries (also Structures), Users and Assets by searching for them
+ - Will connect Entries (also Structures), Categories, Users and Assets by searching for them
  - Will send a summary email when the task if finished
  - View your import history
  - Ability to revert imports
@@ -41,6 +41,9 @@ Map fields
 
 Changelog
 =================
+###0.8.1###
+ - Respect import order when connecting to entries, assets or users
+
 ###0.8.0###
  - Added the ability to import Users and Categories
  - Added the ability to download the originally uploaded file
