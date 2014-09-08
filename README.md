@@ -43,6 +43,7 @@ Changelog
 =================
 ###0.8.1###
  - Respect import order when connecting to entries, assets or users
+ - Report when deleting fails
 
 ###0.8.0###
  - Added the ability to import Users and Categories
