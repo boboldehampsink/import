@@ -248,12 +248,22 @@ class ImportService extends BaseApplicationComponent
                         $criteria = craft()->elements->getCriteria(ElementType::Entry);
                         $criteria->sectionId = $sectionIds;
  
-                        // "Loose" matching for easier connecting
-                        $data = implode(' OR ', ArrayHelper::stringToArray($data));
-                        $criteria->search = $data;
+                        // Get search strings
+                        $search = ArrayHelper::stringToArray($data);
                         
-                        // Return the found id's for connecting
-                        $data = $criteria->ids();
+                        // Ability to import multiple Assets at once
+                        $data = array();
+                        
+                        // Loop through keywords
+                        foreach($search as $query) {
+                            
+                            // Search
+                            $criteria->search = $query;
+                            
+                            // Add to data
+                            $data = array_merge($data, $criteria->ids());
+                            
+                        }
                     
                     } else {
                     
@@ -322,12 +332,22 @@ class ImportService extends BaseApplicationComponent
                         $criteria = craft()->elements->getCriteria(ElementType::Asset);
                         $criteria->sourceId = $sourceIds;
                         
+                        // Get search strings
+                        $search = ArrayHelper::stringToArray($data);
+                        
                         // Ability to import multiple Assets at once
-                        $data = implode(' OR ', ArrayHelper::stringToArray($data));
-                        $criteria->search = $data;
-                                                
-                        // Return the found id's for connecting
-                        $data = $criteria->ids();
+                        $data = array();
+                        
+                        // Loop through keywords
+                        foreach($search as $query) {
+                            
+                            // Search
+                            $criteria->search = $query;
+                            
+                            // Add to data
+                            $data = array_merge($data, $criteria->ids());
+                            
+                        }
                         
                     } else {
                     
@@ -349,12 +369,22 @@ class ImportService extends BaseApplicationComponent
                         // Find matching element        
                         $criteria = craft()->elements->getCriteria(ElementType::User);
                         
-                        // Ability to import multiple Users at once
-                        $data = implode(' OR ', ArrayHelper::stringToArray($data));
-                        $criteria->search = $data;
-                                                
-                        // Return the found id's for connecting
-                        $data = $criteria->ids();
+                        // Get search strings
+                        $search = ArrayHelper::stringToArray($data);
+                        
+                        // Ability to import multiple Assets at once
+                        $data = array();
+                        
+                        // Loop through keywords
+                        foreach($search as $query) {
+                            
+                            // Search
+                            $criteria->search = $query;
+                            
+                            // Add to data
+                            $data = array_merge($data, $criteria->ids());
+                            
+                        }
                         
                     } else {
                     
