@@ -19,7 +19,8 @@ class ImportTest extends BaseTest
             '\\Craft\\Import_LogRecord'      => '/../records/Import_LogRecord.php',
             '\\Craft\\Import_HistoryService' => '/../services/Import_HistoryService.php',
             '\\Craft\\ImportService'         => '/../services/ImportService.php',
-            '\\Craft\\Import_EntryService'   => '/../services/Import_EntryService.php'
+            '\\Craft\\Import_EntryService'   => '/../services/Import_EntryService.php',
+            '\\Craft\\Import_EntryModel'     => '/../models/Import_EntryModel.php'
         );
 
         // Inject them
