@@ -504,18 +504,19 @@ class ImportService extends BaseApplicationComponent
         $slug = preg_replace('/<(.*?)>/u', '', $slug);
         
         // Remove inner-word punctuation.
-        $slug = preg_replace('/[\'"‘’“”]/u', '', $slug);
-        
-        // Make it lowercase
-        $slug = mb_strtolower($slug, 'UTF-8');
-        
-        // Get the "words".  Split on anything that is not a unicode letter or number.
-        // Periods are OK too.
-        // Forward slashes are OK too.
-        preg_match_all('/[\p{L}\p{N}\.\/]+/u', $slug, $words);
+        $slug = preg_replace('/[\'"‘’“”\[\]\(\)\{\}:]/u', '', $slug);
+
+        if (craft()->config->get('allowUppercaseInSlug') === false)
+        {
+            // Make it lowercase
+            $slug = StringHelper::toLowerCase($slug, 'UTF-8');
+        }
+
+        // Get the "words".  Split on anything that is not a unicode letter or number. Periods, underscores, hyphens and forward slashes get a pass.
+        preg_match_all('/[\p{L}\p{N}\.\/_-]+/u', $slug, $words);
         $words = ArrayHelper::filterEmptyStringsFromArray($words[0]);
-        $slug = implode('-', $words);
-        
+        $slug = implode(craft()->config->get('slugWordSeparator'), $words);
+
         return $slug;
         
     }
