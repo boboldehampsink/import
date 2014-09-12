@@ -18,7 +18,9 @@ class ImportTest extends BaseTest
             '\\Craft\\Import_HistoryRecord'  => '/../records/Import_HistoryRecord.php',
             '\\Craft\\Import_LogRecord'      => '/../records/Import_LogRecord.php',
             '\\Craft\\Import_HistoryService' => '/../services/Import_HistoryService.php',
-            '\\Craft\\ImportService'         => '/../services/ImportService.php'
+            '\\Craft\\ImportService'         => '/../services/ImportService.php',
+            '\\Craft\\Import_EntryService'   => '/../services/Import_EntryService.php',
+            '\\Craft\\Import_EntryModel'     => '/../models/Import_EntryModel.php'
         );
 
         // Inject them
@@ -31,6 +33,7 @@ class ImportTest extends BaseTest
         // Construct them
         $this->importHistoryService = new Import_HistoryService;
         $this->importService        = new ImportService;
+        $this->importEntryService   = new Import_EntryService;
     
     } 
     
@@ -57,7 +60,7 @@ class ImportTest extends BaseTest
     {
     
         $fields = array('title' => 'test');
-        $entry = $this->importService->prepForElementModel($fields, new EntryModel());
+        $entry = $this->importEntryService->prepForElementModel($fields, new EntryModel());
         
         $this->assertTrue($entry instanceOf EntryModel);
         
