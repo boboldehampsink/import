@@ -8,18 +8,26 @@ class Import_UserService extends BaseApplicationComponent
     public function getGroups()
     {
     
-        // Get usergroups
-        $groups = craft()->userGroups->getAllGroups();
-        
-        // Return when groups found
-        if(count($groups)) {
-        
-            return $groups;
+        // Check if usergroups are allowed in this installation
+        if(isset(craft()->userGroups)) {
+    
+            // Get usergroups
+            $groups = craft()->userGroups->getAllGroups();
             
+            // Return when groups found
+            if(count($groups)) {
+            
+                return $groups;
+                
+            }
+        
+            // Still return true when no groups found
+            return true;
+        
         }
         
-        // Still return true when no groups found
-        return true;
+        // Else, dont proceed with the user element
+        return false;
     
     }
 

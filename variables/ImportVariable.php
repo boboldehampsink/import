@@ -10,7 +10,7 @@ class ImportVariable
         // Get from right elementType
         $service = 'import_' . strtolower($elementType);
         
-        // Check if elementtyp can be imported
+        // Check if elementtype can be imported
         if(isset(craft()->$service)) {
     
             // Return "groups" (section, groups, etc.)
