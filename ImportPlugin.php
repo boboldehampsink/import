@@ -11,7 +11,7 @@ class ImportPlugin extends BasePlugin
 
     function getVersion()
     {
-        return '0.8.1';
+        return '0.8.2';
     }
 
     function getDeveloper()

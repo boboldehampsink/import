@@ -41,6 +41,11 @@ Map fields
 
 Changelog
 =================
+###0.8.2###
+ - Updated the slugify function to match the latest Craft createSlug function
+ - Check if the installation supports usergroups
+ - Fixed phpunit unit testing
+
 ###0.8.1###
  - Respect import order when connecting to entries, assets or users
  - Report when deleting fails
