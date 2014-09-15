@@ -241,10 +241,13 @@ class ImportService extends BaseApplicationComponent
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
+                    
+                        // Get field settings
+                        $settings = $field->getFieldType()->getSettings();
                 
                         // Get source id's for connecting
                         $sectionIds = array();
-                        $sources = $field->getFieldType()->getSettings()->sources;
+                        $sources = $settings->sources;
                         if(is_array($sources)) {
                             foreach($sources as $source) {
                                 list($type, $id) = explode(':', $source);
@@ -255,6 +258,7 @@ class ImportService extends BaseApplicationComponent
                         // Find matching element in sections       
                         $criteria = craft()->elements->getCriteria(ElementType::Entry);
                         $criteria->sectionId = $sectionIds;
+                        $criteria->limit = $settings->limit;
  
                         // Get search strings
                         $search = ArrayHelper::stringToArray($data);
@@ -289,14 +293,17 @@ class ImportService extends BaseApplicationComponent
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
-                                                                        
+                    
+                        // Get field settings
+                        $settings = $field->getFieldType()->getSettings();
+                                                                                                
                         // Get source id
-                        $source = $field->getFieldType()->getSettings()->source;
+                        $source = $settings->source;
                         list($type, $id) = explode(':', $source);
                         
                         // Get category data
                         $category = new CategoryModel();
-                        $category->groupId = $id;                    
+                        $category->groupId = $id;                  
                     
                         // This we append before the slugified path
                         $categoryUrl = str_replace('/{slug}', '/', $category->getUrlFormat());
@@ -305,6 +312,7 @@ class ImportService extends BaseApplicationComponent
                         $criteria = craft()->elements->getCriteria(ElementType::Category);
                         $criteria->groupId = $id;
                         $criteria->uri = $categoryUrl . $this->_slugify($data);
+                        $criteria->limit = $settings->limit;
                         
                         // Return the found id's for connecting
                         $data = $criteria->ids();
@@ -325,10 +333,13 @@ class ImportService extends BaseApplicationComponent
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
-                
+                    
+                        // Get field settings
+                        $settings = $field->getFieldType()->getSettings();
+                                        
                         // Get source id's for connecting
                         $sourceIds = array();
-                        $sources = $field->getFieldType()->getSettings()->sources;
+                        $sources = $settings->sources;
                         if(is_array($sources)) {
                             foreach($sources as $source) {
                                 list($type, $id) = explode(':', $source);
@@ -339,6 +350,7 @@ class ImportService extends BaseApplicationComponent
                         // Find matching element in sources    
                         $criteria = craft()->elements->getCriteria(ElementType::Asset);
                         $criteria->sourceId = $sourceIds;
+                        $criteria->limit = $settings->limit;
                         
                         // Get search strings
                         $search = ArrayHelper::stringToArray($data);
@@ -373,9 +385,24 @@ class ImportService extends BaseApplicationComponent
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
+                    
+                        // Get field settings
+                        $settings = $field->getFieldType()->getSettings();
                                 
-                        // Find matching element        
-                        $criteria = craft()->elements->getCriteria(ElementType::User);
+                        // Get group id's for connecting
+                        $groupIds = array();
+                        $sources = $settings->sources;
+                        if(is_array($sources)) {
+                            foreach($sources as $source) {
+                                list($type, $id) = explode(':', $source);
+                                $groupIds[] = $id;
+                            }
+                        }
+                                    
+                        // Find matching element in sources    
+                        $criteria = craft()->elements->getCriteria(ElementType::Asset);
+                        $criteria->groupId = $groupIds;
+                        $criteria->limit = $settings->limit;
                         
                         // Get search strings
                         $search = ArrayHelper::stringToArray($data);
