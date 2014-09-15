@@ -41,6 +41,9 @@ Map fields
 
 Changelog
 =================
+###0.8.3###
+ - Respect element connect limits
+
 ###0.8.2###
  - Updated the slugify function to match the latest Craft createSlug function
  - Check if the installation supports usergroups
