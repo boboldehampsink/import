@@ -43,6 +43,7 @@ Changelog
 =================
 ###0.8.4###
  - Fixed handling element fields for category element
+ - Make sure there's always a valid criterium when matching
 
 ###0.8.3###
  - Respect element connect limits
