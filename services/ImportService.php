@@ -67,14 +67,15 @@ class ImportService extends BaseApplicationComponent
             $criteria = craft()->$service->setCriteria($settings);
                         
             // Set up criteria model for matching        
+            $cmodel = array();    
             foreach($settings['map'] as $key => $value) {
-                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1) {
-                    $criteria->$settings['map'][$key] = $fields[$value];
+                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && !empty($fields[$value])) {
+                    $criteria->$settings['map'][$key] = $cmodel[] = $fields[$value];
                 }
             } 
             
             // If there's a match...
-            if($criteria->total()) {
+            if(count($cmodel) && $criteria->count()) {
                 
                 // If we're deleting
                 if($settings['behavior'] == ImportModel::BehaviorDelete) {
