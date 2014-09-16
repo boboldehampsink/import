@@ -41,6 +41,9 @@ Map fields
 
 Changelog
 =================
+###0.8.4###
+ - Fixed handling element fields for category element
+
 ###0.8.3###
  - Respect element connect limits
 
