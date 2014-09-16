@@ -57,6 +57,55 @@ class Import_CategoryService extends BaseApplicationComponent
     // Prepare reserved ElementModel values
     public function prepForElementModel(&$fields, CategoryModel $entry) 
     {
+    
+        // Set slug
+        $slug = Import_EntryModel::HandleSlug;
+        if(isset($fields[$slug])) {
+            $entry->$slug = ElementHelper::createSlug($fields[$slug]);
+            unset($fields[$slug]);
+        }
+    
+        // Set title
+        $title = Import_EntryModel::HandleTitle;
+        if(isset($fields[$title])) {
+            $entry->getContent()->$title = $fields[$title];
+            unset($fields[$title]);
+        }
+        
+        // Set parent id
+        $parent = Import_EntryModel::HandleParent;
+        if(isset($fields[$parent])) {
+           
+           // Get data
+           $data = $fields[$parent];
+            
+            // Fresh up $data
+           $data = str_replace("\n", "", $data);
+           $data = str_replace("\r", "", $data);
+           $data = trim($data);
+           
+           // Don't connect empty fields
+           if(!empty($data)) {
+         
+               // Find matching element       
+               $criteria = craft()->elements->getCriteria(ElementType::Category);
+               $criteria->groupId = $entry->groupId;
+
+               // Exact match
+               $criteria->search = '"'.$data.'"';
+               
+               // Return the first found id for connecting
+               if($criteria->total()) {
+               
+                   $entry->$parent = $criteria->first()->id;
+                   
+               }
+           
+           }
+           
+           unset($fields[$parent]);
+        
+        }
         
         // Return entry
         return $entry;

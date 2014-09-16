@@ -152,6 +152,8 @@ class Import_EntryService extends BaseApplicationComponent
                }
            
            }
+           
+           unset($fields[$parent]);
         
         }
         
