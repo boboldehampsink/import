@@ -10,27 +10,8 @@
 {% set selectedTab = 'history' %}
 
 {% if craft.request.getParam('task') %}
-
-    {% set javascript %}
-    $(function() {
-        setTimeout(function() {
-            if(!$('#taskicon').length) {
-                window.location.reload();
-            } else {
-                $('#taskicon').trigger('click');
-                var taskCheck = setInterval(function() {
-                    if((Craft.cp.runningTaskInfo && Craft.cp.runningTaskInfo.id != {{ craft.request.getParam('task') }}) || Craft.cp.runningTaskInfo === null) {
-                        clearInterval(taskCheck);
-                        window.location.href = 'history';
-                    }
-                }, 500);
-            }
-        }, 500);
-    });
-    {% endset %}
-    
-    {% includeJs javascript %}
-
+    {% includeJsResource 'import/js/task.js' %}
+    {% includeJs 'checkForTask(' ~ craft.request.getParam('task') ~ ', \'' ~ craft.import.history[0].file ~ '\');' %}
 {% endif %}
 
 {% set content %}
