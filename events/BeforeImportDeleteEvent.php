@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class ImportDeleteEvent extends Event 
+class BeforeImportDeleteEvent extends Event 
 {
 
     // Whether to proceed after this event is raised

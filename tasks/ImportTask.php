@@ -91,7 +91,7 @@ class ImportTask extends BaseTask
     // Fires an "onImportFinish" event
     public function onImportFinish(ImportFinishEvent $event)
     {
-        $this->raiseEvent('onImportFinish', $event);
+        craft()->import->onImportFinish($event);
     }
 
 }
