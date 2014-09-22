@@ -25,13 +25,17 @@ class ImportModel extends BaseModel
     const StatusReverted = 'reverted';
     
     // Fieldtypes
-    const FieldTypeEntries    = 'Entries';
-    const FieldTypeCategories = 'Categories';
-    const FieldTypeAssets     = 'Assets';
-    const FieldTypeUsers      = 'Users';
-    const FieldTypeRichText   = 'RichText';
-    const FieldTypeNumber     = 'Number';
-    const FieldTypeDate       = 'Date';
+    const FieldTypeEntries      = 'Entries';
+    const FieldTypeCategories   = 'Categories';
+    const FieldTypeAssets       = 'Assets';
+    const FieldTypeUsers        = 'Users';
+    const FieldTypeRichText     = 'RichText';
+    const FieldTypeNumber       = 'Number';
+    const FieldTypeDate         = 'Date';
+    const FieldTypeCheckboxes   = 'Checkboxes';
+    const FieldTypeDropdown     = 'Dropdown';
+    const FieldTypeMultiSelect  = 'MultiSelect';
+    const FieldTypeRadioButtons = 'RadioButtons';
     
     // Delimiters
     const DelimiterSemicolon = ';';

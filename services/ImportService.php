@@ -453,6 +453,18 @@ class ImportService extends BaseApplicationComponent
                     $data = DateTime::createFromString($data, craft()->timezone);
                     
                     break;
+                    
+                case ImportModel::FieldTypeCheckboxes:
+                case ImportModel::FieldTypeDropdown:
+                case ImportModel::FieldTypeMultiSelect:
+                case ImportModel::FieldTypeRadioButtons:
+                    
+                    // Fresh up data
+                    $data = trim($data);
+                    
+                    $data = ArrayHelper::stringToArray($data);
+                    
+                    break;
             
             }
         
