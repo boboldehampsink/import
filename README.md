@@ -41,6 +41,11 @@ Map fields
 
 Changelog
 =================
+###0.8.5###
+ - Added handling of option-based fieldtypes
+ - Fixed a bug with the onImportFinish event
+ - Improved the task checker
+
 ###0.8.4###
  - Fixed handling element fields for category element
  - Make sure there's always a valid criterium when matching
