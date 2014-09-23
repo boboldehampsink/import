@@ -41,6 +41,9 @@ Map fields
 
 Changelog
 =================
+###0.8.6###
+ - Fixed parent matching
+
 ###0.8.5###
  - Added handling of option-based fieldtypes
  - Fixed a bug with the onImportFinish event
