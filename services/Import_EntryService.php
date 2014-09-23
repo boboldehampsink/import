@@ -147,7 +147,7 @@ class Import_EntryService extends BaseApplicationComponent
                // Return the first found element for connecting
                if($criteria->total()) {
                
-                   $entry->$parent = $criteria->first();
+                   $entry->$parent = $criteria->first()->id;
                    
                }
            

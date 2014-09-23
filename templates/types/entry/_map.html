@@ -28,7 +28,7 @@
                     {% if loop.first %}
                             <option value="title"{% if column|lower == 'title' or column|lower == 'name' or column|lower == entrytype.titleLabel|lower %} selected{% endif %}>{{ entrytype.titleLabel }} *</option>
                             <option value="slug"{% if column|lower == 'slug' %} selected{% endif %}>{{ "Slug"|t }}</option>
-                            <option value="parent"{% if column|lower == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
+                            <option value="parentId"{% if column|lower == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
                             <option value="authorId"{% if column|lower == 'author' or column|lower == 'admin' %} selected{% endif %}>{{ "Author"|t }}</option>
                             <option value="postDate"{% if column|lower == 'postdate' or column|lower == 'date' %} selected{% endif %}>{{ "Post Date"|t }}</option>
                             <option value="expiryDate"{% if column|lower == 'expirydate' or column|lower == 'enddate' %} selected{% endif %}>{{ "Expiry Date"|t }}</option>

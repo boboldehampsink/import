@@ -11,6 +11,6 @@ class Import_EntryModel extends BaseModel
     const HandleExpiryDate   = 'expiryDate';
     const HandleEnabled      = 'enabled';
     const HandleSlug         = 'slug';
-    const HandleParent       = 'parent';
+    const HandleParent       = 'parentId';
     
 }
