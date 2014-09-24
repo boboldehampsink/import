@@ -42,6 +42,7 @@ return array(
     'Don\'t import' => 'Niet importeren',
     'Criterium' => 'Criterium',
     'Criterium for finding existing data.' => 'Criterium om bestaande gegevens te vinden.',
+    'Ancestors' => 'Bovenliggende items',
     'Import process started.' => 'Import proces gestart.',
     'Preparing import process' => 'Importeer proces voorbereiden',
     'Importing' => 'Bezig met importeren van',
