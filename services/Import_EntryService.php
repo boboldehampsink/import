@@ -122,8 +122,10 @@ class Import_EntryService extends BaseApplicationComponent
             unset($fields[$title]);
         }
         
-        // Set parent id
+        // Set parent or ancestors
         $parent = Import_ElementModel::HandleParent;
+        $ancestors = Import_ElementModel::HandleAncestors;
+                
         if(isset($fields[$parent])) {
            
            // Get data
@@ -154,6 +156,43 @@ class Import_EntryService extends BaseApplicationComponent
            }
            
            unset($fields[$parent]);
+        
+        } elseif(isset($fields[$ancestors])) {
+                   
+           // Get data
+           $data = $fields[$ancestors];
+            
+            // Fresh up $data
+           $data = str_replace("\n", "", $data);
+           $data = str_replace("\r", "", $data);
+           $data = trim($data);
+           
+           // Don't connect empty fields
+           if(!empty($data)) {
+         
+               // Get section data
+               $section = new SectionModel();
+               $section->id = $entry->sectionId;                  
+           
+               // This we append before the slugified path
+               $sectionUrl = str_replace('{slug}', '', $section->getUrlFormat());
+                                                   
+               // Find matching element by URI (dirty, not all structures have URI's)        
+               $criteria = craft()->elements->getCriteria(ElementType::Entry);
+               $criteria->sectionId = $entry->sectionId;
+               $criteria->uri = $sectionUrl . craft()->import->slugify($data);
+               $criteria->limit = 1;
+                              
+               // Return the first found element for connecting
+               if($criteria->total()) {
+               
+                   $entry->$parent = $criteria->first()->id;
+                   
+               }
+           
+           }
+           
+           unset($fields[$ancestors]);
         
         }
         

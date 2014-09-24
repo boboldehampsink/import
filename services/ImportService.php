@@ -307,12 +307,12 @@ class ImportService extends BaseApplicationComponent
                         $category->groupId = $id;                  
                     
                         // This we append before the slugified path
-                        $categoryUrl = str_replace('/{slug}', '/', $category->getUrlFormat());
+                        $categoryUrl = str_replace('{slug}', '', $category->getUrlFormat());
                                                             
                         // Find matching element by URI (dirty, not all categories have URI's)        
                         $criteria = craft()->elements->getCriteria(ElementType::Category);
                         $criteria->groupId = $id;
-                        $criteria->uri = $categoryUrl . $this->_slugify($data);
+                        $criteria->uri = $categoryUrl . $this->slugify($data);
                         $criteria->limit = $settings->limit;
                         
                         // Return the found id's for connecting
@@ -474,6 +474,32 @@ class ImportService extends BaseApplicationComponent
     
     }
     
+    // Function that (almost) mimics Craft's inner slugify process.
+    // But... we allow forward slashes to stay, so we can create full uri's.
+    public function slugify($slug) 
+    {
+    
+        // Remove HTML tags
+        $slug = preg_replace('/<(.*?)>/u', '', $slug);
+        
+        // Remove inner-word punctuation.
+        $slug = preg_replace('/[\'"‘’“”\[\]\(\)\{\}:]/u', '', $slug);
+
+        if (craft()->config->get('allowUppercaseInSlug') === false)
+        {
+            // Make it lowercase
+            $slug = StringHelper::toLowerCase($slug, 'UTF-8');
+        }
+
+        // Get the "words".  Split on anything that is not a unicode letter or number. Periods, underscores, hyphens and forward slashes get a pass.
+        preg_match_all('/[\p{L}\p{N}\.\/_-]+/u', $slug, $words);
+        $words = ArrayHelper::filterEmptyStringsFromArray($words[0]);
+        $slug = implode(craft()->config->get('slugWordSeparator'), $words);
+
+        return $slug;
+        
+    }
+    
     public function debug($settings, $history, $step)
     {
         
@@ -533,32 +559,6 @@ class ImportService extends BaseApplicationComponent
         // Return data array
         return $data;
     
-    }
-    
-    // Function that (almost) mimics Craft's inner slugify process.
-    // But... we allow forward slashes to stay, so we can create full uri's.
-    protected function _slugify($slug) 
-    {
-    
-        // Remove HTML tags
-        $slug = preg_replace('/<(.*?)>/u', '', $slug);
-        
-        // Remove inner-word punctuation.
-        $slug = preg_replace('/[\'"‘’“”\[\]\(\)\{\}:]/u', '', $slug);
-
-        if (craft()->config->get('allowUppercaseInSlug') === false)
-        {
-            // Make it lowercase
-            $slug = StringHelper::toLowerCase($slug, 'UTF-8');
-        }
-
-        // Get the "words".  Split on anything that is not a unicode letter or number. Periods, underscores, hyphens and forward slashes get a pass.
-        preg_match_all('/[\p{L}\p{N}\.\/_-]+/u', $slug, $words);
-        $words = ArrayHelper::filterEmptyStringsFromArray($words[0]);
-        $slug = implode(craft()->config->get('slugWordSeparator'), $words);
-
-        return $slug;
-        
     }
     
     // Fires an "onBeforeImportDelete" event
