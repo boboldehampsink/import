@@ -70,10 +70,16 @@ class ImportService extends BaseApplicationComponent
             $cmodel = array();    
             foreach($settings['map'] as $key => $value) {
                 if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && !empty($fields[$value])) {
-                    $criteria->$settings['map'][$key] = $cmodel[] = $fields[$value];
+                    $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
                 }
             } 
             
+            // Workaround for title matching
+            if(!is_null($criteria->title)) {
+                $criteria->search = Import_ElementModel::HandleTitle.':"'.$criteria->title.'"';
+                $criteria->title = null;
+            }
+                        
             // If there's a match...
             if(count($cmodel) && $criteria->count()) {
                 
