@@ -41,6 +41,9 @@ Map fields
 
 Changelog
 =================
+###0.8.7###
+ - Added ancestor matching (by uri)
+
 ###0.8.6###
  - Fixed parent matching
 
