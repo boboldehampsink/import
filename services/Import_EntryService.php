@@ -44,6 +44,7 @@ class Import_EntryService extends BaseApplicationComponent
     
         // Look in same section when replacing
         $criteria->sectionId = $settings['elementvars']['section'];
+        $criteria->type = $settings['elementvars']['entrytype'];
     
         return $criteria;
     
