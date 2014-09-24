@@ -59,21 +59,21 @@ class Import_CategoryService extends BaseApplicationComponent
     {
     
         // Set slug
-        $slug = Import_EntryModel::HandleSlug;
+        $slug = Import_ElementModel::HandleSlug;
         if(isset($fields[$slug])) {
             $entry->$slug = ElementHelper::createSlug($fields[$slug]);
             unset($fields[$slug]);
         }
     
         // Set title
-        $title = Import_EntryModel::HandleTitle;
+        $title = Import_ElementModel::HandleTitle;
         if(isset($fields[$title])) {
             $entry->getContent()->$title = $fields[$title];
             unset($fields[$title]);
         }
         
         // Set parent id
-        $parent = Import_EntryModel::HandleParent;
+        $parent = Import_ElementModel::HandleParent;
         if(isset($fields[$parent])) {
            
            // Get data

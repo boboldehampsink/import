@@ -79,7 +79,7 @@ class Import_EntryService extends BaseApplicationComponent
     {
         
         // Set author
-        $author = Import_EntryModel::HandleAuthor;
+        $author = Import_ElementModel::HandleAuthor;
         if(isset($fields[$author])) {
             $entry->$author = intval($fields[$author]);
             unset($fields[$author]);
@@ -88,42 +88,42 @@ class Import_EntryService extends BaseApplicationComponent
         }
         
         // Set slug
-        $slug = Import_EntryModel::HandleSlug;
+        $slug = Import_ElementModel::HandleSlug;
         if(isset($fields[$slug])) {
             $entry->$slug = ElementHelper::createSlug($fields[$slug]);
             unset($fields[$slug]);
         }
         
         // Set postdate
-        $postDate = Import_EntryModel::HandlePostDate;
+        $postDate = Import_ElementModel::HandlePostDate;
         if(isset($fields[$postDate])) {
             $entry->$postDate = DateTime::createFromString($fields[$postDate], craft()->timezone);
             unset($fields[$postDate]);
         }
         
         // Set expiry date
-        $expiryDate = Import_EntryModel::HandleExpiryDate;
+        $expiryDate = Import_ElementModel::HandleExpiryDate;
         if(isset($fields[$expiryDate])) {
             $entry->$expiryDate = DateTime::createFromString($fields[$expiryDate], craft()->timezone);
             unset($fields[$expiryDate]);
         }
         
         // Set enabled
-        $enabled = Import_EntryModel::HandleEnabled;
+        $enabled = Import_ElementModel::HandleEnabled;
         if(isset($fields[$enabled])) {
             $entry->$enabled = (bool)$fields[$enabled];
             unset($fields[$enabled]);
         }
         
         // Set title
-        $title = Import_EntryModel::HandleTitle;
+        $title = Import_ElementModel::HandleTitle;
         if(isset($fields[$title])) {
             $entry->getContent()->$title = $fields[$title];
             unset($fields[$title]);
         }
         
         // Set parent id
-        $parent = Import_EntryModel::HandleParent;
+        $parent = Import_ElementModel::HandleParent;
         if(isset($fields[$parent])) {
            
            // Get data
