@@ -43,6 +43,8 @@ Changelog
 =================
 ###0.8.7###
  - Added ancestor matching (by uri)
+ - Improved entry type matching
+ - Added a workaround for title matching
 
 ###0.8.6###
  - Fixed parent matching
