@@ -450,7 +450,7 @@ class ImportService extends BaseApplicationComponent
                     $data = trim($data);
                     
                     // Parse date from string
-                    $data = DateTime::createFromString($data, craft()->timezone);
+                    $data = DateTimeHelper::formatTimeForDb(DateTimeHelper::fromString($data, craft()->timezone));
                     
                     break;
                     
