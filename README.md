@@ -41,6 +41,10 @@ Map fields
 
 Changelog
 =================
+###0.8.8###
+ - Remove title workaround, the fix is to escape comma's
+ - Better date parsing
+
 ###0.8.7###
  - Added ancestor matching (by uri)
  - Improved entry type matching
