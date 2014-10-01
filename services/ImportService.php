@@ -454,8 +454,33 @@ class ImportService extends BaseApplicationComponent
                     
                     break;
                     
-                case ImportModel::FieldTypeCheckboxes:
                 case ImportModel::FieldTypeDropdown:
+
+                    //get field settings
+                    $settings = $field->getFieldType()->getSettings();
+
+                    //get field options
+                    $options = $settings->getAttribute('options');
+
+                    // find matching option label
+                    $labelSelected = false;
+                    foreach($options as $option){
+
+                        if($labelSelected){
+                            continue;
+                        }
+
+                        if($data == $option['label']){
+                            $data = $option['value'];
+                            //stop looking after first match
+                            $labelSelected = true;
+                        }
+
+                    }
+
+                    break;
+
+                case ImportModel::FieldTypeCheckboxes:
                 case ImportModel::FieldTypeMultiSelect:
                 case ImportModel::FieldTypeRadioButtons:
                     
