@@ -454,6 +454,7 @@ class ImportService extends BaseApplicationComponent
                     
                     break;
                     
+                case ImportModel::FieldTypeRadioButtons:
                 case ImportModel::FieldTypeDropdown:
 
                     //get field settings
@@ -482,7 +483,6 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeCheckboxes:
                 case ImportModel::FieldTypeMultiSelect:
-                case ImportModel::FieldTypeRadioButtons:
                     
                     // Fresh up data
                     $data = trim($data);

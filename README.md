@@ -41,6 +41,9 @@ Map fields
 
 Changelog
 =================
+###0.8.9###
+ - Fixed errors when importing single-option fieldtype data (thanks to Richard Brown)
+
 ###0.8.8###
  - Remove title workaround, the fix is to escape comma's
  - Better date parsing
