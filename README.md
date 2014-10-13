@@ -41,6 +41,9 @@ Map fields
 
 Changelog
 =================
+###0.8.10###
+ - Fixed category structure importing
+
 ###0.8.9###
  - Fixed errors when importing single-option fieldtype data (thanks to Richard Brown)
 
