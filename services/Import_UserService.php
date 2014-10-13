@@ -35,9 +35,9 @@ class Import_UserService extends BaseApplicationComponent
     {
     
         // Set up new user model
-        $entry = new UserModel();
+        $element = new UserModel();
         
-        return $entry;    
+        return $element;    
     
     }
     
@@ -73,7 +73,73 @@ class Import_UserService extends BaseApplicationComponent
     
     }
     
-    public function save(&$element, $settings)
+    // Prepare reserved ElementModel values
+    public function prepForElementModel(&$fields, UserModel $element) 
+    {
+    
+        // Set username
+        $username = Import_ElementModel::HandleUsername;
+        if(isset($fields[$username])) {
+            $element->$username = $fields[$username];
+            unset($fields[$username]);
+        } elseif(isset($fields[$username])) {
+            $element->$username = $fields[$username];
+        }
+        
+        // Set photo
+        $photo = Import_ElementModel::HandlePhoto;
+        if(isset($fields[$photo])) {
+            $element->$photo = $fields[$photo];
+        }
+        
+        // Set firstname
+        $firstName = Import_ElementModel::HandleFirstname;
+        if(isset($fields[$firstName])) {
+            $element->$firstName = $fields[$firstName];
+            unset($fields[$firstName]);
+        }
+        
+        // Set lastname
+        $lastName = Import_ElementModel::HandleLastname;
+        if(isset($fields[$lastName])) {
+            $element->$lastName = $fields[$lastName];
+            unset($fields[$lastName]);
+        }
+        
+        // Set email
+        $email = Import_ElementModel::HandleEmail;
+        if(isset($fields[$email])) {
+            $element->$email = $fields[$email];
+            unset($fields[$email]);
+        }
+        
+        // Set status
+        $status = Import_ElementModel::HandleStatus;
+        if(isset($fields[$status])) {
+            $element->$status = $fields[$status];
+            unset($fields[$status]);
+        }
+        
+        // Set locale
+        $locale = Import_ElementModel::HandleLocale;
+        if(isset($fields[$locale])) {
+            $element->$locale = $fields[$locale];
+            unset($fields[$locale]);
+        }
+        
+        // Set password
+        $password = Import_ElementModel::HandlePassword;
+        if(isset($fields[$password])) {
+            $element->$password = $fields[$password];
+            unset($fields[$password]);
+        }
+        
+        // Return entry
+        return $element;
+                    
+    }  
+
+    public function save(UserModel &$element, $settings)
     {
         
         // Save user
@@ -90,70 +156,9 @@ class Import_UserService extends BaseApplicationComponent
     
     }
     
-    // Prepare reserved ElementModel values
-    public function prepForElementModel(&$fields, UserModel $entry) 
+    public function callback($fields, UserModel $element)
     {
-    
-        // Set username
-        $username = Import_ElementModel::HandleUsername;
-        if(isset($fields[$username])) {
-            $entry->$username = $fields[$username];
-            unset($fields[$username]);
-        } elseif(isset($fields[$username])) {
-            $entry->$username = $fields[$username];
-        }
-        
-        // Set photo
-        $photo = Import_ElementModel::HandlePhoto;
-        if(isset($fields[$photo])) {
-            $entry->$photo = $fields[$photo];
-        }
-        
-        // Set firstname
-        $firstName = Import_ElementModel::HandleFirstname;
-        if(isset($fields[$firstName])) {
-            $entry->$firstName = $fields[$firstName];
-            unset($fields[$firstName]);
-        }
-        
-        // Set lastname
-        $lastName = Import_ElementModel::HandleLastname;
-        if(isset($fields[$lastName])) {
-            $entry->$lastName = $fields[$lastName];
-            unset($fields[$lastName]);
-        }
-        
-        // Set email
-        $email = Import_ElementModel::HandleEmail;
-        if(isset($fields[$email])) {
-            $entry->$email = $fields[$email];
-            unset($fields[$email]);
-        }
-        
-        // Set status
-        $status = Import_ElementModel::HandleStatus;
-        if(isset($fields[$status])) {
-            $entry->$status = $fields[$status];
-            unset($fields[$status]);
-        }
-        
-        // Set locale
-        $locale = Import_ElementModel::HandleLocale;
-        if(isset($fields[$locale])) {
-            $entry->$locale = $fields[$locale];
-            unset($fields[$locale]);
-        }
-        
-        // Set password
-        $password = Import_ElementModel::HandlePassword;
-        if(isset($fields[$password])) {
-            $entry->$password = $fields[$password];
-            unset($fields[$password]);
-        }
-        
-        // Return entry
-        return $entry;
-                    
+        // No callback for users
     }
 
 }

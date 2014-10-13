@@ -157,6 +157,11 @@ class ImportService extends BaseApplicationComponent
                 // Log errors when unsuccessful
                 $this->log[$row] = craft()->import_history->log($settings['history'], $row, $entry->getErrors());
             
+            } else {
+            
+                // Some functions need calling after saving
+                craft()->$service->callback($fields, $entry);
+                
             }
             
         } catch(Exception $e) {

@@ -26,11 +26,11 @@ class Import_EntryService extends BaseApplicationComponent
     {
     
         // Set up new entry model
-        $entry = new EntryModel();
-        $entry->sectionId = $settings['elementvars']['section'];
-        $entry->typeId = $settings['elementvars']['entrytype'];
+        $element = new EntryModel();
+        $element->sectionId = $settings['elementvars']['section'];
+        $element->typeId = $settings['elementvars']['entrytype'];
         
-        return $entry;    
+        return $element;    
     
     }
     
@@ -58,68 +58,51 @@ class Import_EntryService extends BaseApplicationComponent
     
     }
     
-    public function save(&$element, $settings)
-    {
-        
-        // Save user
-        if(craft()->entries->saveEntry($element)) {
-        
-            // Log entry id's when successful
-            craft()->import_history->version($settings['history'], $element->id);
-            
-            return true;
-            
-        }
-        
-        return false;
-    
-    }
-    
     // Prepare reserved ElementModel values
-    public function prepForElementModel(&$fields, EntryModel $entry) 
+    public function prepForElementModel(&$fields, EntryModel $element) 
     {
         
         // Set author
         $author = Import_ElementModel::HandleAuthor;
         if(isset($fields[$author])) {
-            $entry->$author = intval($fields[$author]);
+            $element->$author = intval($fields[$author]);
             unset($fields[$author]);
         } else {
-            $entry->$author = ($entry->$author ? $entry->$author : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
+            $element->$author = ($element->$author ? $element->$author : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
         }
         
         // Set slug
         $slug = Import_ElementModel::HandleSlug;
         if(isset($fields[$slug])) {
-            $entry->$slug = ElementHelper::createSlug($fields[$slug]);
+            $element->$slug = ElementHelper::createSlug($fields[$slug]);
             unset($fields[$slug]);
         }
         
         // Set postdate
         $postDate = Import_ElementModel::HandlePostDate;
         if(isset($fields[$postDate])) {
-            $entry->$postDate = DateTime::createFromString($fields[$postDate], craft()->timezone);
+            $element->$postDate = DateTime::createFromString($fields[$postDate], craft()->timezone);
             unset($fields[$postDate]);
         }
         
         // Set expiry date
         $expiryDate = Import_ElementModel::HandleExpiryDate;
         if(isset($fields[$expiryDate])) {
-            $entry->$expiryDate = DateTime::createFromString($fields[$expiryDate], craft()->timezone);
+            $element->$expiryDate = DateTime::createFromString($fields[$expiryDate], craft()->timezone);
             unset($fields[$expiryDate]);
         }
         
         // Set enabled
         $enabled = Import_ElementModel::HandleEnabled;
         if(isset($fields[$enabled])) {
-            $entry->$enabled = (bool)$fields[$enabled];
+            $element->$enabled = (bool)$fields[$enabled];
             unset($fields[$enabled]);
         }
         
         // Set title
         $title = Import_ElementModel::HandleTitle;
         if(isset($fields[$title])) {
-            $entry->getContent()->$title = $fields[$title];
+            $element->getContent()->$title = $fields[$title];
             unset($fields[$title]);
         }
         
@@ -142,7 +125,7 @@ class Import_EntryService extends BaseApplicationComponent
          
                // Find matching element       
                $criteria = craft()->elements->getCriteria(ElementType::Entry);
-               $criteria->sectionId = $entry->sectionId;
+               $criteria->sectionId = $element->sectionId;
 
                // Exact match
                $criteria->search = '"'.$data.'"';
@@ -150,7 +133,7 @@ class Import_EntryService extends BaseApplicationComponent
                // Return the first found element for connecting
                if($criteria->total()) {
                
-                   $entry->$parent = $criteria->first()->id;
+                   $element->$parent = $criteria->first()->id;
                    
                }
            
@@ -173,21 +156,21 @@ class Import_EntryService extends BaseApplicationComponent
          
                // Get section data
                $section = new SectionModel();
-               $section->id = $entry->sectionId;                  
+               $section->id = $element->sectionId;                  
            
                // This we append before the slugified path
                $sectionUrl = str_replace('{slug}', '', $section->getUrlFormat());
                                                    
                // Find matching element by URI (dirty, not all structures have URI's)        
                $criteria = craft()->elements->getCriteria(ElementType::Entry);
-               $criteria->sectionId = $entry->sectionId;
+               $criteria->sectionId = $element->sectionId;
                $criteria->uri = $sectionUrl . craft()->import->slugify($data);
                $criteria->limit = 1;
                               
                // Return the first found element for connecting
                if($criteria->total()) {
                
-                   $entry->$parent = $criteria->first()->id;
+                   $element->$parent = $criteria->first()->id;
                    
                }
            
@@ -197,9 +180,31 @@ class Import_EntryService extends BaseApplicationComponent
         
         }
         
-        // Return entry
-        return $entry;
+        // Return element
+        return $element;
                     
+    }
+
+    public function save(EntryModel &$element, $settings)
+    {
+        
+        // Save user
+        if(craft()->entries->saveEntry($element)) {
+        
+            // Log element id's when successful
+            craft()->import_history->version($settings['history'], $element->id);
+            
+            return true;
+            
+        }
+        
+        return false;
+    
+    }
+    
+    public function callback($fields, EntryModel $element)
+    {
+        // No callback for entries
     }
 
 }

@@ -16,10 +16,10 @@ class Import_CategoryService extends BaseApplicationComponent
     {
     
         // Set up new category model
-        $entry = new CategoryModel();
-        $entry->groupId = $settings['elementvars']['group'];
+        $element = new CategoryModel();
+        $element->groupId = $settings['elementvars']['group'];
         
-        return $entry;    
+        return $element;    
     
     }
     
@@ -46,7 +46,31 @@ class Import_CategoryService extends BaseApplicationComponent
     
     }
     
-    public function save(&$element, $settings)
+    // Prepare reserved ElementModel values
+    public function prepForElementModel(&$fields, CategoryModel $element) 
+    {
+    
+        // Set slug
+        $slug = Import_ElementModel::HandleSlug;
+        if(isset($fields[$slug])) {
+            $element->$slug = ElementHelper::createSlug($fields[$slug]);
+            unset($fields[$slug]);
+        }
+    
+        // Set title
+        $title = Import_ElementModel::HandleTitle;
+        if(isset($fields[$title])) {
+            $element->getContent()->$title = $fields[$title];
+            unset($fields[$title]);
+        }
+        
+        // Return element
+        return $element;
+                    
+    }
+    
+
+    public function save(CategoryModel &$element, $settings)
     {
         
         // Save category
@@ -54,24 +78,9 @@ class Import_CategoryService extends BaseApplicationComponent
     
     }
     
-    // Prepare reserved ElementModel values
-    public function prepForElementModel(&$fields, CategoryModel $entry) 
+    public function callback($fields, CategoryModel $element)
     {
     
-        // Set slug
-        $slug = Import_ElementModel::HandleSlug;
-        if(isset($fields[$slug])) {
-            $entry->$slug = ElementHelper::createSlug($fields[$slug]);
-            unset($fields[$slug]);
-        }
-    
-        // Set title
-        $title = Import_ElementModel::HandleTitle;
-        if(isset($fields[$title])) {
-            $entry->getContent()->$title = $fields[$title];
-            unset($fields[$title]);
-        }
-        
         // Set parent or ancestors
         $parent = Import_ElementModel::HandleParent;
         $ancestors = Import_ElementModel::HandleAncestors;
@@ -91,7 +100,7 @@ class Import_CategoryService extends BaseApplicationComponent
          
                // Find matching element       
                $criteria = craft()->elements->getCriteria(ElementType::Category);
-               $criteria->groupId = $entry->groupId;
+               $criteria->groupId = $element->groupId;
 
                // Exact match
                $criteria->search = '"'.$data.'"';
@@ -99,7 +108,11 @@ class Import_CategoryService extends BaseApplicationComponent
                // Return the first found element for connecting
                if($criteria->total()) {
                
-                   $entry->$parent = $criteria->first()->id;
+                   // Get category group
+                   $categoryGroup = craft()->categories->getGroupById($element->groupId);
+                   
+                   // Set structure
+                   craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
                    
                }
            
@@ -118,25 +131,25 @@ class Import_CategoryService extends BaseApplicationComponent
            $data = trim($data);
            
            // Don't connect empty fields
-           if(!empty($data)) {
-         
-               // Get category data
-               $category = new CategoryModel();
-               $category->groupId = $entry->groupId;                  
+           if(!empty($data)) {                
            
                // This we append before the slugified path
-               $categoryUrl = str_replace('{slug}', '', $category->getUrlFormat());
+               $categoryUrl = str_replace('{slug}', '', $element->getUrlFormat());
                                                    
                // Find matching element by URI (dirty, not all categories have URI's)        
                $criteria = craft()->elements->getCriteria(ElementType::Category);
-               $criteria->groupId = $entry->groupId;
+               $criteria->groupId = $element->groupId;
                $criteria->uri = $categoryUrl . craft()->import->slugify($data);
                $criteria->limit = 1;
                
                // Return the first found element for connecting
                if($criteria->total()) {
                
-                   $entry->$parent = $criteria->first()->id;
+                   // Get category group
+                   $categoryGroup = craft()->categories->getGroupById($element->groupId);
+                   
+                   // Set structure
+                   craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
                    
                }
            
@@ -145,10 +158,7 @@ class Import_CategoryService extends BaseApplicationComponent
            unset($fields[$ancestors]);
         
         }
-        
-        // Return entry
-        return $entry;
-                    
+    
     }
 
 }
