@@ -228,6 +228,10 @@ class ImportService extends BaseApplicationComponent
     // Prepare fields for fieldtypes
     public function prepForFieldType(&$data, $handle) 
     {
+    
+        // Fresh up $data
+        $data = StringHelper::convertToUTF8($data);
+        $data = trim($data);
                 
         // Get field info
         $field = craft()->fields->getFieldByHandle($handle);
@@ -240,10 +244,9 @@ class ImportService extends BaseApplicationComponent
             
                 case ImportModel::FieldTypeEntries:
                 
-                    // Fresh up $data
+                    // No newlines allowed
                     $data = str_replace("\n", "", $data);
                     $data = str_replace("\r", "", $data);
-                    $data = trim($data);
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
@@ -293,9 +296,6 @@ class ImportService extends BaseApplicationComponent
                     break;
                 
                 case ImportModel::FieldTypeCategories:
-                
-                    // Fresh up $data
-                    $data = trim($data);
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
@@ -333,9 +333,6 @@ class ImportService extends BaseApplicationComponent
                     break;
                 
                 case ImportModel::FieldTypeAssets:
-                
-                    // Fresh up $data
-                    $data = trim($data);
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
@@ -385,9 +382,6 @@ class ImportService extends BaseApplicationComponent
                     break;
                 
                 case ImportModel::FieldTypeUsers:
-                
-                    // Fresh up $data
-                    $data = trim($data);
                     
                     // Don't connect empty fields
                     if(!empty($data)) {
@@ -437,9 +431,6 @@ class ImportService extends BaseApplicationComponent
                     break;
                     
                 case ImportModel::FieldTypeNumber:
-                
-                    // Fresh up $data
-                    $data = trim($data);
                     
                     // Parse as number
                     $data = LocalizationHelper::normalizeNumber($data);
@@ -450,9 +441,6 @@ class ImportService extends BaseApplicationComponent
                     break;
                     
                 case ImportModel::FieldTypeDate:
-                
-                    // Fresh up data
-                    $data = trim($data);
                     
                     // Parse date from string
                     $data = DateTimeHelper::formatTimeForDb(DateTimeHelper::fromString($data, craft()->timezone));
@@ -488,9 +476,6 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeCheckboxes:
                 case ImportModel::FieldTypeMultiSelect:
-                    
-                    // Fresh up data
-                    $data = trim($data);
                     
                     $data = ArrayHelper::stringToArray($data);
                     
@@ -579,9 +564,9 @@ class ImportService extends BaseApplicationComponent
         // Open file and parse csv rows
         $handle = fopen($file, 'r');        
         while(($row = fgetcsv($handle, 0, $delimiter)) !== false) {
-        
+                
             // Add row to data array
-            $data[] = StringHelper::convertToUTF8($row);
+            $data[] = $row;
         
         }
         fclose($handle);
