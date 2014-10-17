@@ -586,6 +586,9 @@ class ImportService extends BaseApplicationComponent
         }
         fclose($handle);
         
+        // Ensure UTF-8 encoding
+        $data = StringHelper::convertToUTF8($data);
+        
         // Return data array
         return $data;
     
