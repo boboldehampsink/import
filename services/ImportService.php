@@ -581,13 +581,10 @@ class ImportService extends BaseApplicationComponent
         while(($row = fgetcsv($handle, 0, $delimiter)) !== false) {
         
             // Add row to data array
-            $data[] = $row;
+            $data[] = StringHelper::convertToUTF8($row);
         
         }
         fclose($handle);
-        
-        // Ensure UTF-8 encoding
-        $data = StringHelper::convertToUTF8($data);
         
         // Return data array
         return $data;
