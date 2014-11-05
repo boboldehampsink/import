@@ -543,6 +543,9 @@ class ImportService extends BaseApplicationComponent
     
         $data = array();
         
+        // Automatically detect line endings
+        @ini_set('auto_detect_line_endings', true);
+        
         // Open file into rows
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         
