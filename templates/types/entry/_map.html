@@ -1,10 +1,20 @@
 {% set entrytypes = craft.sections.getSectionById(import.elementvars.section).getEntryTypes() %}
-        
-<p>{{ "Choose where you want to import your fields. * Please note that \"{title}\" is always required."|t({
+    
+<p>{{ 'Choose the destination fields for your imported data. "{title}" is always required.'|t({
     title: entrytypes[0].titleLabel
 }) }}</p>
+{% if import.behavior != 'append' %}
+<p>{{ 'Select the field(s) to use as match criteria to find existing Entries to replace or delete data.'|t }}</p>
+{% endif %}
 
 <table class="data">
+    <tr>
+        <th>{{ "Column name"|t }}</th>
+        <th>{{ "Field name"|t }}</th>
+        {% if import.behavior != 'append' %}
+        <th>{{ "Use as match criteria"|t }}</th>
+        {% endif %}
+    </tr>
 {% for column in columns %}
     {% set column = column|trim %}
     <tr>
@@ -63,6 +73,6 @@
     </tr>
 {% endfor %}
     <tr>
-        <td colspan="2" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
+        <td colspan="{% if import.behavior != 'append' %}2{% else %}3{% endif %}" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
     </tr>
 </table>

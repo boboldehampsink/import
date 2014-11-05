@@ -3,7 +3,26 @@ Import plugin for Craft CMS
 
 Plugin that allows you to import data from CSV files.
 
-Features:
+Usage
+=================
+Importing data is a two step process:
+
+Step 1. Select import options
+- Choose the type of element to import (Category, Entry, or User)
+- Select the corresponding category group, section, entry type, or user group
+- Select the Import Behavior:
+    - Append Data — Will add new categories, entries, or users.
+    - Replace Data — Will update data for existing matched categories, entries, or users.
+    - Delete Data — Will delete data for existing matched categories, entries, or users.
+
+Step 2. Map CSV data
+- Map the destination fields for the csv data.
+- Select which fields will be used as criteria to match existing records to replace (update) or delete data.
+
+And import!
+
+Features
+=================
  - Import Entries, Users and Categories
  - Map CSV columns onto Fields
  - Append, replace or delete data
@@ -18,11 +37,12 @@ Features:
  - View your import history
  - Ability to revert imports
  
-Roadmap:
+Roadmap
  - Import more ElementTypes (Tags, Globals, Assets?) (0.8)
  - Support JSON and XML (0.9)
  
 Important:
+=================
 The plugin's folder should be named "import"
 
 ###Screenshots###

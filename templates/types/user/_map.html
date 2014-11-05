@@ -1,8 +1,18 @@
 {% set fieldLayout = craft.fields.getLayoutByType(import.type) %}
                     
-<p>{{ 'Choose where you want to import your fields. * Please note that "Email" is always required.'|t }}</p>
+<p>{{ 'Choose the destination fields for your imported data. "Email" is always required.'|t }}</p>
+{% if import.behavior != 'append' %}
+<p>{{ 'Select the field(s) to use as match criteria to find existing Users to replace or delete data.'|t }}</p>
+{% endif %}
 
 <table class="data">
+    <tr>
+        <th>{{ "Column name"|t }}</th>
+        <th>{{ "Field name"|t }}</th>
+        {% if import.behavior != 'append' %}
+        <th>{{ "Use as match criteria"|t }}</th>
+        {% endif %}
+    </tr>
 {% for column in columns %}
     {% set column = column|trim %}
     <tr>
@@ -53,6 +63,6 @@
     </tr>
 {% endfor %}
     <tr>
-        <td colspan="2" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
+        <td colspan="{% if import.behavior != 'append' %}2{% else %}3{% endif %}" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
     </tr>
 </table>
