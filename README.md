@@ -61,6 +61,10 @@ Map fields
 
 Changelog
 =================
+###0.8.11###
+ - Added automatic line ending detection
+ - Improved usability
+
 ###0.8.10###
  - Fixed category structure importing
 
