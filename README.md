@@ -37,7 +37,7 @@ Features
  - View your import history
  - Ability to revert imports
  
-Roadmap
+###Roadmap###
  - Import more ElementTypes (Tags, Globals, Assets?) (0.8)
  - Support JSON and XML (0.9)
  
@@ -45,8 +45,8 @@ Important:
 =================
 The plugin's folder should be named "import"
 
-###Screenshots###
-
+Screenshots
+=================
 History
 ![History](https://raw.githubusercontent.com/boboldehampsink/CraftImportPlugin/gh-pages/images/history.png)
 
