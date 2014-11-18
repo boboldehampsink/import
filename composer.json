@@ -1,0 +1,14 @@
+{
+    "name": "boboldehampsink/import",
+    "description": "Import Plugin for Craft CMS",
+    "authors": [
+		{
+			"name": "Bob Olde Hampsink",
+			"email": "b.oldehampsink@itmundi.nl"
+		}
+	],
+    "type": "craft-plugin",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
