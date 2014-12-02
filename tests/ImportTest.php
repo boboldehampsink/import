@@ -4,11 +4,11 @@ namespace Craft;
 class ImportTest extends BaseTest 
 {
     
-    protected $importHistoryService;
-    protected $importService;
-    
     public function setUp()
     {
+    
+        // PHPUnit complains about not settings this
+        date_default_timezone_set('UTC');
     
         // Get dependencies
         $dir = __DIR__;
@@ -31,16 +31,16 @@ class ImportTest extends BaseTest
         }
     
         // Construct them
-        $this->importHistoryService = new Import_HistoryService;
-        $this->importService        = new ImportService;
-        $this->importEntryService   = new Import_EntryService;
+        $this->setComponent(craft(), 'import_history', new Import_HistoryService);
+        $this->setComponent(craft(), 'import', new ImportService);
+        $this->setComponent(craft(), 'import_entry', new Import_EntryService);
     
     } 
     
     public function testHistoryShowLog() 
     {
     
-        $log = $this->importHistoryService->showLog(1);
+        $log = craft()->import_history->showLog(1);
         
         $this->assertTrue(is_array($log));
         $this->assertTrue($log > 0);
@@ -50,7 +50,7 @@ class ImportTest extends BaseTest
     public function testHistoryLog() 
     {
     
-        $log = $this->importHistoryService->log($historyId = 1, $line = 0, $errors = array());
+        $log = craft()->import_history->log($historyId = 1, $line = 0, $errors = array());
         
         $this->assertSame($log, $errors);
         
@@ -60,7 +60,7 @@ class ImportTest extends BaseTest
     {
     
         $fields = array('title' => 'test');
-        $entry = $this->importEntryService->prepForElementModel($fields, new EntryModel());
+        $entry = craft()->import_entry->prepForElementModel($fields, new EntryModel());
         
         $this->assertTrue($entry instanceOf EntryModel);
         
@@ -70,7 +70,7 @@ class ImportTest extends BaseTest
     {
     
         $data = ' u0';
-        $this->importService->prepForFieldType($data, 'price');
+        craft()->import->prepForFieldType($data, 'price');
         
         $this->assertTrue(is_numeric($data));
         
