@@ -13,6 +13,7 @@
 
 {% set content %}
     <form method="post" action="" class="centered" accept-charset="utf-8">
+        {{ getCsrfInput() }}
         <input type="hidden" name="action" value="import/import">
         <input type="hidden" name="file" value="{{ file }}">
         <input type="hidden" name="unique[]" value="">
