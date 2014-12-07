@@ -36,7 +36,8 @@ class ImportModel extends BaseModel
     const FieldTypeDropdown     = 'Dropdown';
     const FieldTypeMultiSelect  = 'MultiSelect';
     const FieldTypeRadioButtons = 'RadioButtons';
-    
+    const FieldTypeTags         = 'Tags';
+
     // Delimiters
     const DelimiterSemicolon = ';';
     const DelimiterComma     = ',';
