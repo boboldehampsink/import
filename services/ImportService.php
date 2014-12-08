@@ -480,7 +480,49 @@ class ImportService extends BaseApplicationComponent
                     $data = ArrayHelper::stringToArray($data);
                     
                     break;
-            
+
+                case ImportModel::FieldTypeTags:
+
+                    //get settings
+                    $settings = $field->getFieldType()->getSettings();
+
+                    //get tag group id
+                    $source = $settings->getAttribute('source');
+                    list($type, $id) = explode(':', $source);
+                    $groupId = $id;
+
+                    $tags = ArrayHelper::stringToArray($data);
+                    $data = array();
+
+                    foreach($tags as $tag){
+
+                      //find existing tag
+                      $criteria = craft()->elements->getCriteria(ElementType::Tag);
+                      $criteria->title = $tag;
+                      $criteria->groupId = $groupId;
+
+                      if ($criteria->count() === 0) {
+
+                        //create tag if one doesn't already exist
+                        $newtag = new TagModel();
+                        $newtag->getContent()->title = $tag;
+                        $newtag->groupId = $groupId;
+                        if (craft()->tags->saveTag($newtag)) {
+                          $tagArray = array($newtag->id);
+                        }
+
+                      } else {
+
+                        $tagArray = $criteria->ids();
+
+                      }
+
+                      $data = array_merge($data,$tagArray);
+
+                    }
+
+                    break;
+
             }
         
         }
