@@ -61,6 +61,10 @@ Map fields
 
 Changelog
 =================
+###0.8.12###
+ - Added support for the tag field type (thanks to Richard Brown)
+ - Added getCsrfInput function to forms
+
 ###0.8.11###
  - Added automatic line ending detection
  - Improved usability
