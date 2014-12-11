@@ -329,7 +329,7 @@ class ImportService extends BaseApplicationComponent
                         foreach($search as $query) {
                             
                             // Find matching element by URI (dirty, not all categories have URI's)
-                            $criteria->uri = $categoryUrl . $this->slugify($data);;
+                            $criteria->uri = $categoryUrl . $this->slugify($query);
                             
                             // Add to data
                             $data = array_merge($data, $criteria->ids());
