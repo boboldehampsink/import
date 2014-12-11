@@ -313,15 +313,28 @@ class ImportService extends BaseApplicationComponent
                     
                         // This we append before the slugified path
                         $categoryUrl = str_replace('{slug}', '', $category->getUrlFormat());
-                                                            
-                        // Find matching element by URI (dirty, not all categories have URI's)        
+
+                        // Find matching elements in categories
                         $criteria = craft()->elements->getCriteria(ElementType::Category);
                         $criteria->groupId = $id;
-                        $criteria->uri = $categoryUrl . $this->slugify($data);
                         $criteria->limit = $settings->limit;
+
+                        // Get search strings
+                        $search = ArrayHelper::stringToArray($data);
                         
-                        // Return the found id's for connecting
-                        $data = $criteria->ids();
+                        // Ability to import multiple Categories at once
+                        $data = array();
+
+                        // Loop through keywords
+                        foreach($search as $query) {
+                            
+                            // Find matching element by URI (dirty, not all categories have URI's)
+                            $criteria->uri = $categoryUrl . $this->slugify($data);;
+                            
+                            // Add to data
+                            $data = array_merge($data, $criteria->ids());
+                            
+                        }
                         
                     } else {
                     
