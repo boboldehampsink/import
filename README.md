@@ -62,7 +62,7 @@ Map fields
 Changelog
 =================
 ###0.8.13###
- - Added ability to import into multiple categories
+ - Added ability to connect to multiple categories
 
 ###0.8.12###
  - Added support for the tag field type (thanks to Richard Brown)
