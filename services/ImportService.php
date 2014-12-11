@@ -442,6 +442,50 @@ class ImportService extends BaseApplicationComponent
                     }
                                         
                     break;
+
+                case ImportModel::FieldTypeTags:
+
+                    // Get field settings
+                    $settings = $field->getFieldType()->getSettings();
+
+                    // Get tag group id
+                    $source = $settings->getAttribute('source');
+                    list($type, $groupId) = explode(':', $source);
+
+                    $tags = ArrayHelper::stringToArray($data);
+                    $data = array();
+
+                    foreach($tags as $tag){
+
+                        // Find existing tag
+                        $criteria = craft()->elements->getCriteria(ElementType::Tag);
+                        $criteria->title = $tag;
+                        $criteria->groupId = $groupId;
+
+                        if(!$criteria->total()) {
+
+                            // Create tag if one doesn't already exist
+                            $newtag = new TagModel();
+                            $newtag->getContent()->title = $tag;
+                            $newtag->groupId = $groupId;
+                            
+                            // Save tag
+                            if(craft()->tags->saveTag($newtag)) {
+                                $tagArray = array($newtag->id);
+                            }
+
+                        } else {
+
+                            $tagArray = $criteria->ids();
+
+                        }
+
+                        // Add tags to data array
+                        $data = array_merge($data, $tagArray);
+
+                    }
+
+                    break;
                     
                 case ImportModel::FieldTypeNumber:
                     
@@ -493,50 +537,6 @@ class ImportService extends BaseApplicationComponent
                     // Convert to array
                     $data = ArrayHelper::stringToArray($data);
                     
-                    break;
-
-                case ImportModel::FieldTypeTags:
-
-                    //get settings
-                    $settings = $field->getFieldType()->getSettings();
-
-                    //get tag group id
-                    $source = $settings->getAttribute('source');
-                    list($type, $groupId) = explode(':', $source);
-
-                    $tags = ArrayHelper::stringToArray($data);
-                    $data = array();
-
-                    foreach($tags as $tag){
-
-                        // Find existing tag
-                        $criteria = craft()->elements->getCriteria(ElementType::Tag);
-                        $criteria->title = $tag;
-                        $criteria->groupId = $groupId;
-
-                        if(!$criteria->total()) {
-
-	                        // Create tag if one doesn't already exist
-	                        $newtag = new TagModel();
-	                        $newtag->getContent()->title = $tag;
-	                        $newtag->groupId = $groupId;
-	                        
-	                        // Save tag
-	                        if(craft()->tags->saveTag($newtag)) {
-	                            $tagArray = array($newtag->id);
-	                        }
-
-                        } else {
-
-                        	$tagArray = $criteria->ids();
-
-                        }
-
-						// Add tags to data array
-                        $data = array_merge($data, $tagArray);
-
-                    }
-
                     break;
 
             }
