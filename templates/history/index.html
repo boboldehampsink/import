@@ -27,7 +27,7 @@
                 <th scope="col" data-attribute="finished">{{ "Finished"|t }}</th>
                 <th scope="col" data-attribute="totaltime">{{ "Total time"|t }}</th>
                 <th scope="col" data-attribute="user">{{ "User"|t }}</th>
-                <th scope="col" data-attribute="revert">{{ "Revert"|t }}</th>
+                {% if CraftEdition >= CraftClient %}<th scope="col" data-attribute="revert">{{ "Revert"|t }}</th>{% endif %}
                 <th scope="col" data-attribute="download">{{ "Download"|t }}</th>
                 <td class="thin"></td>
             </tr>
@@ -67,6 +67,7 @@
                 <td data-title="{{ 'User'|t }}">
                     <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
                 </td>
+                {% if CraftEdition >= CraftClient %}
                 <td data-title="{{ 'Revert'|t }}">
                     {% if item.status == 'finished' and (item.type == 'Entry' or item.type is empty) and item.behavior != 'delete' %}
                         <a href="{{ actionUrl('import/history/revert', { id: item.id }) }}" class="btn small" onclick="return confirm('{{ "Are you sure you want to revert the imported entries to the previous version?"|t }}')">{{ 'Revert'|t }}</a>
@@ -74,6 +75,7 @@
                         <a href="javascript:void(0)" class="btn small disabled" onclick="return alert('{{ "Reverting is not available for this type or behavior"|t }}')">{{ 'Revert'|t }}</a>
                     {% endif %}
                 </td>
+                {% endif %}
                 <td data-title="{{ 'Download'|t }}">
                     {% if item.type is not empty %}
                         <a href="{{ actionUrl('import/history/download', {'id': item.id }) }}" class="btn small">{{ 'Download'|t }}</a>

@@ -190,9 +190,14 @@ class Import_EntryService extends BaseApplicationComponent
         
         // Save user
         if(craft()->entries->saveEntry($element)) {
+
+            // If entry revisions are supported
+            if(isset(craft()->entryRevisions)) {
         
-            // Log element id's when successful
-            craft()->import_history->version($settings['history'], $element->id);
+                // Log element id's when successful
+                craft()->import_history->version($settings['history'], $element->id);
+
+            }
             
             return true;
             
