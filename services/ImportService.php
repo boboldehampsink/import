@@ -69,7 +69,7 @@ class ImportService extends BaseApplicationComponent
             // Set up criteria model for matching        
             $cmodel = array();    
             foreach($settings['map'] as $key => $value) {
-                if(isset($criteria->$settings['map'][$key]) && isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && !empty($fields[$value])) {
+                if(isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && !empty($fields[$value])) {
                     $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
                 }
             }
