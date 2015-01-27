@@ -82,8 +82,6 @@ class Import_UserService extends BaseApplicationComponent
         if(isset($fields[$username])) {
             $element->$username = $fields[$username];
             unset($fields[$username]);
-        } elseif(isset($fields[$username])) {
-            $element->$username = $fields[$username];
         }
         
         // Set photo
@@ -111,6 +109,11 @@ class Import_UserService extends BaseApplicationComponent
         if(isset($fields[$email])) {
             $element->$email = $fields[$email];
             unset($fields[$email]);
+
+            // Set email as username
+            if(craft()->config->get('useEmailAsUsername')) {
+                $element->$username = $element->$email;
+            }
         }
         
         // Set status
