@@ -8,7 +8,7 @@ class Import_HistoryController extends BaseController
     {
 
         // If entry revisions are supported
-        if(isset(craft()->entryRevisions)) {
+        if(craft()->getEdition() == Craft::Pro) {
     
             // Get history id
             $history = craft()->request->getParam('id');

@@ -9,7 +9,7 @@ class Import_UserService extends BaseApplicationComponent
     {
     
         // Check if usergroups are allowed in this installation
-        if(isset(craft()->userGroups)) {
+        if(craft()->getEdition() == Craft::Pro) {
     
             // Get usergroups
             $groups = craft()->userGroups->getAllGroups();

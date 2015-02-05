@@ -192,7 +192,7 @@ class Import_EntryService extends BaseApplicationComponent
         if(craft()->entries->saveEntry($element)) {
 
             // If entry revisions are supported
-            if(isset(craft()->entryRevisions)) {
+            if(craft()->getEdition() == Craft::Pro) {
         
                 // Log element id's when successful
                 craft()->import_history->version($settings['history'], $element->id);
