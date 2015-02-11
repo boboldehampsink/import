@@ -61,6 +61,11 @@ Map fields
 
 Changelog
 =================
+###0.8.14###
+ - Made versioning unavailable for Craft Personal licenses, as its not supported by Craft
+ - Fixed content attributes not (always) being pre-set on criteria models
+ - Set email as username when defined in config
+
 ###0.8.13###
  - Added ability to connect to multiple categories
 
