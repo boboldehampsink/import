@@ -13,15 +13,14 @@ class Import_LogRecord extends BaseRecord
     {
         return array(
             'line'     => AttributeType::Number,
-            'errors'   => AttributeType::Mixed
+            'errors'   => AttributeType::Mixed,
         );
     }
-    
+
     public function defineRelations()
     {
         return array(
-            'history'  => array(static::BELONGS_TO, 'Import_HistoryRecord')
+            'history'  => array(static::BELONGS_TO, 'Import_HistoryRecord'),
         );
     }
-    
 }

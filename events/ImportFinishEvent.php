@@ -1,7 +1,6 @@
 <?php
 namespace Craft;
 
-class ImportFinishEvent extends Event 
+class ImportFinishEvent extends Event
 {
-
 }

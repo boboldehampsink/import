@@ -55,5 +55,5 @@ return array(
     'Revert Import' => 'Import terugdraaien',
     'Reverting import' => 'Import aan het terugdraaien',
     'Revert import process started.' => 'Import terugdraai proces gestart',
-    'The import history of {file} has been deleted.' => 'De import geschiedenis van {file} is verwijderd.'
+    'The import history of {file} has been deleted.' => 'De import geschiedenis van {file} is verwijderd.',
 );

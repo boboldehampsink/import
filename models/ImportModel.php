@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class ImportModel extends BaseModel 
+class ImportModel extends BaseModel
 {
 
     // Filetypes
@@ -13,17 +13,17 @@ class ImportModel extends BaseModel
     const TypeCSVOff  = 'application/vnd.ms-excel';
     const TypeCSVOff2 = 'application/vnd.msexcel';
     const TypeCSVOth  = 'application/octet-stream';
-    
+
     // Behaviors
     const BehaviorAppend  = 'append';
     const BehaviorReplace = 'replace';
     const BehaviorDelete  = 'delete';
-    
+
     // Statuses
     const StatusStarted  = 'started';
     const StatusFinished = 'finished';
     const StatusReverted = 'reverted';
-    
+
     // Fieldtypes
     const FieldTypeEntries      = 'Entries';
     const FieldTypeCategories   = 'Categories';
@@ -44,24 +44,23 @@ class ImportModel extends BaseModel
     const DelimiterPipe      = '|';
 
     // Use model validation to validate filetype
-    protected function defineAttributes() 
+    protected function defineAttributes()
     {
         return array(
-            'filetype' => array(AttributeType::Enum, 
-                'required' => true, 
-                'label' => Craft::t('Filetype'), 
+            'filetype' => array(AttributeType::Enum,
+                'required' => true,
+                'label' => Craft::t('Filetype'),
                 'values' => array(
-                    self::TypeCSV, 
-                    self::TypeCSVWin, 
-                    self::TypeCSVIE, 
-                    self::TypeCSVApp, 
-                    self::TypeCSVExc, 
-                    self::TypeCSVOff, 
-                    self::TypeCSVOff2, 
-                    self::TypeCSVOth
-                )
-            )
+                    self::TypeCSV,
+                    self::TypeCSVWin,
+                    self::TypeCSVIE,
+                    self::TypeCSVApp,
+                    self::TypeCSVExc,
+                    self::TypeCSVOff,
+                    self::TypeCSVOff2,
+                    self::TypeCSVOth,
+                ),
+            ),
         );
     }
-    
 }

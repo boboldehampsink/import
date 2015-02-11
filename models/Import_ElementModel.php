@@ -1,9 +1,9 @@
 <?php
 namespace Craft;
 
-class Import_ElementModel extends BaseModel 
+class Import_ElementModel extends BaseModel
 {
-     
+
     const HandleTitle        = 'title';
     const HandleAuthor       = 'authorId';
     const HandlePostDate     = 'postDate';
@@ -20,5 +20,4 @@ class Import_ElementModel extends BaseModel
     const HandleStatus       = 'status';
     const HandleLocale       = 'preferredLocale';
     const HandlePassword     = 'newPassword';
-    
 }

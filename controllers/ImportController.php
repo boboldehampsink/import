@@ -1,129 +1,123 @@
 <?php
 namespace Craft;
 
-class ImportController extends BaseController 
+class ImportController extends BaseController
 {
 
-    public function actionGetEntryTypes() 
+    public function actionGetEntryTypes()
     {
-    
+
         // Only ajax post requests
         $this->requirePostRequest();
         $this->requireAjaxRequest();
-        
+
         // Get section
         $section = craft()->request->getPost('section');
         $section = craft()->sections->getSectionById($section);
-        
+
         // Get entry types
         $entrytypes = $section->getEntryTypes();
-        
+
         // Return JSON
         $this->returnJson($entrytypes);
-    
     }
 
     // Upload file and process it for mapping
-    public function actionUpload() 
+    public function actionUpload()
     {
-        
+
         // Get import post
         $import = craft()->request->getRequiredPost('import');
-    
+
         // Get file
         $file = \CUploadedFile::getInstanceByName('file');
-        
+
         // Determine folder
-        $folder = craft()->path->getStoragePath() . 'import/';
-        
+        $folder = craft()->path->getStoragePath().'import/';
+
         // Ensure folder exists
         IOHelper::ensureFolderExists($folder);
-        
+
         // Get filepath - save in storage folder
-        $path = $folder . $file->getName();
- 
+        $path = $folder.$file->getName();
+
         // Save file to Craft's temp folder for later use
         $file->saveAs($path);
-        
+
         // Put vars in model
         $model           = new ImportModel();
         $model->filetype = $file->getType();
-        
+
         // Validate filetype
-        if($model->validate()) {
-        
+        if ($model->validate()) {
+
             // Get columns
             $columns = craft()->import->columns($path);
-            
+
             // Send variables to template and display
             $this->renderTemplate('import/_map', array(
                 'import'    => $import,
                 'file'      => $path,
-                'columns'   => $columns
+                'columns'   => $columns,
             ));
-        
         } else {
-        
+
             // Not validated, show error
             craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
-            
         }
-    
     }
-    
+
     // Start import task
-    public function actionImport() 
+    public function actionImport()
     {
-    
+
         // Get import post
         $settings = craft()->request->getRequiredPost('import');
-        
+
         // Get file
         $file = craft()->request->getParam('file');
-        
+
         // Get mapping fields
         $map = craft()->request->getParam('fields');
         $unique = craft()->request->getParam('unique');
-        
+
         // Get rows/steps from file
         $rows = count(craft()->import->data($file));
-        
+
         // Set more settings
         $settings = array_merge(array(
             'file'        => $file,
             'rows'        => $rows,
             'map'         => $map,
-            'unique'      => $unique
+            'unique'      => $unique,
         ), $settings);
-        
+
         // Create history
         $history = craft()->import_history->start($settings);
-        
+
         // Add history to settings
         $settings['history'] = $history;
-        
+
         // Determine new folder to save original importfile
-        $folder = dirname($file) . '/' . $history . '/';
+        $folder = dirname($file).'/'.$history.'/';
         IOHelper::ensureFolderExists($folder);
-        
+
         // Move the file to its history folder
-        IOHelper::move($file, $folder . basename($file));
-        
+        IOHelper::move($file, $folder.basename($file));
+
         // Update the settings with the new file location
-        $settings['file'] = $folder . basename($file);
-        
+        $settings['file'] = $folder.basename($file);
+
         // UNCOMMENT FOR DEBUGGING
         //craft()->import->debug($settings, $history, 1);
 
         // Create the import task
-        $task = craft()->tasks->createTask('Import', Craft::t('Importing') . ' ' . basename($file), $settings);
-        
+        $task = craft()->tasks->createTask('Import', Craft::t('Importing').' '.basename($file), $settings);
+
         // Notify user
         craft()->userSession->setNotice(Craft::t('Import process started.'));
-        
+
         // Redirect to history
-        $this->redirect('import/history?task=' . $task->id);
-    
+        $this->redirect('import/history?task='.$task->id);
     }
-    
 }
