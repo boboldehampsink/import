@@ -65,7 +65,14 @@ class Import_EntryService extends BaseApplicationComponent
         // Set author
         $author = Import_ElementModel::HandleAuthor;
         if(isset($fields[$author])) {
-            $element->$author = intval($fields[$author]);
+            if(is_numeric($fields[$author])) {
+                $element->$authorId = intval($fields[$author]);
+            } else {
+                $userModel = craft()->users->getUserByUsernameOrEmail($fields[$author]);
+                if($userModel) {
+                    $element->authorId = $userModel->id;
+                }
+            }
             unset($fields[$author]);
         } else {
             $element->$author = ($element->$author ? $element->$author : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
