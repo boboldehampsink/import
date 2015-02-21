@@ -58,8 +58,8 @@ class ImportPlugin extends BasePlugin
     public function onAfterInstall()
     {
 
-        // Minimum build is 2554
-        $minBuild = '2554';
+        // Minimum build is 2615
+        $minBuild = '2615';
 
         // If your build is lower
         if (craft()->getBuild() < $minBuild) {

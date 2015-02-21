@@ -82,12 +82,11 @@ class ImportService extends BaseApplicationComponent
                     $elements = $criteria->find();
 
                     // Fire an 'onBeforeImportDelete' event
-                    Craft::import('plugins.import.events.BeforeImportDeleteEvent');
-                    $event = new BeforeImportDeleteEvent($this, array('elements' => $elements));
+                    $event = new Event($this, array('elements' => $elements));
                     $this->onBeforeImportDelete($event);
 
                     // Give event the chance to blow off deletion
-                    if ($event->proceed) {
+                    if ($event->performAction) {
                         try {
 
                             // Do it
@@ -601,13 +600,19 @@ class ImportService extends BaseApplicationComponent
     }
 
     // Fires an "onBeforeImportDelete" event
-    public function onBeforeImportDelete(BeforeImportDeleteEvent $event)
+    public function onBeforeImportDelete(Event $event)
     {
         $this->raiseEvent('onBeforeImportDelete', $event);
     }
 
+    // Fires an "onImportStart" event
+    public function onImportStart(Event $event)
+    {
+        $this->raiseEvent('onImportStart', $event);
+    }
+
     // Fires an "onImportFinish" event
-    public function onImportFinish(ImportFinishEvent $event)
+    public function onImportFinish(Event $event)
     {
         $this->raiseEvent('onImportFinish', $event);
     }

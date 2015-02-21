@@ -3,7 +3,6 @@ namespace Craft;
 
 class ImportTask extends BaseTask
 {
-
     protected $backupFile = false;
 
     protected function defineSettings()
@@ -57,6 +56,14 @@ class ImportTask extends BaseTask
         // Open file
         $data = craft()->import->data($settings->file);
 
+        // On start
+        if (!$step) {
+
+            // Fire an "onImportStart" event
+            $event = new Event($this, array('settings' => $settings));
+            craft()->import->onImportStart($event);
+        }
+
         // Check if row exists
         if (isset($data[$step])) {
 
@@ -71,17 +78,10 @@ class ImportTask extends BaseTask
             craft()->import->finish($settings, $this->backupFile);
 
             // Fire an "onImportFinish" event
-            Craft::import('plugins.import.events.ImportFinishEvent');
-            $event = new ImportFinishEvent($this, array('settings' => $settings));
-            $this->onImportFinish($event);
+            $event = new Event($this, array('settings' => $settings));
+            craft()->import->onImportFinish($event);
         }
 
         return true;
-    }
-
-    // Fires an "onImportFinish" event
-    public function onImportFinish(ImportFinishEvent $event)
-    {
-        craft()->import->onImportFinish($event);
     }
 }
