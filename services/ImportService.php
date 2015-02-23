@@ -137,8 +137,8 @@ class ImportService extends BaseApplicationComponent
         try {
 
             // Hook called after all the field values are set, allowing for modification
-            // of the entry before it's saved. Include the mapping table and row data.
-            craft()->plugins->call('postRowImportOperation', array($entry, $settings['map'], $data));
+            // of the entire entry before it's saved. Include the mapping table and row data.
+            craft()->plugins->call('modifyImportRow', array($entry, $settings['map'], $data));
         } catch (Exception $e) {
 
             // Something went terribly wrong, assume its only this row
