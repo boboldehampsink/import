@@ -61,6 +61,11 @@ Map fields
 
 Changelog
 =================
+###0.8.15###
+ - added an onImportStart event
+ - added an modifyImportRow hook (thanks to freddietilley)
+ - improved event handling - min. required Craft build is now 2615
+
 ###0.8.14###
  - Made versioning unavailable for Craft Personal licenses, as its not supported by Craft
  - Fixed content attributes not (always) being pre-set on criteria models
