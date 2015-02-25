@@ -73,7 +73,9 @@ class ImportService extends BaseApplicationComponent
         }
 
         // Check what service we're gonna need
-        $service = 'import_'.strtolower($settings['type']);
+        if (!($service = $this->getService($settings['type']))) {
+            throw new Exception(Craft::t('Unknown Element Type Service called.'));
+        }
 
         // Map data to fields
         $fields = array_combine($settings['map'], $data);
@@ -551,6 +553,35 @@ class ImportService extends BaseApplicationComponent
         }
 
         return $data;
+    }
+
+    /**
+     * Get service to use for importing
+     * @param  stirng $elementType
+     * @return object|boolean
+     */
+    public function getService($elementType)
+    {
+        // Check if there's a service for this element type elsewhere
+        $service = craft()->plugins->callFirst('registerImportService', array(
+            'elementType' => $elementType
+        ));
+
+        // If not, do internal check
+        if($service == null) {
+        
+            // Get from right elementType
+            $service = 'import_'.strtolower($elementType);
+        }
+
+        // Check if elementtype can be imported
+        if (isset(craft()->$service) && craft()->$service instanceof IImportElementType) {
+
+            // Return this service
+            return craft()->$service;
+        }
+
+        return false;
     }
 
     /**

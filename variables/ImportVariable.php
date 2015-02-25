@@ -21,14 +21,11 @@ class ImportVariable
      */
     public function getGroups($elementType)
     {
-        // Get from right elementType
-        $service = 'import_'.strtolower($elementType);
-
         // Check if elementtype can be imported
-        if (isset(craft()->$service)) {
+        if ($service = craft()->import->getService($elementType)) {
 
             // Return "groups" (section, groups, etc.)
-            return craft()->$service->getGroups();
+            return $service->getGroups();
         }
 
         return false;
