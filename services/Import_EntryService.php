@@ -90,10 +90,10 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         // Set author
         $author = Import_ElementModel::HandleAuthor;
         if (isset($fields[$author])) {
-            $element->$author = intval($fields[$author]);
+            $element->$author = (is_numeric($fields[$author]) ? $fields[$author] : ($user = craft()->users->getUserByUsernameOrEmail($fields[$author]) ? $user->id : 1));
             unset($fields[$author]);
         } else {
-            $element->$author = ($element->$author ? $element->$author : (craft()->userSession->getUser() ? craft()->userSession->getUser()->id : 1));
+            $element->$author = ($element->$author ? $element->$author : ($user = craft()->userSession->getUser() ? $user->id : 1));
         }
 
         // Set slug
