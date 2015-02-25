@@ -2,20 +2,21 @@
 namespace Craft;
 
 /**
- * Import Category Service
+ * Import Category Service.
  *
  * Contains logic for importing categories
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class Import_CategoryService extends BaseApplicationComponent implements IImportElementType
 {
     /**
-     * Return groups
+     * Return groups.
+     *
      * @return array
      */
     public function getGroups()
@@ -25,8 +26,10 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     }
 
     /**
-     * Return category model with group
+     * Return category model with group.
+     *
      * @param array $settings
+     *
      * @return CategoryModel
      */
     public function setModel(array $settings)
@@ -39,8 +42,10 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     }
 
     /**
-     * Set category criteria
+     * Set category criteria.
+     *
      * @param array $settings
+     *
      * @return ElementCriteriaModel
      */
     public function setCriteria(array $settings)
@@ -58,8 +63,10 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     }
 
     /**
-     * Delete categories
-     * @param  array $elements
+     * Delete categories.
+     *
+     * @param array $elements
+     *
      * @return boolean
      */
     public function delete(array $elements)
@@ -69,9 +76,11 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     }
 
     /**
-     * Prepare reserved ElementModel values
-     * @param  array            &$fields
-     * @param  BaseElementModel $element
+     * Prepare reserved ElementModel values.
+     *
+     * @param array            &$fields
+     * @param BaseElementModel $element
+     *
      * @return BaseElementModel
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
@@ -95,9 +104,11 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     }
 
     /**
-     * Save a category
-     * @param  BaseElementModel &$element
-     * @param  array            $settings
+     * Save a category.
+     *
+     * @param BaseElementModel &$element
+     * @param array            $settings
+     *
      * @return boolean
      */
     public function save(BaseElementModel &$element, array $settings)
@@ -107,9 +118,10 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     }
 
     /**
-     * Executes after saving a category
-     * @param  array            $fields
-     * @param  BaseElementModel $element
+     * Executes after saving a category.
+     *
+     * @param array            $fields
+     * @param BaseElementModel $element
      */
     public function callback(array $fields, BaseElementModel $element)
     {

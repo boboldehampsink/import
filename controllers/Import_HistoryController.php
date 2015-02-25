@@ -2,20 +2,20 @@
 namespace Craft;
 
 /**
- * Import History Controller
+ * Import History Controller.
  *
  * Request actions for Import History
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class Import_HistoryController extends BaseController
 {
     /**
-     * Reverts an import
+     * Reverts an import.
      */
     public function actionRevert()
     {
@@ -49,7 +49,8 @@ class Import_HistoryController extends BaseController
     }
 
     /**
-     * Downloads an import file
+     * Downloads an import file.
+     *
      * @throws HttpException If not found
      */
     public function actionDownload()
@@ -76,7 +77,7 @@ class Import_HistoryController extends BaseController
     }
 
     /**
-     * Deletes an import from the history
+     * Deletes an import from the history.
      */
     public function actionDelete()
     {

@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName
+ * The class name is the UTC timestamp in the format of mYYMMDD_HHMMSS_pluginHandle_migrationName.
  */
 class m140430_122214_import_ImportHistory extends BaseMigration
 {

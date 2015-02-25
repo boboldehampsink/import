@@ -2,20 +2,20 @@
 namespace Craft;
 
 /**
- * Import Test
+ * Import Test.
  *
  * Unit tests for Import Plugin
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class ImportTest extends BaseTest
 {
     /**
-     * Load plugin component
+     * Load plugin component.
      */
     public function setUp()
     {
@@ -25,7 +25,7 @@ class ImportTest extends BaseTest
     }
 
     /**
-     * Test history log detail
+     * Test history log detail.
      */
     public function testHistoryShowLog()
     {
@@ -36,7 +36,7 @@ class ImportTest extends BaseTest
     }
 
     /**
-     * Test history logging
+     * Test history logging.
      */
     public function testHistoryLog()
     {
@@ -46,7 +46,7 @@ class ImportTest extends BaseTest
     }
 
     /**
-     * Test preparing value for elementmodel
+     * Test preparing value for elementmodel.
      */
     public function testPrepForElementModel()
     {
@@ -57,7 +57,7 @@ class ImportTest extends BaseTest
     }
 
     /**
-     * Test preparing value for field type
+     * Test preparing value for field type.
      */
     public function testPrepForFieldType()
     {

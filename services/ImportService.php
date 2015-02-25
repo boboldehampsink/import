@@ -2,27 +2,30 @@
 namespace Craft;
 
 /**
- * Import Service
+ * Import Service.
  *
  * Contains common import logic
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class ImportService extends BaseApplicationComponent
 {
     /**
-     * Save log
+     * Save log.
+     *
      * @var array
      */
     public $log = array();
 
     /**
-     * Read CSV columns
-     * @param  string $file
+     * Read CSV columns.
+     *
+     * @param string $file
+     *
      * @return array
      */
     public function columns($file)
@@ -36,8 +39,10 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Get CSV data
-     * @param  string $file
+     * Get CSV data.
+     *
+     * @param string $file
+     *
      * @return array
      */
     public function data($file)
@@ -53,10 +58,11 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Import row
-     * @param  int   $row
-     * @param  array $data
-     * @param  array $settings
+     * Import row.
+     *
+     * @param int   $row
+     * @param array $data
+     * @param array $settings
      */
     public function row($row, array $data, array $settings)
     {
@@ -195,9 +201,10 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Finish importing
-     * @param  array $settings
-     * @param  string $backup
+     * Finish importing.
+     *
+     * @param array  $settings
+     * @param string $backup
      */
     public function finish(array $settings, $backup)
     {
@@ -249,9 +256,11 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Prepare fields for fieldtypes
-     * @param  string &$data
-     * @param  string $handle
+     * Prepare fields for fieldtypes.
+     *
+     * @param string &$data
+     * @param string $handle
+     *
      * @return mixed
      */
     public function prepForFieldType(&$data, $handle)
@@ -556,20 +565,22 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Get service to use for importing
-     * @param  stirng $elementType
+     * Get service to use for importing.
+     *
+     * @param stirng $elementType
+     *
      * @return object|boolean
      */
     public function getService($elementType)
     {
         // Check if there's a service for this element type elsewhere
         $service = craft()->plugins->callFirst('registerImportService', array(
-            'elementType' => $elementType
+            'elementType' => $elementType,
         ));
 
         // If not, do internal check
-        if($service == null) {
-        
+        if ($service == null) {
+
             // Get from right elementType
             $service = 'import_'.strtolower($elementType);
         }
@@ -587,7 +598,9 @@ class ImportService extends BaseApplicationComponent
     /**
      * Function that (almost) mimics Craft's inner slugify process.
      * But... we allow forward slashes to stay, so we can create full uri's.
-     * @param  string $slug
+     *
+     * @param string $slug
+     *
      * @return string
      */
     public function slugify($slug)
@@ -612,10 +625,11 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Function to use when debugging
-     * @param  array $settings
-     * @param  int   $history
-     * @param  int   $step
+     * Function to use when debugging.
+     *
+     * @param array $settings
+     * @param int   $history
+     * @param int   $step
      */
     public function debug(array $settings, $history, $step)
     {
@@ -639,8 +653,10 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Special function that handles csv delimiter detection
-     * @param  string $file
+     * Special function that handles csv delimiter detection.
+     *
+     * @param string $file
+     *
      * @return array
      */
     protected function _open($file)
@@ -682,8 +698,9 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Fires an "onBeforeImportDelete" event
-     * @param  Event  $event
+     * Fires an "onBeforeImportDelete" event.
+     *
+     * @param Event $event
      */
     public function onBeforeImportDelete(Event $event)
     {
@@ -691,8 +708,9 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Fires an "onImportStart" event
-     * @param  Event  $event
+     * Fires an "onImportStart" event.
+     *
+     * @param Event $event
      */
     public function onImportStart(Event $event)
     {
@@ -700,8 +718,9 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Fires an "onImportFinish" event
-     * @param  Event  $event
+     * Fires an "onImportFinish" event.
+     *
+     * @param Event $event
      */
     public function onImportFinish(Event $event)
     {

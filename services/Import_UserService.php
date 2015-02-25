@@ -2,20 +2,21 @@
 namespace Craft;
 
 /**
- * Import User Service
+ * Import User Service.
  *
  * Contains logic for importing users
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class Import_UserService extends BaseApplicationComponent implements IImportElementType
 {
     /**
-     * Return groups
+     * Return groups.
+     *
      * @return array|boolean
      */
     public function getGroups()
@@ -40,8 +41,10 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     }
 
     /**
-     * Return user model with group
+     * Return user model with group.
+     *
      * @param array $settings
+     *
      * @return UserModel
      */
     public function setModel(array $settings)
@@ -53,8 +56,10 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     }
 
     /**
-     * Set user criteria
+     * Set user criteria.
+     *
      * @param array $settings
+     *
      * @return ElementCriteriaModel
      */
     public function setCriteria(array $settings)
@@ -68,8 +73,10 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     }
 
     /**
-     * Delete users
-     * @param  array $elements
+     * Delete users.
+     *
+     * @param array $elements
+     *
      * @return boolean
      */
     public function delete(array $elements)
@@ -87,9 +94,11 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     }
 
     /**
-     * Prepare reserved ElementModel values
-     * @param  array            &$fields
-     * @param  BaseElementModel $element
+     * Prepare reserved ElementModel values.
+     *
+     * @param array            &$fields
+     * @param BaseElementModel $element
+     *
      * @return BaseElementModel
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
@@ -160,9 +169,11 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     }
 
     /**
-     * Save a user
-     * @param  BaseElementModel &$element
-     * @param  array            $settings
+     * Save a user.
+     *
+     * @param BaseElementModel &$element
+     * @param array            $settings
+     *
      * @return boolean
      */
     public function save(BaseElementModel &$element, array $settings)
@@ -180,9 +191,10 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     }
 
     /**
-     * Executes after saving a user
-     * @param  array            $fields
-     * @param  BaseElementModel $element
+     * Executes after saving a user.
+     *
+     * @param array            $fields
+     * @param BaseElementModel $element
      */
     public function callback(array $fields, BaseElementModel $element)
     {

@@ -2,20 +2,21 @@
 namespace Craft;
 
 /**
- * Import Entry Service
+ * Import Entry Service.
  *
  * Contains logic for importing entries
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class Import_EntryService extends BaseApplicationComponent implements IImportElementType
 {
     /**
-     * Return groups
+     * Return groups.
+     *
      * @return array
      */
     public function getGroups()
@@ -35,8 +36,10 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     }
 
     /**
-     * Return entry model with group
+     * Return entry model with group.
+     *
      * @param array $settings
+     *
      * @return EntryModel
      */
     public function setModel(array $settings)
@@ -50,8 +53,10 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     }
 
     /**
-     * Set entry criteria
+     * Set entry criteria.
+     *
      * @param array $settings
+     *
      * @return ElementCriteriaModel
      */
     public function setCriteria(array $settings)
@@ -69,8 +74,10 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     }
 
     /**
-     * Delete entries
-     * @param  array $elements
+     * Delete entries.
+     *
+     * @param array $elements
+     *
      * @return boolean
      */
     public function delete(array $elements)
@@ -80,9 +87,11 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     }
 
     /**
-     * Prepare reserved ElementModel values
-     * @param  array            &$fields
-     * @param  BaseElementModel $element
+     * Prepare reserved ElementModel values.
+     *
+     * @param array            &$fields
+     * @param BaseElementModel $element
+     *
      * @return BaseElementModel
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
@@ -202,9 +211,11 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     }
 
     /**
-     * Save an entry
-     * @param  BaseElementModel &$element
-     * @param  array            $settings
+     * Save an entry.
+     *
+     * @param BaseElementModel &$element
+     * @param array            $settings
+     *
      * @return boolean
      */
     public function save(BaseElementModel &$element, array $settings)
@@ -226,9 +237,10 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     }
 
     /**
-     * Executes after saving an entry
-     * @param  array            $fields
-     * @param  BaseElementModel $element
+     * Executes after saving an entry.
+     *
+     * @param array            $fields
+     * @param BaseElementModel $element
      */
     public function callback(array $fields, BaseElementModel $element)
     {

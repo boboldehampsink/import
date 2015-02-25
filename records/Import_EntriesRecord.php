@@ -2,20 +2,21 @@
 namespace Craft;
 
 /**
- * Import Entries Record
+ * Import Entries Record.
  *
  * Represents the import_entries table
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class Import_EntriesRecord extends BaseRecord
 {
     /**
-     * Return table name
+     * Return table name.
+     *
      * @return string
      */
     public function getTableName()
@@ -24,7 +25,8 @@ class Import_EntriesRecord extends BaseRecord
     }
 
     /**
-     * Return table relations
+     * Return table relations.
+     *
      * @return array
      */
     public function defineRelations()

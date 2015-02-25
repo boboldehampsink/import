@@ -2,18 +2,19 @@
 namespace Craft;
 
 /**
- * Import Plugin
+ * Import Plugin.
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class ImportPlugin extends BasePlugin
 {
     /**
-     * Return plugin name
+     * Return plugin name.
+     *
      * @return string
      */
     public function getName()
@@ -22,7 +23,8 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Return plugin version
+     * Return plugin version.
+     *
      * @return string
      */
     public function getVersion()
@@ -31,7 +33,8 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Return plugin developer
+     * Return plugin developer.
+     *
      * @return string
      */
     public function getDeveloper()
@@ -40,7 +43,8 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Return plugin developer url
+     * Return plugin developer url.
+     *
      * @return string
      */
     public function getDeveloperUrl()
@@ -49,7 +53,8 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Return if plugin has cp section
+     * Return if plugin has cp section.
+     *
      * @return boolean
      */
     public function hasCpSection()
@@ -58,7 +63,8 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Register CP routes
+     * Register CP routes.
+     *
      * @return array
      */
     public function registerCpRoutes()
@@ -69,7 +75,8 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Register permissions
+     * Register permissions.
+     *
      * @return array
      */
     public function registerUserPermissions()
@@ -83,9 +90,11 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Register ImportOperation hook
-     * @param  array    &$data
-     * @param  string   $handle
+     * Register ImportOperation hook.
+     *
+     * @param array  &$data
+     * @param string $handle
+     *
      * @return string
      */
     public function registerImportOperation(array &$data, $handle)
@@ -94,7 +103,7 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Check if the plugin meets the requirements, else uninstall again
+     * Check if the plugin meets the requirements, else uninstall again.
      */
     public function onAfterInstall()
     {
@@ -122,7 +131,7 @@ class ImportPlugin extends BasePlugin
     }
 
     /**
-     * Run on plugin initialisation
+     * Run on plugin initialisation.
      */
     public function init()
     {

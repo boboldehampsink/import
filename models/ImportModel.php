@@ -2,20 +2,20 @@
 namespace Craft;
 
 /**
- * Import Model
+ * Import Model.
  *
  * Contains common constants and file upload validation
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class ImportModel extends BaseModel
 {
     /**
-     * Filetypes
+     * Filetypes.
      */
     const TypeCSV     = 'text/csv';
     const TypeCSVWin  = 'text/comma-separated-values';
@@ -27,21 +27,21 @@ class ImportModel extends BaseModel
     const TypeCSVOth  = 'application/octet-stream';
 
     /**
-     * Behaviors
+     * Behaviors.
      */
     const BehaviorAppend  = 'append';
     const BehaviorReplace = 'replace';
     const BehaviorDelete  = 'delete';
 
     /**
-     * Statuses
+     * Statuses.
      */
     const StatusStarted  = 'started';
     const StatusFinished = 'finished';
     const StatusReverted = 'reverted';
 
     /**
-     * Fieldtypes
+     * Fieldtypes.
      */
     const FieldTypeEntries      = 'Entries';
     const FieldTypeCategories   = 'Categories';
@@ -57,14 +57,15 @@ class ImportModel extends BaseModel
     const FieldTypeTags         = 'Tags';
 
     /**
-     * Delimiters
+     * Delimiters.
      */
     const DelimiterSemicolon = ';';
     const DelimiterComma     = ',';
     const DelimiterPipe      = '|';
 
     /**
-     * Use model validation to validate filetype
+     * Use model validation to validate filetype.
+     *
      * @return array
      */
     protected function defineAttributes()

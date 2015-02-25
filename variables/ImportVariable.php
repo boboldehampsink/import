@@ -2,21 +2,23 @@
 namespace Craft;
 
 /**
- * Import Variable
+ * Import Variable.
  *
  * Injects logics into the templates
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
  * @license   http://buildwithcraft.com/license Craft License Agreement
+ *
  * @link      http://github.com/boboldehampsink
- * @package   craft.plugins.import
  */
 class ImportVariable
 {
     /**
-     * Get groups for service
-     * @param  string $elementType
+     * Get groups for service.
+     *
+     * @param string $elementType
+     *
      * @return array|boolean
      */
     public function getGroups($elementType)
@@ -32,7 +34,8 @@ class ImportVariable
     }
 
     /**
-     * Show history overview
+     * Show history overview.
+     *
      * @return array
      */
     public function history()
@@ -42,8 +45,10 @@ class ImportVariable
     }
 
     /**
-     * Show history detail
-     * @param  int $history
+     * Show history detail.
+     *
+     * @param int $history
+     *
      * @return array
      */
     public function log($history)
