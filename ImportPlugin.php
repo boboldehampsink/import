@@ -1,35 +1,66 @@
 <?php
 namespace Craft;
 
+/**
+ * Import Plugin
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class ImportPlugin extends BasePlugin
 {
-
+    /**
+     * Return plugin name
+     * @return string
+     */
     public function getName()
     {
         return Craft::t('Import');
     }
 
+    /**
+     * Return plugin version
+     * @return string
+     */
     public function getVersion()
     {
         return '0.8.15';
     }
 
+    /**
+     * Return plugin developer
+     * @return string
+     */
     public function getDeveloper()
     {
         return 'Bob Olde Hampsink';
     }
 
+    /**
+     * Return plugin developer url
+     * @return string
+     */
     public function getDeveloperUrl()
     {
         return 'https://github.com/boboldehampsink';
     }
 
+    /**
+     * Return if plugin has cp section
+     * @return boolean
+     */
     public function hasCpSection()
     {
         return true;
     }
 
-    // Register CP routes
+    /**
+     * Register CP routes
+     * @return array
+     */
     public function registerCpRoutes()
     {
         return array(
@@ -37,7 +68,10 @@ class ImportPlugin extends BasePlugin
         );
     }
 
-    // Register permissions
+    /**
+     * Register permissions
+     * @return array
+     */
     public function registerUserPermissions()
     {
         return array(
@@ -48,13 +82,20 @@ class ImportPlugin extends BasePlugin
         );
     }
 
-    // Register ImportOperation hook
-    public function registerImportOperation(&$data, $handle)
+    /**
+     * Register ImportOperation hook
+     * @param  array    &$data
+     * @param  string   $handle
+     * @return string
+     */
+    public function registerImportOperation(array &$data, $handle)
     {
         return craft()->import->prepForFieldType($data, $handle);
     }
 
-    // Check if the plugin meets the requirements, else uninstall again
+    /**
+     * Check if the plugin meets the requirements, else uninstall again
+     */
     public function onAfterInstall()
     {
 
@@ -78,5 +119,14 @@ class ImportPlugin extends BasePlugin
                 'build' => $minBuild,
             )));
         }
+    }
+
+    /**
+     * Run on plugin initialisation
+     */
+    public function init()
+    {
+        // Import Import Element Type Interface
+        Craft::import('plugins.import.services.IImportElementType');
     }
 }

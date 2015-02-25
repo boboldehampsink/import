@@ -1,12 +1,25 @@
 <?php
 namespace Craft;
 
-class Import_UserService extends BaseApplicationComponent
+/**
+ * Import User Service
+ *
+ * Contains logic for importing users
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
+class Import_UserService extends BaseApplicationComponent implements IImportElementType
 {
-
+    /**
+     * Return groups
+     * @return array|boolean
+     */
     public function getGroups()
     {
-
         // Check if usergroups are allowed in this installation
         if (craft()->getEdition() == Craft::Pro) {
 
@@ -26,18 +39,26 @@ class Import_UserService extends BaseApplicationComponent
         return false;
     }
 
-    public function setModel($settings)
+    /**
+     * Return user model with group
+     * @param array $settings
+     * @return UserModel
+     */
+    public function setModel(array $settings)
     {
-
         // Set up new user model
         $element = new UserModel();
 
         return $element;
     }
 
-    public function setCriteria($settings)
+    /**
+     * Set user criteria
+     * @param array $settings
+     * @return ElementCriteriaModel
+     */
+    public function setCriteria(array $settings)
     {
-
         // Match with current data
         $criteria = craft()->elements->getCriteria(ElementType::User);
         $criteria->limit = null;
@@ -46,7 +67,12 @@ class Import_UserService extends BaseApplicationComponent
         return $criteria;
     }
 
-    public function delete($elements)
+    /**
+     * Delete users
+     * @param  array $elements
+     * @return boolean
+     */
+    public function delete(array $elements)
     {
         $return = true;
 
@@ -60,8 +86,13 @@ class Import_UserService extends BaseApplicationComponent
         return $return;
     }
 
-    // Prepare reserved ElementModel values
-    public function prepForElementModel(&$fields, UserModel $element)
+    /**
+     * Prepare reserved ElementModel values
+     * @param  array            &$fields
+     * @param  BaseElementModel $element
+     * @return BaseElementModel
+     */
+    public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
 
         // Set username
@@ -128,9 +159,14 @@ class Import_UserService extends BaseApplicationComponent
         return $element;
     }
 
-    public function save(UserModel &$element, $settings)
+    /**
+     * Save a user
+     * @param  BaseElementModel &$element
+     * @param  array            $settings
+     * @return boolean
+     */
+    public function save(BaseElementModel &$element, array $settings)
     {
-
         // Save user
         if (craft()->users->saveUser($element)) {
 
@@ -143,7 +179,12 @@ class Import_UserService extends BaseApplicationComponent
         return false;
     }
 
-    public function callback($fields, UserModel $element)
+    /**
+     * Executes after saving a user
+     * @param  array            $fields
+     * @param  BaseElementModel $element
+     */
+    public function callback(array $fields, BaseElementModel $element)
     {
         // No callback for users
     }

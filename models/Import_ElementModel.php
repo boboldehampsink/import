@@ -1,9 +1,19 @@
 <?php
 namespace Craft;
 
+/**
+ * Import Element Model
+ *
+ * Contains the constants for element field handles
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class Import_ElementModel extends BaseModel
 {
-
     const HandleTitle        = 'title';
     const HandleAuthor       = 'authorId';
     const HandlePostDate     = 'postDate';

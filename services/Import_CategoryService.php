@@ -1,19 +1,36 @@
 <?php
 namespace Craft;
 
-class Import_CategoryService extends BaseApplicationComponent
+/**
+ * Import Category Service
+ *
+ * Contains logic for importing categories
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
+class Import_CategoryService extends BaseApplicationComponent implements IImportElementType
 {
-
+    /**
+     * Return groups
+     * @return array
+     */
     public function getGroups()
     {
-
         // Return editable groups for user
         return craft()->categories->getEditableGroups();
     }
 
-    public function setModel($settings)
+    /**
+     * Return category model with group
+     * @param array $settings
+     * @return CategoryModel
+     */
+    public function setModel(array $settings)
     {
-
         // Set up new category model
         $element = new CategoryModel();
         $element->groupId = $settings['elementvars']['group'];
@@ -21,7 +38,12 @@ class Import_CategoryService extends BaseApplicationComponent
         return $element;
     }
 
-    public function setCriteria($settings)
+    /**
+     * Set category criteria
+     * @param array $settings
+     * @return ElementCriteriaModel
+     */
+    public function setCriteria(array $settings)
     {
 
         // Match with current data
@@ -35,17 +57,25 @@ class Import_CategoryService extends BaseApplicationComponent
         return $criteria;
     }
 
-    public function delete($elements)
+    /**
+     * Delete categories
+     * @param  array $elements
+     * @return boolean
+     */
+    public function delete(array $elements)
     {
-
         // Delete categories
         return craft()->categories->deleteCategory($elements);
     }
 
-    // Prepare reserved ElementModel values
-    public function prepForElementModel(&$fields, CategoryModel $element)
+    /**
+     * Prepare reserved ElementModel values
+     * @param  array            &$fields
+     * @param  BaseElementModel $element
+     * @return BaseElementModel
+     */
+    public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
-
         // Set slug
         $slug = Import_ElementModel::HandleSlug;
         if (isset($fields[$slug])) {
@@ -64,84 +94,93 @@ class Import_CategoryService extends BaseApplicationComponent
         return $element;
     }
 
-    public function save(CategoryModel &$element, $settings)
+    /**
+     * Save a category
+     * @param  BaseElementModel &$element
+     * @param  array            $settings
+     * @return boolean
+     */
+    public function save(BaseElementModel &$element, array $settings)
     {
-
         // Save category
         return craft()->categories->saveCategory($element);
     }
 
-    public function callback($fields, CategoryModel $element)
+    /**
+     * Executes after saving a category
+     * @param  array            $fields
+     * @param  BaseElementModel $element
+     */
+    public function callback(array $fields, BaseElementModel $element)
     {
-
         // Set parent or ancestors
         $parent = Import_ElementModel::HandleParent;
         $ancestors = Import_ElementModel::HandleAncestors;
 
         if (isset($fields[$parent])) {
 
-           // Get data
-           $data = $fields[$parent];
+            // Get data
+            $data = $fields[$parent];
 
             // Fresh up $data
-           $data = str_replace("\n", "", $data);
+            $data = str_replace("\n", "", $data);
             $data = str_replace("\r", "", $data);
             $data = trim($data);
 
-           // Don't connect empty fields
-           if (!empty($data)) {
+            // Don't connect empty fields
+            if (!empty($data)) {
 
-               // Find matching element
-               $criteria = craft()->elements->getCriteria(ElementType::Category);
-               $criteria->groupId = $element->groupId;
+                // Find matching element
+                $criteria = craft()->elements->getCriteria(ElementType::Category);
+                $criteria->groupId = $element->groupId;
 
-               // Exact match
-               $criteria->search = '"'.$data.'"';
+                // Exact match
+                $criteria->search = '"'.$data.'"';
 
-               // Return the first found element for connecting
-               if ($criteria->total()) {
+                // Return the first found element for connecting
+                if ($criteria->total()) {
 
-                   // Get category group
-                   $categoryGroup = craft()->categories->getGroupById($element->groupId);
+                    // Get category group
+                    $categoryGroup = craft()->categories->getGroupById($element->groupId);
 
-                   // Set structure
-                   craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
-               }
-           }
+                    // Set structure
+                    craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
+                }
+            }
 
             unset($fields[$parent]);
         } elseif (isset($fields[$ancestors])) {
 
-           // Get data
-           $data = $fields[$ancestors];
+            // Get data
+            $data = $fields[$ancestors];
 
             // Fresh up $data
-           $data = str_replace("\n", "", $data);
+            $data = str_replace("\n", "", $data);
             $data = str_replace("\r", "", $data);
             $data = trim($data);
 
-           // Don't connect empty fields
-           if (!empty($data)) {
+            // Don't connect empty fields
+            if (!empty($data)) {
 
-               // This we append before the slugified path
-               $categoryUrl = str_replace('{slug}', '', $element->getUrlFormat());
+                // This we append before the slugified path
+                $categoryUrl = str_replace('{slug}', '', $element->getUrlFormat());
 
-               // Find matching element by URI (dirty, not all categories have URI's)
-               $criteria = craft()->elements->getCriteria(ElementType::Category);
-               $criteria->groupId = $element->groupId;
-               $criteria->uri = $categoryUrl.craft()->import->slugify($data);
-               $criteria->limit = 1;
+                // Find matching element by URI (dirty, not all categories have URI's)
+                $criteria = craft()->elements->getCriteria(ElementType::Category);
+                $criteria->groupId = $element->groupId;
+                $criteria->uri = $categoryUrl.craft()->import->slugify($data);
+                $criteria->limit = 1;
 
-               // Return the first found element for connecting
-               if ($criteria->total()) {
+                // Return the first found element for connecting
+                if ($criteria->total()) {
 
-                   // Get category group
-                   $categoryGroup = craft()->categories->getGroupById($element->groupId);
+                    // Get category group
+                    $categoryGroup = craft()->categories->getGroupById($element->groupId);
 
-                   // Set structure
-                   craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
-               }
-           }
+                    // Set structure
+                    craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
+                }
+            }
 
             unset($fields[$ancestors]);
         }

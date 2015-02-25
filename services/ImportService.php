@@ -1,11 +1,30 @@
 <?php
 namespace Craft;
 
+/**
+ * Import Service
+ *
+ * Contains common import logic
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class ImportService extends BaseApplicationComponent
 {
-
+    /**
+     * Save log
+     * @var array
+     */
     public $log = array();
 
+    /**
+     * Read CSV columns
+     * @param  string $file
+     * @return array
+     */
     public function columns($file)
     {
 
@@ -16,9 +35,13 @@ class ImportService extends BaseApplicationComponent
         return array_shift($data);
     }
 
+    /**
+     * Get CSV data
+     * @param  string $file
+     * @return array
+     */
     public function data($file)
     {
-
         // Open CSV file
         $data = $this->_open($file);
 
@@ -29,9 +52,14 @@ class ImportService extends BaseApplicationComponent
         return $data;
     }
 
-    public function row($row, $data, $settings)
+    /**
+     * Import row
+     * @param  int   $row
+     * @param  array $data
+     * @param  array $settings
+     */
+    public function row($row, array $data, array $settings)
     {
-
         // Get max power
         craft()->config->maxPowerCaptain();
 
@@ -164,7 +192,12 @@ class ImportService extends BaseApplicationComponent
         }
     }
 
-    public function finish($settings, $backup)
+    /**
+     * Finish importing
+     * @param  array $settings
+     * @param  string $backup
+     */
+    public function finish(array $settings, $backup)
     {
         craft()->import_history->end($settings['history'], ImportModel::StatusFinished);
 
@@ -213,7 +246,12 @@ class ImportService extends BaseApplicationComponent
         }
     }
 
-    // Prepare fields for fieldtypes
+    /**
+     * Prepare fields for fieldtypes
+     * @param  string &$data
+     * @param  string $handle
+     * @return mixed
+     */
     public function prepForFieldType(&$data, $handle)
     {
 
@@ -515,11 +553,14 @@ class ImportService extends BaseApplicationComponent
         return $data;
     }
 
-    // Function that (almost) mimics Craft's inner slugify process.
-    // But... we allow forward slashes to stay, so we can create full uri's.
+    /**
+     * Function that (almost) mimics Craft's inner slugify process.
+     * But... we allow forward slashes to stay, so we can create full uri's.
+     * @param  string $slug
+     * @return string
+     */
     public function slugify($slug)
     {
-
         // Remove HTML tags
         $slug = preg_replace('/<(.*?)>/u', '', $slug);
 
@@ -539,7 +580,13 @@ class ImportService extends BaseApplicationComponent
         return $slug;
     }
 
-    public function debug($settings, $history, $step)
+    /**
+     * Function to use when debugging
+     * @param  array $settings
+     * @param  int   $history
+     * @param  int   $step
+     */
+    public function debug(array $settings, $history, $step)
     {
 
         // Open file
@@ -560,7 +607,11 @@ class ImportService extends BaseApplicationComponent
         craft()->request->redirect('import/history');
     }
 
-    // Special function that handles csv delimiter detection
+    /**
+     * Special function that handles csv delimiter detection
+     * @param  string $file
+     * @return array
+     */
     protected function _open($file)
     {
         $data = array();
@@ -599,19 +650,28 @@ class ImportService extends BaseApplicationComponent
         return $data;
     }
 
-    // Fires an "onBeforeImportDelete" event
+    /**
+     * Fires an "onBeforeImportDelete" event
+     * @param  Event  $event
+     */
     public function onBeforeImportDelete(Event $event)
     {
         $this->raiseEvent('onBeforeImportDelete', $event);
     }
 
-    // Fires an "onImportStart" event
+    /**
+     * Fires an "onImportStart" event
+     * @param  Event  $event
+     */
     public function onImportStart(Event $event)
     {
         $this->raiseEvent('onImportStart', $event);
     }
 
-    // Fires an "onImportFinish" event
+    /**
+     * Fires an "onImportFinish" event
+     * @param  Event  $event
+     */
     public function onImportFinish(Event $event)
     {
         $this->raiseEvent('onImportFinish', $event);

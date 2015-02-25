@@ -1,12 +1,24 @@
 <?php
 namespace Craft;
 
+/**
+ * Import History Controller
+ *
+ * Request actions for Import History
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class Import_HistoryController extends BaseController
 {
-
+    /**
+     * Reverts an import
+     */
     public function actionRevert()
     {
-
         // If entry revisions are supported
         if (craft()->getEdition() == Craft::Pro) {
 
@@ -36,6 +48,10 @@ class Import_HistoryController extends BaseController
         $this->redirect('import/history');
     }
 
+    /**
+     * Downloads an import file
+     * @throws HttpException If not found
+     */
     public function actionDownload()
     {
 
@@ -59,6 +75,9 @@ class Import_HistoryController extends BaseController
         throw new HttpException(404);
     }
 
+    /**
+     * Deletes an import from the history
+     */
     public function actionDelete()
     {
 

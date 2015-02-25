@@ -1,12 +1,25 @@
 <?php
 namespace Craft;
 
-class Import_EntryService extends BaseApplicationComponent
+/**
+ * Import Entry Service
+ *
+ * Contains logic for importing entries
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
+class Import_EntryService extends BaseApplicationComponent implements IImportElementType
 {
-
+    /**
+     * Return groups
+     * @return array
+     */
     public function getGroups()
     {
-
         // Get editable sections for user
         $editable = craft()->sections->getEditableSections();
 
@@ -21,9 +34,13 @@ class Import_EntryService extends BaseApplicationComponent
         return $sections;
     }
 
-    public function setModel($settings)
+    /**
+     * Return entry model with group
+     * @param array $settings
+     * @return EntryModel
+     */
+    public function setModel(array $settings)
     {
-
         // Set up new entry model
         $element = new EntryModel();
         $element->sectionId = $settings['elementvars']['section'];
@@ -32,9 +49,13 @@ class Import_EntryService extends BaseApplicationComponent
         return $element;
     }
 
-    public function setCriteria($settings)
+    /**
+     * Set entry criteria
+     * @param array $settings
+     * @return ElementCriteriaModel
+     */
+    public function setCriteria(array $settings)
     {
-
         // Match with current data
         $criteria = craft()->elements->getCriteria(ElementType::Entry);
         $criteria->limit = null;
@@ -47,17 +68,25 @@ class Import_EntryService extends BaseApplicationComponent
         return $criteria;
     }
 
-    public function delete($elements)
+    /**
+     * Delete entries
+     * @param  array $elements
+     * @return boolean
+     */
+    public function delete(array $elements)
     {
-
         // Delete entry
         return craft()->entries->deleteEntry($elements);
     }
 
-    // Prepare reserved ElementModel values
-    public function prepForElementModel(&$fields, EntryModel $element)
+    /**
+     * Prepare reserved ElementModel values
+     * @param  array            &$fields
+     * @param  BaseElementModel $element
+     * @return BaseElementModel
+     */
+    public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
-
         // Set author
         $author = Import_ElementModel::HandleAuthor;
         if (isset($fields[$author])) {
@@ -108,62 +137,62 @@ class Import_EntryService extends BaseApplicationComponent
 
         if (isset($fields[$parent])) {
 
-           // Get data
-           $data = $fields[$parent];
+            // Get data
+            $data = $fields[$parent];
 
             // Fresh up $data
-           $data = str_replace("\n", "", $data);
+            $data = str_replace("\n", "", $data);
             $data = str_replace("\r", "", $data);
             $data = trim($data);
 
-           // Don't connect empty fields
-           if (!empty($data)) {
+            // Don't connect empty fields
+            if (!empty($data)) {
 
-               // Find matching element
-               $criteria = craft()->elements->getCriteria(ElementType::Entry);
-               $criteria->sectionId = $element->sectionId;
+                // Find matching element
+                $criteria = craft()->elements->getCriteria(ElementType::Entry);
+                $criteria->sectionId = $element->sectionId;
 
-               // Exact match
-               $criteria->search = '"'.$data.'"';
+                // Exact match
+                $criteria->search = '"'.$data.'"';
 
-               // Return the first found element for connecting
-               if ($criteria->total()) {
-                   $element->$parent = $criteria->first()->id;
-               }
-           }
+                // Return the first found element for connecting
+                if ($criteria->total()) {
+                    $element->$parent = $criteria->first()->id;
+                }
+            }
 
             unset($fields[$parent]);
         } elseif (isset($fields[$ancestors])) {
 
-           // Get data
-           $data = $fields[$ancestors];
+            // Get data
+            $data = $fields[$ancestors];
 
             // Fresh up $data
-           $data = str_replace("\n", "", $data);
+            $data = str_replace("\n", "", $data);
             $data = str_replace("\r", "", $data);
             $data = trim($data);
 
-           // Don't connect empty fields
-           if (!empty($data)) {
+            // Don't connect empty fields
+            if (!empty($data)) {
 
-               // Get section data
-               $section = new SectionModel();
-               $section->id = $element->sectionId;
+                // Get section data
+                $section = new SectionModel();
+                $section->id = $element->sectionId;
 
-               // This we append before the slugified path
-               $sectionUrl = str_replace('{slug}', '', $section->getUrlFormat());
+                // This we append before the slugified path
+                $sectionUrl = str_replace('{slug}', '', $section->getUrlFormat());
 
-               // Find matching element by URI (dirty, not all structures have URI's)
-               $criteria = craft()->elements->getCriteria(ElementType::Entry);
-               $criteria->sectionId = $element->sectionId;
-               $criteria->uri = $sectionUrl.craft()->import->slugify($data);
-               $criteria->limit = 1;
+                // Find matching element by URI (dirty, not all structures have URI's)
+                $criteria = craft()->elements->getCriteria(ElementType::Entry);
+                $criteria->sectionId = $element->sectionId;
+                $criteria->uri = $sectionUrl.craft()->import->slugify($data);
+                $criteria->limit = 1;
 
-               // Return the first found element for connecting
-               if ($criteria->total()) {
-                   $element->$parent = $criteria->first()->id;
-               }
-           }
+                // Return the first found element for connecting
+                if ($criteria->total()) {
+                    $element->$parent = $criteria->first()->id;
+                }
+            }
 
             unset($fields[$ancestors]);
         }
@@ -172,9 +201,14 @@ class Import_EntryService extends BaseApplicationComponent
         return $element;
     }
 
-    public function save(EntryModel &$element, $settings)
+    /**
+     * Save an entry
+     * @param  BaseElementModel &$element
+     * @param  array            $settings
+     * @return boolean
+     */
+    public function save(BaseElementModel &$element, array $settings)
     {
-
         // Save user
         if (craft()->entries->saveEntry($element)) {
 
@@ -191,7 +225,12 @@ class Import_EntryService extends BaseApplicationComponent
         return false;
     }
 
-    public function callback($fields, EntryModel $element)
+    /**
+     * Executes after saving an entry
+     * @param  array            $fields
+     * @param  BaseElementModel $element
+     */
+    public function callback(array $fields, BaseElementModel $element)
     {
         // No callback for entries
     }

@@ -1,12 +1,25 @@
 <?php
 namespace Craft;
 
+/**
+ * Import History Service
+ *
+ * Contains logic for showing import history
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class Import_HistoryService extends BaseApplicationComponent
 {
-
+    /**
+     * Show all log entries
+     * @return array
+     */
     public function show()
     {
-
         // Set criteria
         $criteria = new \CDbCriteria();
         $criteria->order = 'id desc';
@@ -14,9 +27,13 @@ class Import_HistoryService extends BaseApplicationComponent
         return Import_HistoryRecord::model()->findAll($criteria);
     }
 
+    /**
+     * Show a specific log item
+     * @param  int $history
+     * @return array
+     */
     public function showLog($history)
     {
-
         // Set criteria
         $criteria = new \CDbCriteria();
         $criteria->condition = 'historyId = :history_id';
@@ -48,7 +65,12 @@ class Import_HistoryService extends BaseApplicationComponent
         return $total;
     }
 
-    public function start($settings)
+    /**
+     * Start logging
+     * @param  array $settings
+     * @return int
+     */
+    public function start(array $settings)
     {
         $history              = new Import_HistoryRecord();
         $history->userId      = craft()->userSession->getUser()->id;
@@ -63,7 +85,14 @@ class Import_HistoryService extends BaseApplicationComponent
         return $history->id;
     }
 
-    public function log($history, $line, $errors)
+    /**
+     * Add to log
+     * @param  int $history
+     * @param  int $line
+     * @param  array $errors
+     * @return array
+     */
+    public function log($history, $line, array $errors)
     {
         if (Import_HistoryRecord::model()->findById($history)) {
             $log = new Import_LogRecord();
@@ -77,6 +106,11 @@ class Import_HistoryService extends BaseApplicationComponent
         return $errors;
     }
 
+    /**
+     * Stop logging
+     * @param  int $history
+     * @param  string $status
+     */
     public function end($history, $status)
     {
         $history = Import_HistoryRecord::model()->findById($history);
@@ -85,12 +119,20 @@ class Import_HistoryService extends BaseApplicationComponent
         $history->save(false);
     }
 
+    /**
+     * Clear history
+     * @param  int $history
+     */
     public function clear($history)
     {
-
         // TODO
     }
 
+    /**
+     * Save entry version
+     * @param  int $history
+     * @param  int $entry
+     */
     public function version($history, $entry)
     {
 

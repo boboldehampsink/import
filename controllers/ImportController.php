@@ -1,9 +1,22 @@
 <?php
 namespace Craft;
 
+/**
+ * Import Controller
+ *
+ * Request actions for importing
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class ImportController extends BaseController
 {
-
+    /**
+     * Get available entry types
+     */
     public function actionGetEntryTypes()
     {
 
@@ -22,7 +35,9 @@ class ImportController extends BaseController
         $this->returnJson($entrytypes);
     }
 
-    // Upload file and process it for mapping
+    /**
+     * Upload file and process it for mapping
+     */
     public function actionUpload()
     {
 
@@ -67,7 +82,9 @@ class ImportController extends BaseController
         }
     }
 
-    // Start import task
+    /**
+     * Start import task
+     */
     public function actionImport()
     {
 
