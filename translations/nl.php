@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Dutch language
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 return array(
     'Import' => 'Importeren',
     '{plugin} only works on Craft build {build} or higher' => '{plugin} werkt alleen met Craft build {build} of hoger',

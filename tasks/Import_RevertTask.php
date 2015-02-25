@@ -1,9 +1,23 @@
 <?php
 namespace Craft;
 
+/**
+ * Import Revert Task
+ *
+ * Contains logic for reverting imports
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class Import_RevertTask extends BaseTask
 {
-
+    /**
+     * Define settings
+     * @return array
+     */
     protected function defineSettings()
     {
         return array(
@@ -11,11 +25,19 @@ class Import_RevertTask extends BaseTask
         );
     }
 
+    /**
+     * Return description
+     * @return string
+     */
     public function getDescription()
     {
         return Craft::t('Revert Import');
     }
 
+    /**
+     * Return total steps
+     * @return int
+     */
     public function getTotalSteps()
     {
 
@@ -26,6 +48,11 @@ class Import_RevertTask extends BaseTask
         return count($this->getSettings()->entries);
     }
 
+    /**
+     * Run step
+     * @param  int $step
+     * @return boolean
+     */
     public function runStep($step)
     {
 

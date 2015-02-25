@@ -1,17 +1,32 @@
 <?php
 namespace Craft;
 
+/**
+ * Import Test
+ *
+ * Unit tests for Import Plugin
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @license   http://buildwithcraft.com/license Craft License Agreement
+ * @link      http://github.com/boboldehampsink
+ * @package   craft.plugins.import
+ */
 class ImportTest extends BaseTest
 {
-
+    /**
+     * Load plugin component
+     */
     public function setUp()
     {
-
         // Load plugins
         $pluginsService = craft()->getComponent('plugins');
         $pluginsService->loadPlugins();
     }
 
+    /**
+     * Test history log detail
+     */
     public function testHistoryShowLog()
     {
         $log = craft()->import_history->showLog(1);
@@ -20,6 +35,9 @@ class ImportTest extends BaseTest
         $this->assertTrue($log > 0);
     }
 
+    /**
+     * Test history logging
+     */
     public function testHistoryLog()
     {
         $log = craft()->import_history->log($historyId = 1, $line = 0, $errors = array());
@@ -27,6 +45,9 @@ class ImportTest extends BaseTest
         $this->assertSame($log, $errors);
     }
 
+    /**
+     * Test preparing value for elementmodel
+     */
     public function testPrepForElementModel()
     {
         $fields = array('title' => 'test');
@@ -35,6 +56,9 @@ class ImportTest extends BaseTest
         $this->assertTrue($entry instanceof EntryModel);
     }
 
+    /**
+     * Test preparing value for field type
+     */
     public function testPrepForFieldType()
     {
         $data = ' u0';
