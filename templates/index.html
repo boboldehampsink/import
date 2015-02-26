@@ -19,7 +19,7 @@
         <input type="hidden" name="action" value="import/upload">
         
         {% set elementTypes = {} %}
-        {% for elementType, properties in craft.elements.getAllElementTypes if craft.import.getGroups(elementType) %}
+        {% for elementType in craft.elements.getAllElementTypes if craft.import.getGroups(elementType.getClassHandle()) %}
             {% set elementTypes = elementTypes|merge([elementType]) %}
         {% endfor %}
         
@@ -42,7 +42,7 @@
                                 <div class="select">
                                     <select name="import[type]" id="types">
                                     {% for elementType in elementTypes %}
-                                        <option value="{{ elementType }}">{{ elementType|t }}</option>
+                                        <option value="{{ elementType.getClassHandle() }}">{{ elementType.getName() }}</option>
                                     {% endfor %}
                                     </select>
                                 </div>
@@ -53,7 +53,7 @@
             </thead>
             
             {% for elementType in elementTypes %}
-                {% include craft.import.getTemplate(elementType) %}
+                {% include craft.import.getTemplate(elementType.getClassHandle()) %}
             {% endfor %}
             
             <tbody>
