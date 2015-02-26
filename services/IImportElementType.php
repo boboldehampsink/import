@@ -15,6 +15,13 @@ namespace Craft;
 interface IImportElementType
 {
     /**
+     * Return import template.
+     *
+     * @return string
+     */
+    public function getTemplate();
+
+    /**
      * Return groups.
      */
     public function getGroups();

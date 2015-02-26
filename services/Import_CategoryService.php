@@ -15,6 +15,16 @@ namespace Craft;
 class Import_CategoryService extends BaseApplicationComponent implements IImportElementType
 {
     /**
+     * Return import template.
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return 'import/types/category/_upload';
+    }
+
+    /**
      * Return groups.
      *
      * @return array

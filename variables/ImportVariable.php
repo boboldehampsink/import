@@ -34,6 +34,25 @@ class ImportVariable
     }
 
     /**
+     * Get template for service.
+     *
+     * @param string $elementType
+     *
+     * @return array|boolean
+     */
+    public function getTemplate($elementType)
+    {
+        // Check if elementtype can be imported
+        if ($service = craft()->import->getService($elementType)) {
+
+            // Return template
+            return $service->getTemplate();
+        }
+
+        return false;
+    }
+
+    /**
      * Show history overview.
      *
      * @return array

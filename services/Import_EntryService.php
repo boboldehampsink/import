@@ -15,6 +15,16 @@ namespace Craft;
 class Import_EntryService extends BaseApplicationComponent implements IImportElementType
 {
     /**
+     * Return import template.
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return 'import/types/entry/_upload';
+    }
+
+    /**
      * Return groups.
      *
      * @return array
