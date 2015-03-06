@@ -66,9 +66,6 @@ class ImportService extends BaseApplicationComponent
      */
     public function row($row, array $data, array $settings)
     {
-        // Get max power
-        craft()->config->maxPowerCaptain();
-
         // See if map and data match (could not be due to malformed csv)
         if (count($settings['map']) != count($data)) {
 
