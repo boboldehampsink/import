@@ -121,6 +121,7 @@
                         </div>
                     </td>
                 </tr>
+                {% if currentUser.can('backup') %}
                 <tr class="importBackup">
                     <td>
                         <div class="field">
@@ -141,6 +142,7 @@
                         </div>
                     </td>
                 </tr>
+                {% endif %}
                 <tr>
                     <td colspan="2" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Next'|t }}"></td>
                 </tr>

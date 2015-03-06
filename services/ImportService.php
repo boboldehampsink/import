@@ -105,11 +105,14 @@ class ImportService extends BaseApplicationComponent
                 }
             }
 
+            // Get current user
+            $currentUser = craft()->userSession->getUser();
+
             // If there's a match...
             if (count($cmodel) && $criteria->count()) {
 
                 // If we're deleting
-                if ($settings['behavior'] == ImportModel::BehaviorDelete) {
+                if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
 
                     // Get elements to delete
                     $elements = $criteria->find();
@@ -137,10 +140,14 @@ class ImportService extends BaseApplicationComponent
 
                     // Skip rest and continue
                     return;
-                } else {
+                } elseif ($currentUser->can('append') || $currentUser->can('replace')) {
 
                     // Fill new EntryModel with match
                     $entry = $criteria->first();
+                } else {
+
+                    // No permissions!
+                    throw new Exception(Craft::t('Tried to import without permission.'));
                 }
             } else {
 
@@ -228,8 +235,11 @@ class ImportService extends BaseApplicationComponent
             $emailSettings = craft()->email->getSettings();
             $email->toEmail = $emailSettings['emailAddress'];
 
+            // Get current user
+            $currentUser = craft()->userSession->getUser();
+
             // Zip the backup
-            if ($settings['backup'] && IOHelper::fileExists($backup)) {
+            if ($currentUser->can('backup') && $settings['backup'] && IOHelper::fileExists($backup)) {
                 $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
                 if (IOHelper::fileExists($destZip)) {
                     IOHelper::deleteFile($destZip, true);

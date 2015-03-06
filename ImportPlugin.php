@@ -86,6 +86,8 @@ class ImportPlugin extends BasePlugin
             ImportModel::BehaviorAppend  => array('label' => Craft::t('Append data')),
             ImportModel::BehaviorReplace => array('label' => Craft::t('Replace data')),
             ImportModel::BehaviorDelete  => array('label' => Craft::t('Delete data')),
+            // Backup permissions
+            ImportModel::Backup          => array('label' => Craft::t('Backup Database')),
         );
     }
 
