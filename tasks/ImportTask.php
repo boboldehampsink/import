@@ -34,10 +34,10 @@ class ImportTask extends BaseTask
             'map'         => AttributeType::Mixed,
             'unique'      => AttributeType::Mixed,
             'type'        => AttributeType::String,
-            'elementvars' => AttributeType::Mixed,
-            'behavior'    => AttributeType::Name,
+            'elementvars' => array(AttributeType::Mixed, 'default' => array()),
+            'behavior'    => array(AttributeType::Name, 'default' => ImportModel::BehaviorAppend),
             'email'       => AttributeType::Email,
-            'backup'      => AttributeType::Bool,
+            'backup'      => array(AttributeType::Bool, 'default' => false),
             'history'     => AttributeType::Number,
         );
     }
