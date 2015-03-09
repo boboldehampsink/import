@@ -64,7 +64,7 @@ class ImportService extends BaseApplicationComponent
      * @param array $data
      * @param array $settings
      */
-    public function row($row, array $data, array $settings)
+    public function row($row, array $data, $settings)
     {
         // See if map and data match (could not be due to malformed csv)
         if (count($settings['map']) != count($data)) {
