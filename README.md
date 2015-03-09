@@ -61,6 +61,12 @@ Map fields
 
 Changelog
 =================
+###0.8.16###
+ - Added a registerImportService hook so you can write an import service for other/your own element type(s)
+ - Author can now be an id, username or emailaddress
+ - Added a backup permission and better security for existing permissions
+ - Added a check to see if the import file (still) exists
+
 ###0.8.15###
  - added an onImportStart event
  - added an modifyImportRow hook (thanks to freddietilley)
