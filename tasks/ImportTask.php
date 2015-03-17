@@ -15,18 +15,11 @@ namespace Craft;
 class ImportTask extends BaseTask
 {
     /**
-     * Settings.
-     *
-     * @var array
-     */
-    protected $_settings;
-
-    /**
      * Backup file name.
      *
      * @var boolean
      */
-    protected $_backupFile = false;
+    protected $backupFile = false;
 
     /**
      * Define settings.
@@ -67,13 +60,13 @@ class ImportTask extends BaseTask
     public function getTotalSteps()
     {
         // Get settings
-        $this->_settings = $this->getSettings()->toArray();
+        $settings = $this->getSettings();
 
         // Delete element template caches before importing
-        craft()->templateCache->deleteCachesByElementType($this->_settings['type']);
+        craft()->templateCache->deleteCachesByElementType($settings->type);
 
         // Take a step for every row
-        return $settings['rows'];
+        return $settings->rows;
     }
 
     /**
@@ -85,22 +78,25 @@ class ImportTask extends BaseTask
      */
     public function runStep($step)
     {
+        // Get settings
+        $settings = $this->getSettings();
+
         // Backup?
-        if ($this->_settings['backup'] && !$step) {
+        if ($settings->backup && !$step) {
 
             // Do the backup
             $backup = new DbBackup();
-            $this->_backupFile = $backup->run();
+            $this->backupFile = $backup->run();
         }
 
         // Open file
-        $data = craft()->import->data($this->_settings['file']);
+        $data = craft()->import->data($settings->file);
 
         // On start
         if (!$step) {
 
             // Fire an "onImportStart" event
-            $event = new Event($this, array('settings' => $this->_settings));
+            $event = new Event($this, array('settings' => $settings));
             craft()->import->onImportStart($event);
         }
 
@@ -108,17 +104,17 @@ class ImportTask extends BaseTask
         if (isset($data[$step])) {
 
             // Import row
-            craft()->import->row($step, $data[$step], $this->_settings);
+            craft()->import->row($step, $data[$step], $settings);
         }
 
         // When finished
-        if ($step == ($this->_settings['rows'] - 1)) {
+        if ($step == ($settings->rows - 1)) {
 
             // Finish
-            craft()->import->finish($this->_settings, $this->_backupFile);
+            craft()->import->finish($settings, $this->backupFile);
 
             // Fire an "onImportFinish" event
-            $event = new Event($this, array('settings' => $this->_settings));
+            $event = new Event($this, array('settings' => $settings));
             craft()->import->onImportFinish($event);
         }
 
