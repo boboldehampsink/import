@@ -29,16 +29,16 @@ interface IImportElementType
     /**
      * Return element model with group.
      *
-     * @param array $settings
+     * @param array|object $settings
      */
-    public function setModel(array $settings);
+    public function setModel($settings);
 
     /**
      * Set element criteria.
      *
-     * @param arrya $settings
+     * @param array|object $settings
      */
-    public function setCriteria(array $settings);
+    public function setCriteria($settings);
 
     /**
      * Delete elements.
@@ -59,9 +59,9 @@ interface IImportElementType
      * Save an element.
      *
      * @param BaseElementModel &$element
-     * @param array            $settings
+     * @param array|object     $settings
      */
-    public function save(BaseElementModel &$element, array $settings);
+    public function save(BaseElementModel &$element, $settings);
 
     /**
      * Executes after saving an element.

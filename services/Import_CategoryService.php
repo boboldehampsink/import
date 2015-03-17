@@ -38,11 +38,11 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     /**
      * Return category model with group.
      *
-     * @param array $settings
+     * @param array|object $settings
      *
      * @return CategoryModel
      */
-    public function setModel(array $settings)
+    public function setModel($settings)
     {
         // Set up new category model
         $element = new CategoryModel();
@@ -54,11 +54,11 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     /**
      * Set category criteria.
      *
-     * @param array $settings
+     * @param array|object $settings
      *
      * @return ElementCriteriaModel
      */
-    public function setCriteria(array $settings)
+    public function setCriteria($settings)
     {
 
         // Match with current data
@@ -117,11 +117,11 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      * Save a category.
      *
      * @param BaseElementModel &$element
-     * @param array            $settings
+     * @param array|object     $settings
      *
      * @return boolean
      */
-    public function save(BaseElementModel &$element, array $settings)
+    public function save(BaseElementModel &$element, $settings)
     {
         // Save category
         return craft()->categories->saveCategory($element);

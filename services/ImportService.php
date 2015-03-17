@@ -60,11 +60,11 @@ class ImportService extends BaseApplicationComponent
     /**
      * Import row.
      *
-     * @param int   $row
-     * @param array $data
-     * @param array $settings
+     * @param int          $row
+     * @param array        $data
+     * @param array|object $settings
      */
-    public function row($row, array $data, array $settings)
+    public function row($row, array $data, $settings)
     {
         // See if map and data match (could not be due to malformed csv)
         if (count($settings['map']) != count($data)) {
@@ -210,7 +210,7 @@ class ImportService extends BaseApplicationComponent
      * @param array  $settings
      * @param string $backup
      */
-    public function finish(array $settings, $backup)
+    public function finish($settings, $backup)
     {
         craft()->import_history->end($settings['history'], ImportModel::StatusFinished);
 
@@ -634,11 +634,11 @@ class ImportService extends BaseApplicationComponent
     /**
      * Function to use when debugging.
      *
-     * @param array $settings
-     * @param int   $history
-     * @param int   $step
+     * @param array|object $settings
+     * @param int          $history
+     * @param int          $step
      */
-    public function debug(array $settings, $history, $step)
+    public function debug($settings, $history, $step)
     {
 
         // Open file

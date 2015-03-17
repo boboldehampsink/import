@@ -71,11 +71,11 @@ class Import_HistoryService extends BaseApplicationComponent
     /**
      * Start logging.
      *
-     * @param array $settings
+     * @param array|object $settings
      *
      * @return int
      */
-    public function start(array $settings)
+    public function start($settings)
     {
         $history              = new Import_HistoryRecord();
         $history->userId      = craft()->userSession->getUser()->id;

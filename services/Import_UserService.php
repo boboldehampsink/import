@@ -53,11 +53,11 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     /**
      * Return user model with group.
      *
-     * @param array $settings
+     * @param array|object $settings
      *
      * @return UserModel
      */
-    public function setModel(array $settings)
+    public function setModel($settings)
     {
         // Set up new user model
         $element = new UserModel();
@@ -68,11 +68,11 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     /**
      * Set user criteria.
      *
-     * @param array $settings
+     * @param array|object $settings
      *
      * @return ElementCriteriaModel
      */
-    public function setCriteria(array $settings)
+    public function setCriteria($settings)
     {
         // Match with current data
         $criteria = craft()->elements->getCriteria(ElementType::User);
@@ -182,11 +182,11 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      * Save a user.
      *
      * @param BaseElementModel &$element
-     * @param array            $settings
+     * @param array|object     $settings
      *
      * @return boolean
      */
-    public function save(BaseElementModel &$element, array $settings)
+    public function save(BaseElementModel &$element, $settings)
     {
         // Save user
         if (craft()->users->saveUser($element)) {

@@ -48,11 +48,11 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     /**
      * Return entry model with group.
      *
-     * @param array $settings
+     * @param array|object $settings
      *
      * @return EntryModel
      */
-    public function setModel(array $settings)
+    public function setModel($settings)
     {
         // Set up new entry model
         $element = new EntryModel();
@@ -65,11 +65,11 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     /**
      * Set entry criteria.
      *
-     * @param array $settings
+     * @param array|object $settings
      *
      * @return ElementCriteriaModel
      */
-    public function setCriteria(array $settings)
+    public function setCriteria($settings)
     {
         // Match with current data
         $criteria = craft()->elements->getCriteria(ElementType::Entry);
@@ -224,11 +224,11 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      * Save an entry.
      *
      * @param BaseElementModel &$element
-     * @param array            $settings
+     * @param array|object     $settings
      *
      * @return boolean
      */
-    public function save(BaseElementModel &$element, array $settings)
+    public function save(BaseElementModel &$element, $settings)
     {
         // Save user
         if (craft()->entries->saveEntry($element)) {
