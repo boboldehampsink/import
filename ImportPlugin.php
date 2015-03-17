@@ -94,12 +94,12 @@ class ImportPlugin extends BasePlugin
     /**
      * Register ImportOperation hook.
      *
-     * @param array  &$data
+     * @param        &$data
      * @param string $handle
      *
      * @return string
      */
-    public function registerImportOperation(array &$data, $handle)
+    public function registerImportOperation(&$data, $handle)
     {
         return craft()->import->prepForFieldType($data, $handle);
     }
