@@ -89,13 +89,13 @@ class ImportService extends BaseApplicationComponent
         }
 
         // Set up a model to save according to element type
-        $entry = craft()->$service->setModel($settings);
+        $entry = $service->setModel($settings);
 
         // If unique is non-empty array, we're replacing or deleting
         if (is_array($settings['unique']) && count($settings['unique']) > 1) {
 
             // Set criteria according to elementtype
-            $criteria = craft()->$service->setCriteria($settings);
+            $criteria = $service->setCriteria($settings);
 
             // Set up criteria model for matching
             $cmodel = array();
@@ -126,7 +126,7 @@ class ImportService extends BaseApplicationComponent
                         try {
 
                             // Do it
-                            if (!craft()->$service->delete($elements)) {
+                            if (!$service->delete($elements)) {
 
                                 // Log errors when unsuccessful
                                 $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));
@@ -157,7 +157,7 @@ class ImportService extends BaseApplicationComponent
         }
 
         // Prepare element model
-        $entry = craft()->$service->prepForElementModel($fields, $entry);
+        $entry = $service->prepForElementModel($fields, $entry);
 
         try {
 
@@ -188,14 +188,14 @@ class ImportService extends BaseApplicationComponent
         try {
 
             // Log
-            if (!craft()->$service->save($entry, $settings)) {
+            if (!$service->save($entry, $settings)) {
 
                 // Log errors when unsuccessful
                 $this->log[$row] = craft()->import_history->log($settings['history'], $row, $entry->getErrors());
             } else {
 
                 // Some functions need calling after saving
-                craft()->$service->callback($fields, $entry);
+                $service->callback($fields, $entry);
             }
         } catch (Exception $e) {
 
