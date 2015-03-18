@@ -101,40 +101,48 @@ class ImportController extends BaseController
         // Get rows/steps from file
         $rows = count(craft()->import->data($file));
 
-        // Set more settings
-        $settings = array_merge(array(
-            'file'        => $file,
-            'rows'        => $rows,
-            'map'         => $map,
-            'unique'      => $unique,
-        ), $settings);
+        // Proceed when atleast one row
+        if ($rows) {
 
-        // Create history
-        $history = craft()->import_history->start($settings);
+            // Set more settings
+            $settings = array_merge(array(
+                'file'        => $file,
+                'rows'        => $rows,
+                'map'         => $map,
+                'unique'      => $unique,
+            ), $settings);
 
-        // Add history to settings
-        $settings['history'] = $history;
+            // Create history
+            $history = craft()->import_history->start($settings);
 
-        // Determine new folder to save original importfile
-        $folder = dirname($file).'/'.$history.'/';
-        IOHelper::ensureFolderExists($folder);
+            // Add history to settings
+            $settings['history'] = $history;
 
-        // Move the file to its history folder
-        IOHelper::move($file, $folder.basename($file));
+            // Determine new folder to save original importfile
+            $folder = dirname($file).'/'.$history.'/';
+            IOHelper::ensureFolderExists($folder);
 
-        // Update the settings with the new file location
-        $settings['file'] = $folder.basename($file);
+            // Move the file to its history folder
+            IOHelper::move($file, $folder.basename($file));
 
-        // UNCOMMENT FOR DEBUGGING
-        //craft()->import->debug($settings, $history, 1);
+            // Update the settings with the new file location
+            $settings['file'] = $folder.basename($file);
 
-        // Create the import task
-        $task = craft()->tasks->createTask('Import', Craft::t('Importing').' '.basename($file), $settings);
+            // UNCOMMENT FOR DEBUGGING
+            //craft()->import->debug($settings, $history, 1);
 
-        // Notify user
-        craft()->userSession->setNotice(Craft::t('Import process started.'));
+            // Create the import task
+            $task = craft()->tasks->createTask('Import', Craft::t('Importing').' '.basename($file), $settings);
 
-        // Redirect to history
-        $this->redirect('import/history?task='.$task->id);
+            // Notify user
+            craft()->userSession->setNotice(Craft::t('Import process started.'));
+
+            // Redirect to history
+            $this->redirect('import/history?task='.$task->id);
+        } else {
+
+            // Redirect to history
+            $this->redirect('import/history');
+        }
     }
 }
