@@ -61,6 +61,9 @@ Map fields
 
 Changelog
 =================
+###0.8.17###
+ - Only import when atleast one row is found
+ 
 ###0.8.16###
  - Added a registerImportService hook so you can write an import service for other/your own element type(s)
  - Author can now be an id, username or emailaddress
