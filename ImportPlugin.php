@@ -29,7 +29,7 @@ class ImportPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '0.8.17';
+        return '0.8.18';
     }
 
     /**
