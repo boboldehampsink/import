@@ -48,39 +48,42 @@ class ImportController extends BaseController
         // Get file
         $file = \CUploadedFile::getInstanceByName('file');
 
-        // Determine folder
-        $folder = craft()->path->getStoragePath().'import/';
+        // Is file valid?
+        if (!is_null($file)) {
 
-        // Ensure folder exists
-        IOHelper::ensureFolderExists($folder);
+            // Determine folder
+            $folder = craft()->path->getStoragePath().'import/';
 
-        // Get filepath - save in storage folder
-        $path = $folder.$file->getName();
+            // Ensure folder exists
+            IOHelper::ensureFolderExists($folder);
 
-        // Save file to Craft's temp folder for later use
-        $file->saveAs($path);
+            // Get filepath - save in storage folder
+            $path = $folder.$file->getName();
 
-        // Put vars in model
-        $model           = new ImportModel();
-        $model->filetype = $file->getType();
+            // Save file to Craft's temp folder for later use
+            $file->saveAs($path);
 
-        // Validate filetype
-        if ($model->validate()) {
+            // Put vars in model
+            $model           = new ImportModel();
+            $model->filetype = $file->getType();
 
-            // Get columns
-            $columns = craft()->import->columns($path);
+            // Validate filetype
+            if ($model->validate()) {
 
-            // Send variables to template and display
-            $this->renderTemplate('import/_map', array(
-                'import'    => $import,
-                'file'      => $path,
-                'columns'   => $columns,
-            ));
-        } else {
+                // Get columns
+                $columns = craft()->import->columns($path);
 
-            // Not validated, show error
-            craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
+                // Send variables to template and display
+                $this->renderTemplate('import/_map', array(
+                    'import'    => $import,
+                    'file'      => $path,
+                    'columns'   => $columns,
+                ));
+            }
         }
+
+        // Not validated, show error
+        craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
     }
 
     /**
