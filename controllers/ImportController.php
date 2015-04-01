@@ -119,6 +119,9 @@ class ImportController extends BaseController
             // Add history to settings
             $settings['history'] = $history;
 
+            // UNCOMMENT FOR DEBUGGING
+            //craft()->import->debug($settings, $history, 1);
+
             // Determine new folder to save original importfile
             $folder = dirname($file).'/'.$history.'/';
             IOHelper::ensureFolderExists($folder);
@@ -128,9 +131,6 @@ class ImportController extends BaseController
 
             // Update the settings with the new file location
             $settings['file'] = $folder.basename($file);
-
-            // UNCOMMENT FOR DEBUGGING
-            //craft()->import->debug($settings, $history, 1);
 
             // Create the import task
             $task = craft()->tasks->createTask('Import', Craft::t('Importing').' '.basename($file), $settings);
