@@ -449,14 +449,14 @@ class ImportService extends BaseApplicationComponent
                         }
 
                         // Find matching element in sources
-                        $criteria = craft()->elements->getCriteria(ElementType::Asset);
+                        $criteria = craft()->elements->getCriteria(ElementType::User);
                         $criteria->groupId = $groupIds;
                         $criteria->limit = $settings->limit;
 
                         // Get search strings
                         $search = ArrayHelper::stringToArray($data);
 
-                        // Ability to import multiple Assets at once
+                        // Ability to import multiple Users at once
                         $data = array();
 
                         // Loop through keywords
