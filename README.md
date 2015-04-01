@@ -61,6 +61,9 @@ Map fields
 
 Changelog
 =================
+###0.8.19###
+ - Fixed a bug that broke User connecting
+
 ###0.8.18###
  - Fixed undefined variable $user, closing issues #42 and #43
 
