@@ -79,11 +79,16 @@ class ImportController extends BaseController
                     'file'      => $path,
                     'columns'   => $columns,
                 ));
-            }
-        }
+            } else {
 
-        // Not validated, show error
-        craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
+                // Not validated, show error
+                craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
+            }
+        } else {
+
+            // No file uploaded
+            craft()->userSession->setError(Craft::t('Please upload a file.'));
+        }
     }
 
     /**
