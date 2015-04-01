@@ -17,12 +17,12 @@
     <form id="import-form" method="post" class="centered" accept-charset="UTF-8" enctype="multipart/form-data">
         {{ getCsrfInput() }}
         <input type="hidden" name="action" value="import/upload">
-        
+
         {% set elementTypes = {} %}
         {% for elementType in craft.elements.getAllElementTypes if craft.import.getGroups(elementType.getClassHandle()) %}
             {% set elementTypes = elementTypes|merge([elementType]) %}
         {% endfor %}
-        
+
         <table class="data">
             <thead class="importType">
                 <tr>
@@ -31,7 +31,7 @@
                             <div class="heading">
                                 <label>{{ "Type"|t }}</label>
                                 <div class="instructions">
-                                    <p>{{ "Choose the type you want to import into."|t }}</p>                
+                                    <p>{{ "Choose the type you want to import into."|t }}</p>
                                 </div>
                             </div>
                         </div>
@@ -51,11 +51,11 @@
                     </td>
                 </tr>
             </thead>
-            
+
             {% for elementType in elementTypes %}
                 {% include craft.import.getTemplate(elementType.getClassHandle()) %}
             {% endfor %}
-            
+
             <tbody>
                 <tr class="importBehavior">
                     <td>
@@ -63,7 +63,7 @@
                             <div class="heading">
                                 <label>{{ "Import behavior"|t }}</label>
                                 <div class="instructions">
-                                    <p>{{ "Choose whether to create new records, or update or delete existing data."|t }}</p>                
+                                    <p>{{ "Choose whether to create new records, or update or delete existing data."|t }}</p>
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                             <div class="heading">
                                 <label>{{ "File"|t }}</label>
                                 <div class="instructions">
-                                    <p>{{ "Choose the file you want to import.<br />Valid file formats: CSV"|t|raw }}</p>                
+                                    <p>{{ "Choose the file you want to import.<br />Valid file formats: CSV"|t|raw }}</p>
                                 </div>
                             </div>
                         </div>
@@ -148,6 +148,6 @@
                 </tr>
             </tbody>
         </table>
-        
+
     </form>
 {% endset %}

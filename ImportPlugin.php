@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -55,7 +56,7 @@ class ImportPlugin extends BasePlugin
     /**
      * Return if plugin has cp section.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasCpSection()
     {

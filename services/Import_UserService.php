@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -27,7 +28,7 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     /**
      * Return groups.
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function getGroups()
     {
@@ -87,7 +88,7 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      *
      * @param array $elements
      *
-     * @return boolean
+     * @return bool
      */
     public function delete(array $elements)
     {
@@ -184,7 +185,7 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      * @param BaseElementModel &$element
      * @param array|object     $settings
      *
-     * @return boolean
+     * @return bool
      */
     public function save(BaseElementModel &$element, $settings)
     {

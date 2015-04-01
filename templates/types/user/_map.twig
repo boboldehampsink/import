@@ -1,5 +1,5 @@
 {% set fieldLayout = craft.fields.getLayoutByType(import.type) %}
-                    
+
 <p>{{ 'Choose the destination fields for your imported data. "Email" is always required.'|t }}</p>
 {% if import.behavior != 'append' %}
 <p>{{ 'Select the field(s) to use as match criteria to find existing Users to replace or delete data.'|t }}</p>
@@ -21,7 +21,7 @@
                 <div class="heading">
                     <label>{{ column }}</label>
                     <div class="instructions">
-                        <p>{{ "will be imported into:"|t }}</p>                
+                        <p>{{ "will be imported into:"|t }}</p>
                     </div>
                 </div>
             </div>

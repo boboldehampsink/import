@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -77,7 +78,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      *
      * @param array $elements
      *
-     * @return boolean
+     * @return bool
      */
     public function delete(array $elements)
     {
@@ -119,7 +120,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      * @param BaseElementModel &$element
      * @param array|object     $settings
      *
-     * @return boolean
+     * @return bool
      */
     public function save(BaseElementModel &$element, $settings)
     {
@@ -145,8 +146,8 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
             $data = $fields[$parent];
 
             // Fresh up $data
-            $data = str_replace("\n", "", $data);
-            $data = str_replace("\r", "", $data);
+            $data = str_replace("\n", '', $data);
+            $data = str_replace("\r", '', $data);
             $data = trim($data);
 
             // Don't connect empty fields
@@ -177,8 +178,8 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
             $data = $fields[$ancestors];
 
             // Fresh up $data
-            $data = str_replace("\n", "", $data);
-            $data = str_replace("\r", "", $data);
+            $data = str_replace("\n", '', $data);
+            $data = str_replace("\r", '', $data);
             $data = trim($data);
 
             // Don't connect empty fields

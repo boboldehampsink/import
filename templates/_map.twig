@@ -17,11 +17,11 @@
         <input type="hidden" name="action" value="import/import">
         <input type="hidden" name="file" value="{{ file }}">
         <input type="hidden" name="unique[]" value="">
-        
+
         {% for key, value in import if key != 'elementvars' %}
             <input type="hidden" name="import[{{ key }}]" value="{{ value }}">
         {% endfor %}
-        
+
         {% for key, value in import.elementvars %}
             {% if value is iterable %}
                 {% for subvalue in value %}
@@ -31,8 +31,8 @@
                 <input type="hidden" name="import[elementvars][{{ key }}]" value="{{ value }}">
             {% endif %}
         {% endfor %}
-        
+
         {% include 'import/types/' ~ import.type|lower ~ '/_map' %}
-        
+
     </form>
 {% endset %}

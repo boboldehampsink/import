@@ -3,19 +3,19 @@
 {% if results.errors|length %}
 
     <hr />
-    
+
     <p>{{ "However, {failed} rows failed to import. He're some details on what went wrong."|t({
         failed: results.errors|length
     }) }}</p>
-        
+
     {% for line, errors in results.errors %}
-    
+
         <p><b>{{ "Line"|t }}: {{ line }}</b><br />
         {% for error in errors %}
             {{ error[0] }}<br />
         {% endfor %}
         </p>
-    
+
     {% endfor %}
 
 {% endif %}
@@ -23,7 +23,7 @@
 {% if backup %}
 
     <hr />
-    
+
     <h3>{{ "Database Backup"|t }}</h3>
     <p><a href="{{ siteUrl }}craft/{{ backup|split('craft/')[1] }}">Download backup</a></p>
 

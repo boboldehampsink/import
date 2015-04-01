@@ -1,5 +1,5 @@
 {% set entrytypes = craft.sections.getSectionById(import.elementvars.section).getEntryTypes() %}
-    
+
 <p>{{ 'Choose the destination fields for your imported data. "{title}" is always required.'|t({
     title: entrytypes[0].titleLabel
 }) }}</p>
@@ -23,7 +23,7 @@
                 <div class="heading">
                     <label>{{ column }}</label>
                     <div class="instructions">
-                        <p>{{ "will be imported into:"|t }}</p>                
+                        <p>{{ "will be imported into:"|t }}</p>
                     </div>
                 </div>
             </div>

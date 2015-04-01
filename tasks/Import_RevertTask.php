@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -56,7 +57,7 @@ class Import_RevertTask extends BaseTask
      *
      * @param int $step
      *
-     * @return boolean
+     * @return bool
      */
     public function runStep($step)
     {

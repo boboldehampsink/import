@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -26,7 +27,7 @@ class ImportModel extends BaseModel
     const TypeCSVOff2 = 'application/vnd.msexcel';
     const TypeCSVOth  = 'application/octet-stream';
 
-    /** 
+    /**
      * Backup.
      */
     const Backup = 'backup';

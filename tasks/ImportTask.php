@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -17,7 +18,7 @@ class ImportTask extends BaseTask
     /**
      * Backup file name.
      *
-     * @var boolean
+     * @var bool
      */
     protected $backupFile = false;
 
@@ -74,7 +75,7 @@ class ImportTask extends BaseTask
      *
      * @param int $step
      *
-     * @return boolean
+     * @return bool
      */
     public function runStep($step)
     {

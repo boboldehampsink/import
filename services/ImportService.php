@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -289,8 +290,8 @@ class ImportService extends BaseApplicationComponent
                 case ImportModel::FieldTypeEntries:
 
                     // No newlines allowed
-                    $data = str_replace("\n", "", $data);
-                    $data = str_replace("\r", "", $data);
+                    $data = str_replace("\n", '', $data);
+                    $data = str_replace("\r", '', $data);
 
                     // Don't connect empty fields
                     if (!empty($data)) {
@@ -576,7 +577,7 @@ class ImportService extends BaseApplicationComponent
      *
      * @param stirng $elementType
      *
-     * @return object|boolean
+     * @return object|bool
      */
     public function getService($elementType)
     {

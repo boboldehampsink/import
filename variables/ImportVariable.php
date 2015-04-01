@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -19,7 +20,7 @@ class ImportVariable
      *
      * @param string $elementType
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function getGroups($elementType)
     {
@@ -38,7 +39,7 @@ class ImportVariable
      *
      * @param string $elementType
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function getTemplate($elementType)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -43,7 +44,7 @@ interface IImportElementType
     /**
      * Delete elements.
      *
-     * @return boolean
+     * @return bool
      */
     public function delete(array $elements);
 

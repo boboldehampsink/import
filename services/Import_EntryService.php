@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 /**
@@ -88,7 +89,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      *
      * @param array $elements
      *
-     * @return boolean
+     * @return bool
      */
     public function delete(array $elements)
     {
@@ -162,8 +163,8 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
             $data = $fields[$parent];
 
             // Fresh up $data
-            $data = str_replace("\n", "", $data);
-            $data = str_replace("\r", "", $data);
+            $data = str_replace("\n", '', $data);
+            $data = str_replace("\r", '', $data);
             $data = trim($data);
 
             // Don't connect empty fields
@@ -189,8 +190,8 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
             $data = $fields[$ancestors];
 
             // Fresh up $data
-            $data = str_replace("\n", "", $data);
-            $data = str_replace("\r", "", $data);
+            $data = str_replace("\n", '', $data);
+            $data = str_replace("\r", '', $data);
             $data = trim($data);
 
             // Don't connect empty fields
@@ -228,7 +229,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      * @param BaseElementModel &$element
      * @param array|object     $settings
      *
-     * @return boolean
+     * @return bool
      */
     public function save(BaseElementModel &$element, $settings)
     {
