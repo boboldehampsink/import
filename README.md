@@ -70,6 +70,9 @@ Map fields
 
 Changelog
 =================
+###0.8.20###
+ - Check if uploaded file is valid, closing issue #46
+
 ###0.8.19###
  - Fixed a bug that broke User connecting
 
