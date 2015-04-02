@@ -45,6 +45,15 @@ Important:
 =================
 The plugin's folder should be named "import"
 
+Frequently Asked Questions
+=================
+- How do I indicate an element field type in the CSV file?
+	- Import utilizes "search", so it can be anything that makes it unique
+- How would I indicate a multiplicity of element field types in the CSV file?
+	- Just separate them by comma
+- Is there an "Export" feature so I can get to data that is more complete in the DB than in my CSV file?
+	- No, but there is the "Export" plugin that can be found here: https://github.com/boboldehampsink/export
+
 Screenshots
 =================
 History
