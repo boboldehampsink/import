@@ -70,6 +70,10 @@ Map fields
 
 Changelog
 =================
+###0.8.21###
+ - Bugfix: Start errors at line 2, as line one are column headers
+ - Added MIT license
+
 ###0.8.20###
  - Check if uploaded file is valid, closing issue #46
 
