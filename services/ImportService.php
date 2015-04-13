@@ -566,6 +566,23 @@ class ImportService extends BaseApplicationComponent
 
                     break;
 
+                case ImportModel::FieldTypeLightSwitch:
+
+                    // Convert yes/no values to boolean
+                    switch ($data) {
+
+                        case Craft::t('Yes');
+                            $data = true;
+                            break;
+
+                        case Craft::t('No');
+                            $data = false;
+                            break;
+
+                    }
+
+                    break;
+
             }
         }
 

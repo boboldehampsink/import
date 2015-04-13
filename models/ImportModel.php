@@ -61,6 +61,7 @@ class ImportModel extends BaseModel
     const FieldTypeMultiSelect  = 'MultiSelect';
     const FieldTypeRadioButtons = 'RadioButtons';
     const FieldTypeTags         = 'Tags';
+    const FieldTypeLightSwitch  = 'Lightswitch';
 
     /**
      * Delimiters.
