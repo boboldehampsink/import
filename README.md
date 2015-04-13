@@ -70,6 +70,9 @@ Map fields
 
 Changelog
 =================
+###0.8.22##
+ - Added support for (translated) yes/no importing into lightswitch fields
+
 ###0.8.21###
  - Bugfix: Start errors at line 2, as line one are column headers
  - Added MIT license
