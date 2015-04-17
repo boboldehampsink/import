@@ -638,7 +638,7 @@ class ImportService extends BaseApplicationComponent
 
         if (craft()->config->get('allowUppercaseInSlug') === false) {
             // Make it lowercase
-            $slug = StringHelper::toLowerCase($slug, 'UTF-8');
+            $slug = StringHelper::toLowerCase($slug);
         }
 
         // Get the "words".  Split on anything that is not a unicode letter or number. Periods, underscores, hyphens and forward slashes get a pass.
