@@ -61,7 +61,7 @@ class Import_HistoryService extends BaseApplicationComponent
             $rows = $model->rows;
 
             // Make "total" list
-            for ($i = 2; $i <= $rows; $i++) {
+            for ($i = 2; $i <= ($rows + 1); $i++) {
                 $total[$i] = isset($errors[$i]) ? $errors[$i] : array(Craft::t('None'));
             }
         }
