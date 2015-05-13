@@ -1,5 +1,11 @@
 Changelog
 =================
+###0.8.23###
+ - Fixed not showing full history set (missing one line), fixing issue #52
+ - Skip row when criteria value looks suspicious - preventing possible data loss
+ - Fixed an undefined index error
+ - Fixed js not being executed when no sections exist, closing issue #56
+ 
 ###0.8.22##
  - Added support for (translated) yes/no importing into lightswitch fields
 
