@@ -1,6 +1,6 @@
 $(function() {
 
-    if($('#sections').length) {
+    if($('#types').length) {
     
         // Show the fields that match the import type
         $('#types').change(function() {
@@ -12,27 +12,27 @@ $(function() {
         
         // Trigger change on load
         $('#types').trigger('change');
-        
-        // Find entry types by chosen section
-        $(document).on('change', '#sections', function() {
-        
-            $('#entrytypes').html('');
-            Craft.postActionRequest('import/getEntryTypes', { 'section': $(this).val() }, function(entrytypes) {
-                    
-                $.each(entrytypes, function(index, value) {
-                    $('#entrytypes').append('<option value="' + value.id + '">' + value.name + '</option>');
-                });
-            
-            });
-            
-        });
-        
-        // Only show backup option when receiving email
-        $(document).on('change', '#email', function() {
-            $('#backup').prop('disabled', !$(this).is(':checked'));
-        });
-        
+
     }
+        
+    // Find entry types by chosen section
+    $(document).on('change', '#sections', function() {
+    
+        $('#entrytypes').html('');
+        Craft.postActionRequest('import/getEntryTypes', { 'section': $(this).val() }, function(entrytypes) {
+                
+            $.each(entrytypes, function(index, value) {
+                $('#entrytypes').append('<option value="' + value.id + '">' + value.name + '</option>');
+            });
+        
+        });
+        
+    });
+    
+    // Only show backup option when receiving email
+    $(document).on('change', '#email', function() {
+        $('#backup').prop('disabled', !$(this).is(':checked'));
+    });
     
     if($('.mapper select').length) {
     
