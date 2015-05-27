@@ -51,6 +51,10 @@ Frequently Asked Questions
 	- Import utilizes "search", so it can be anything that makes it unique
 - How would I indicate a multiplicity of element field types in the CSV file?
 	- Just separate them by comma
+- How should I write my CSVs so parent & child entries work properly?
+	- Write it like Ancestor/Child/Entry and connect as "Ancestor"
+- Do parent entries already need to exist before I import a CSV? Or can they be created form the came CSV import as their child entries?
+	- The entry should exist, but if it comes in the row before then it will exist and it will pass.
 - Is there an "Export" feature so I can get to data that is more complete in the DB than in my CSV file?
 	- No, but there is the "Export" plugin that can be found here: https://github.com/boboldehampsink/export
 
