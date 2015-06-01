@@ -37,7 +37,8 @@ class ImportTask extends BaseTask
             'type'        => AttributeType::String,
             'elementvars' => array(AttributeType::Mixed, 'default' => array()),
             'behavior'    => array(AttributeType::Name, 'default' => ImportModel::BehaviorAppend),
-            'email'       => AttributeType::Email,
+            'validate'    => array(AttributeType::Bool, 'default' => true),
+            'email'       => array(AttributeType::Bool, 'default' => false),
             'backup'      => array(AttributeType::Bool, 'default' => false),
             'history'     => AttributeType::Number,
         );

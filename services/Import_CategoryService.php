@@ -124,8 +124,11 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      */
     public function save(BaseElementModel &$element, $settings)
     {
-        // Save category
-        return craft()->categories->saveCategory($element);
+        if ($settings->validate) {
+            return craft()->categories->saveCategory($element);
+        } else {
+            return craft()->elements->saveElement($element, false);
+        }
     }
 
     /**

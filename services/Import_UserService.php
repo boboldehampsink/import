@@ -189,8 +189,15 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function save(BaseElementModel &$element, $settings)
     {
-        // Save user
-        if (craft()->users->saveUser($element)) {
+        // Save element
+        if ($settings->validate) {
+            $result = craft()->users->saveUser($element);
+        } else {
+            $result = craft()->elements->saveElement($element, false);
+        }
+
+        // Save usergroup
+        if ($result) {
 
             // Assign to groups
             craft()->userGroups->assignUserToGroups($element->id, $settings['elementvars']['groups']);

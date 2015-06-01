@@ -101,6 +101,26 @@
                         </div>
                     </td>
                 </tr>
+                <tr class="importValidate">
+                    <td>
+                        <div class="field">
+                            <div class="heading">
+                                <label>{{ "Validate content"|t }}</label>
+                                <div class="instructions">
+                                    <p>{{ "Enable field validation when importing."|t }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="input">
+                                <input type="hidden" name="import[validate]" value="0">
+                                <input type="checkbox" name="import[validate]" value="1" id="validate" checked />
+                            </div>
+                        </div>
+                    </td>
+                </tr>
                 <tr class="importEmail">
                     <td>
                         <div class="field">

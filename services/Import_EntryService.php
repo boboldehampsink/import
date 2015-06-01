@@ -233,8 +233,15 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      */
     public function save(BaseElementModel &$element, $settings)
     {
-        // Save user
-        if (craft()->entries->saveEntry($element)) {
+        // Save element
+        if ($settings->validate) {
+            $result = craft()->entries->saveEntry($element);
+        } else {
+            $result = craft()->elements->saveElement($element, false);
+        }
+
+        // Save version
+        if ($result) {
 
             // If entry revisions are supported
             if (craft()->getEdition() == Craft::Pro) {
