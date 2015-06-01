@@ -1,5 +1,8 @@
 Changelog
 =================
+###0.8.24###
+ - You can now choose if you want to validate your content
+
 ###0.8.23###
  - Fixed not showing full history set (missing one line), fixing issue #52
  - Skip row when criteria value looks suspicious - preventing possible data loss
