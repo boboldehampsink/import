@@ -1,6 +1,8 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import;
+
+use Craft;
 
 /**
  * Import Plugin.
@@ -11,56 +13,26 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class ImportPlugin extends BasePlugin
+class Plugin extends \craft\app\base\Plugin
 {
-    /**
-     * Return plugin name.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return Craft::t('Import');
-    }
-
-    /**
-     * Return plugin version.
-     *
-     * @return string
-     */
-    public function getVersion()
-    {
-        return '0.8.24';
-    }
-
-    /**
-     * Return plugin developer.
-     *
-     * @return string
-     */
-    public function getDeveloper()
-    {
-        return 'Bob Olde Hampsink';
-    }
-
-    /**
-     * Return plugin developer url.
-     *
-     * @return string
-     */
-    public function getDeveloperUrl()
-    {
-        return 'https://github.com/boboldehampsink';
-    }
-
     /**
      * Return if plugin has cp section.
      *
      * @return bool
      */
-    public function hasCpSection()
+    public static function hasCpSection()
     {
         return true;
+    }
+
+    /**
+     * Register twig variable location.
+     *
+     * @return string
+     */
+    public function getVariableDefinition()
+    {
+        return 'craft\plugins\import\web\twig\variables\Import';
     }
 
     /**
@@ -131,14 +103,5 @@ class ImportPlugin extends BasePlugin
                 'build' => $minBuild,
             )));
         }
-    }
-
-    /**
-     * Run on plugin initialisation.
-     */
-    public function init()
-    {
-        // Import Import Element Type Interface
-        Craft::import('plugins.import.services.IImportElementType');
     }
 }

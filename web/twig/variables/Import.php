@@ -1,6 +1,8 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\web\twig\variables;
+
+use Craft;
 
 /**
  * Import Variable.
@@ -13,8 +15,25 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class ImportVariable
+class Import
 {
+    /**
+     * Get element types.
+     *
+     * @return array
+     */
+    public function getElementTypes()
+    {
+        $elementTypes = [];
+        foreach (Craft::$app->elements->getAllElementTypes() as $elementType) {
+            if ($this->getGroups($elementType)) {
+                $elementTypes[] = $elementType;
+            }
+        }
+
+        return $elementType;
+    }
+
     /**
      * Get groups for service.
      *
@@ -25,7 +44,7 @@ class ImportVariable
     public function getGroups($elementType)
     {
         // Check if elementtype can be imported
-        if ($service = craft()->import->getService($elementType)) {
+        if ($service = Craft::$app->plugins->getPlugin('import')->import->getService($elementType)) {
 
             // Return "groups" (section, groups, etc.)
             return $service->getGroups();

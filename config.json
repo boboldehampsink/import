@@ -1,0 +1,13 @@
+{
+  "name": "Import",
+  "version": "2.0",
+  "developer": "Bob Olde Hampsink",
+  "developerUrl": "http://github.com/boboldehampsink",
+  "components": {
+    "import": "craft\\plugins\\import\\services\\Import",
+    "category": "craft\\plugins\\import\\services\\Category",
+    "entry": "craft\\plugins\\import\\services\\Entry",
+    "user": "craft\\plugins\\import\\services\\User",
+    "history": "craft\\plugins\\import\\services\\History"
+  }
+}

@@ -1,6 +1,9 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\services;
+
+use Craft;
+use yii\base\Component;
 
 /**
  * Import Service.
@@ -13,7 +16,7 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class ImportService extends BaseApplicationComponent
+class Import extends Component
 {
     /**
      * Save log.
@@ -607,7 +610,7 @@ class ImportService extends BaseApplicationComponent
     public function getService($elementType)
     {
         // Check if there's a service for this element type elsewhere
-        $service = craft()->plugins->callFirst('registerImportService', array(
+        $service = Craft::$app->plugins->callFirst('registerImportService', array(
             'elementType' => $elementType,
         ));
 
@@ -615,14 +618,17 @@ class ImportService extends BaseApplicationComponent
         if ($service == null) {
 
             // Get from right elementType
-            $service = 'import_'.strtolower($elementType);
+            $service = strtolower($elementType);
         }
 
+        // Get import plugin module
+        $import = Craft::$app->plugins->getPlugin('import');
+
         // Check if elementtype can be imported
-        if (isset(craft()->$service) && craft()->$service instanceof IImportElementType) {
+        if (isset($import->$service) && $import->$service instanceof ImportElementTypeInterface) {
 
             // Return this service
-            return craft()->$service;
+            return $import->$service;
         }
 
         return false;

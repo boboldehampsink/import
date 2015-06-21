@@ -1,6 +1,6 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\services;
 
 /**
  * Import Element Type Interface.
@@ -13,7 +13,7 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-interface IImportElementType
+interface ElementTypeInterface
 {
     /**
      * Return import template.
@@ -62,7 +62,7 @@ interface IImportElementType
      * @param BaseElementModel &$element
      * @param array|object     $settings
      */
-    public function save(BaseElementModel &$element, $settings);
+    public function save(BaseElementModel & $element, $settings);
 
     /**
      * Executes after saving an element.
