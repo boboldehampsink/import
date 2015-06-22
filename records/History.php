@@ -1,6 +1,9 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\records;
+
+use Craft;
+use yii\db\ActiveRecord;
 
 /**
  * Import History Record.
@@ -13,7 +16,7 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class Import_HistoryRecord extends BaseRecord
+class History extends ActiveRecord
 {
     /**
      * Return table name.

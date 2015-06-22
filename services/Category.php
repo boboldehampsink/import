@@ -1,6 +1,9 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\services;
+
+use Craft;
+use yii\base\Component;
 
 /**
  * Import Category Service.
@@ -13,7 +16,7 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class Import_CategoryService extends BaseApplicationComponent implements IImportElementType
+class Category extends Component implements ElementTypeInterface
 {
     /**
      * Return import template.
@@ -33,7 +36,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     public function getGroups()
     {
         // Return editable groups for user
-        return craft()->categories->getEditableGroups();
+        return Craft::$app->categories->getEditableGroups();
     }
 
     /**
@@ -122,7 +125,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      *
      * @return bool
      */
-    public function save(BaseElementModel &$element, $settings)
+    public function save(BaseElementModel & $element, $settings)
     {
         if ($settings->validate) {
             return craft()->categories->saveCategory($element);

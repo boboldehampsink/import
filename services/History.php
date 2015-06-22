@@ -1,6 +1,9 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\services;
+
+use Craft;
+use yii\base\Component;
 
 /**
  * Import History Service.
@@ -13,7 +16,7 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class Import_HistoryService extends BaseApplicationComponent
+class History extends Component
 {
     /**
      * Show all log entries.
@@ -22,11 +25,7 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function show()
     {
-        // Set criteria
-        $criteria = new \CDbCriteria();
-        $criteria->order = 'id desc';
-
-        return Import_HistoryRecord::model()->findAll($criteria);
+        return \craft\plugins\import\records\History::find();
     }
 
     /**
@@ -38,25 +37,19 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function showLog($history)
     {
-        // Set criteria
-        $criteria = new \CDbCriteria();
-        $criteria->condition = 'historyId = :history_id';
-        $criteria->params = array(
-            ':history_id' => $history,
-        );
+        // Get logs
+        $logs = \craft\plugins\import\records\History::find()->where(array(':historyId' => $history));
 
         // Get errors
         $errors = array();
-        $logs = Import_LogRecord::model()->findAll($criteria);
         foreach ($logs as $log) {
             $errors[$log['line']] = $log['errors'];
         }
 
         // Get total rows
-        $model = Import_HistoryRecord::model()->findById($history);
+        $model = \craft\plugins\import\records\History::findByPk($history);
 
         $total = array();
-
         if ($model) {
             $rows = $model->rows;
 
@@ -78,13 +71,13 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function start($settings)
     {
-        $history              = new Import_HistoryRecord();
+        $history              = new \craft\plugins\import\records\History();
         $history->userId      = craft()->userSession->getUser()->id;
         $history->type        = $settings['type'];
         $history->file        = basename($settings['file']);
         $history->rows        = $settings['rows'];
         $history->behavior    = $settings['behavior'];
-        $history->status      = ImportModel::StatusStarted;
+        $history->status      = \craft\plugins\import\models\History::StatusStarted;
 
         $history->save(false);
 

@@ -1,11 +1,14 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\services;
+
+use Craft;
+use yii\base\Component;
 
 /**
  * Import User Service.
  *
- * Contains logic for importing users
+ * Contains logic for importing categories
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
@@ -13,7 +16,7 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class Import_UserService extends BaseApplicationComponent implements IImportElementType
+class User extends Component implements ElementTypeInterface
 {
     /**
      * Return import template.
@@ -33,10 +36,10 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     public function getGroups()
     {
         // Check if usergroups are allowed in this installation
-        if (craft()->getEdition() == Craft::Pro) {
+        if (Craft::$app->getEdition() == Craft::Pro) {
 
             // Get usergroups
-            $groups = craft()->userGroups->getAllGroups();
+            $groups = Craft::$app->userGroups->getAllGroups();
 
             // Return when groups found
             if (count($groups)) {
@@ -187,7 +190,7 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      *
      * @return bool
      */
-    public function save(BaseElementModel &$element, $settings)
+    public function save(BaseElementModel & $element, $settings)
     {
         // Save element
         if ($settings->validate) {

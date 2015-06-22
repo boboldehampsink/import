@@ -1,11 +1,15 @@
 <?php
 
-namespace Craft;
+namespace craft\plugins\import\services;
+
+use Craft;
+use yii\base\Component;
+use craft\app\models\Section;
 
 /**
  * Import Entry Service.
  *
- * Contains logic for importing entries
+ * Contains logic for importing categories
  *
  * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
  * @copyright Copyright (c) 2015, Bob Olde Hampsink
@@ -13,7 +17,7 @@ namespace Craft;
  *
  * @link      http://github.com/boboldehampsink
  */
-class Import_EntryService extends BaseApplicationComponent implements IImportElementType
+class Entry extends Component implements ElementTypeInterface
 {
     /**
      * Return import template.
@@ -33,12 +37,12 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     public function getGroups()
     {
         // Get editable sections for user
-        $editable = craft()->sections->getEditableSections();
+        $editable = Craft::$app->sections->getEditableSections();
 
         // Get sections but not singles
         $sections = array();
         foreach ($editable as $section) {
-            if ($section->type != SectionType::Single) {
+            if ($section->type != Section::TYPE_SINGLE) {
                 $sections[] = $section;
             }
         }
@@ -231,7 +235,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      *
      * @return bool
      */
-    public function save(BaseElementModel &$element, $settings)
+    public function save(BaseElementModel & $element, $settings)
     {
         // Save element
         if ($settings->validate) {
