@@ -609,6 +609,10 @@ class Import extends Component
      */
     public function getService($elementType)
     {
+        // Get classname without namespace
+        $reflection = new \ReflectionClass($elementType);
+        $elementType = $reflection->getShortName();
+
         // Check if there's a service for this element type elsewhere
         $service = Craft::$app->plugins->callFirst('registerImportService', array(
             'elementType' => $elementType,
@@ -625,7 +629,7 @@ class Import extends Component
         $import = Craft::$app->plugins->getPlugin('import');
 
         // Check if elementtype can be imported
-        if (isset($import->$service) && $import->$service instanceof ImportElementTypeInterface) {
+        if (array_key_exists($service, $import->getComponents()) && $import->$service instanceof ElementTypeInterface) {
 
             // Return this service
             return $import->$service;

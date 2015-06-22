@@ -42,9 +42,9 @@ class Plugin extends \craft\app\base\Plugin
      */
     public function registerCpRoutes()
     {
-        return array(
+        return [
             'import/history/(?P<historyId>\d+)' => 'import/history/_log',
-        );
+        ];
     }
 
     /**
@@ -54,14 +54,14 @@ class Plugin extends \craft\app\base\Plugin
      */
     public function registerUserPermissions()
     {
-        return array(
+        return [
             // Behavior permissions
-            ImportModel::BehaviorAppend  => array('label' => Craft::t('Append data')),
-            ImportModel::BehaviorReplace => array('label' => Craft::t('Replace data')),
-            ImportModel::BehaviorDelete  => array('label' => Craft::t('Delete data')),
+            \craft\plugins\import\models\Import::BehaviorAppend  => array('label' => Craft::t('Append data')),
+            \craft\plugins\import\models\Import::BehaviorReplace => array('label' => Craft::t('Replace data')),
+            \craft\plugins\import\models\Import::BehaviorDelete  => array('label' => Craft::t('Delete data')),
             // Backup permissions
-            ImportModel::Backup          => array('label' => Craft::t('Backup Database')),
-        );
+            \craft\plugins\import\models\Import::Backup          => array('label' => Craft::t('Backup Database')),
+        ];
     }
 
     /**
@@ -74,34 +74,6 @@ class Plugin extends \craft\app\base\Plugin
      */
     public function registerImportOperation(&$data, $handle)
     {
-        return craft()->import->prepForFieldType($data, $handle);
-    }
-
-    /**
-     * Check if the plugin meets the requirements, else uninstall again.
-     */
-    public function onAfterInstall()
-    {
-
-        // Minimum build is 2615
-        $minBuild = '2615';
-
-        // If your build is lower
-        if (craft()->getBuild() < $minBuild) {
-
-            // First disable plugin
-            // With this we force Craft to look up the plugin's ID, which isn't cached at this moment yet
-            // Without this we get a fatal error
-            craft()->plugins->disablePlugin($this->getClassHandle());
-
-            // Uninstall plugin
-            craft()->plugins->uninstallPlugin($this->getClassHandle());
-
-            // Show error message
-            craft()->userSession->setError(Craft::t('{plugin} only works on Craft build {build} or higher', array(
-                'plugin' => $this->getName(),
-                'build' => $minBuild,
-            )));
-        }
+        return Craft::$app->plugins->getPlugin('import')->import->prepForFieldType($data, $handle);
     }
 }

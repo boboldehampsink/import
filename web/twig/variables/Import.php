@@ -31,7 +31,7 @@ class Import
             }
         }
 
-        return $elementType;
+        return $elementTypes;
     }
 
     /**
@@ -63,7 +63,7 @@ class Import
     public function getTemplate($elementType)
     {
         // Check if elementtype can be imported
-        if ($service = craft()->import->getService($elementType)) {
+        if ($service = Craft::$app->plugins->getPlugin('import')->import->getService($elementType)) {
 
             // Return template
             return $service->getTemplate();
@@ -80,7 +80,7 @@ class Import
     public function history()
     {
         // Return all history
-        return craft()->import_history->show();
+        return Craft::$app->plugins->getPlugin('import')->history->show();
     }
 
     /**
@@ -93,6 +93,6 @@ class Import
     public function log($history)
     {
         // Return the log from a certain history
-        return craft()->import_history->showLog($history);
+        return Craft::$app->plugins->getPlugin('import')->history->showLog($history);
     }
 }
