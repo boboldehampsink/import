@@ -37,7 +37,7 @@
                                 <div class="select">
                                     <select name="import[type]" id="types">
                                     {% for elementType in craft.import.elementTypes %}
-                                        <option value="{{ elementType.getClassHandle() }}">{{ elementType.getName() }}</option>
+                                        <option value="{{ elementType }}">{{ elementType }}</option>
                                     {% endfor %}
                                     </select>
                                 </div>
@@ -48,7 +48,7 @@
             </thead>
 
             {% for elementType in craft.import.elementTypes %}
-                {% include craft.import.getTemplate(elementType.getClassHandle()) %}
+                {% include craft.import.getTemplate(elementType) %}
             {% endfor %}
 
             <tbody>
