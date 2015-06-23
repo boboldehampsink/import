@@ -41,9 +41,11 @@
                 <div class="input">
                     <div class="select">
                         <select name="import[elementvars][entrytype]" id="entrytypes" disabled>
-                        {% for entrytype in sections[0].getEntryTypes() %}
-                            <option value="{{ entrytype.id }}">{{ entrytype.name }}</option>
-                        {% endfor %}
+                        {% if sections|length %}
+                            {% for entrytype in sections[0].getEntryTypes() %}
+                                <option value="{{ entrytype.id }}">{{ entrytype.name }}</option>
+                            {% endfor %}
+                        {% endif %}
                         </select>
                     </div>
                 </div>

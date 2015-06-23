@@ -610,8 +610,12 @@ class Import extends Component
     public function getService($elementType)
     {
         // Get classname without namespace
-        $reflection = new \ReflectionClass($elementType);
-        $elementType = $reflection->getShortName();
+        try {
+            $reflection = new \ReflectionClass($elementType);
+            $elementType = $reflection->getShortName();
+        } catch (\ReflectionException $e) {
+            return false;
+        }
 
         // Check if there's a service for this element type elsewhere
         $service = Craft::$app->plugins->callFirst('registerImportService', array(
