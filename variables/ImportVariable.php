@@ -76,4 +76,24 @@ class ImportVariable
         // Return the log from a certain history
         return craft()->import_history->showLog($history);
     }
+
+    /**
+     * Get path to fieldtype's custom option template
+     *
+     * @return string
+     */
+    public function customOption($fieldHandle)
+    {
+        // Abbreviate for code legibility
+        $customPaths =& craft()->import_integration->customOptionPaths;
+
+        // If fieldtype has been registered and is not falsey
+        if (array_key_exists($fieldHandle, $customPaths) && $customPaths[$fieldHandle]) {
+
+            // Return specified custom path
+            return $customPaths[$fieldHandle];
+        }
+
+        return false;
+    }
 }
