@@ -20,6 +20,7 @@ class ImportModel extends BaseModel
      */
     const TypeCSV     = 'text/csv';
     const TypeCSVWin  = 'text/comma-separated-values';
+    const TypeCSVFF   = 'text/x-comma-separated-values';
     const TypeCSVIE   = 'text/plain';
     const TypeCSVApp  = 'application/csv';
     const TypeCSVExc  = 'application/excel';
@@ -84,6 +85,7 @@ class ImportModel extends BaseModel
                 'values' => array(
                     self::TypeCSV,
                     self::TypeCSVWin,
+                    self::TypeCSVFF,
                     self::TypeCSVIE,
                     self::TypeCSVApp,
                     self::TypeCSVExc,
