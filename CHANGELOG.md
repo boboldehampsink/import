@@ -1,5 +1,8 @@
 Changelog
 =================
+###0.8.25###
+ - Add detection of text/x-comma-separated-values, fixing issue #67
+
 ###0.8.24###
  - You can now choose if you want to validate your content
 
