@@ -400,19 +400,19 @@ class ImportService extends BaseApplicationComponent
                         // Get field settings
                         $settings = $field->getFieldType()->getSettings();
 
-                        // Get source id's for connecting
-                        $sourceIds = array();
-                        $sources = $settings->sources;
-                        if (is_array($sources)) {
-                            foreach ($sources as $source) {
-                                list($type, $id) = explode(':', $source);
-                                $sourceIds[] = $id;
+                        // Get folder id's for connecting
+                        $folderIds = array();
+                        $folders = $settings->sources;
+                        if (is_array($folders)) {
+                            foreach ($folders as $folder) {
+                                list($type, $id) = explode(':', $folder);
+                                $folderIds[] = $id;
                             }
                         }
 
-                        // Find matching element in sources
+                        // Find matching element in folders
                         $criteria = craft()->elements->getCriteria(ElementType::Asset);
-                        $criteria->sourceId = $sourceIds;
+                        $criteria->folderId = $folderIds;
                         $criteria->limit = $settings->limit;
 
                         // Get search strings
