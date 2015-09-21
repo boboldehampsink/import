@@ -23,6 +23,20 @@ class ImportService extends BaseApplicationComponent
     public $log = array();
 
     /**
+     * Custom <option> paths.
+     *
+     * @var array
+     */
+    public $customOptionPaths = array();
+
+    /**
+     * Whether custom option paths have been loaded.
+     *
+     * @var bool
+     */
+    private $_loadedOptionPaths = false;
+
+    /**
      * Read CSV columns.
      *
      * @param string $file
@@ -623,6 +637,42 @@ class ImportService extends BaseApplicationComponent
 
             // Return this service
             return craft()->$service;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get path to fieldtype's custom <option> template.
+     *
+     * @param string $fieldHandle
+     *
+     * @return string
+     */
+    public function getCustomOption($fieldHandle)
+    {
+        // If option paths haven't been loaded
+        if (!$this->_loadedOptionPaths) {
+
+            // Call hook for all plugins
+            $responses = craft()->plugins->call('registerImportOptionPaths');
+
+            // Loop through responses from each plugin
+            foreach ($responses as $customPaths) {
+
+                // Append custom paths to master list
+                $this->customOptionPaths = array_merge($this->customOptionPaths, $customPaths);
+            }
+
+            // Option paths have been loaded
+            $this->_loadedOptionPaths = true;
+        }
+
+        // If fieldtype has been registered and is not falsey
+        if (array_key_exists($fieldHandle, $this->customOptionPaths) && $this->customOptionPaths[$fieldHandle]) {
+
+            // Return specified custom path
+            return $this->customOptionPaths[$fieldHandle];
         }
 
         return false;
