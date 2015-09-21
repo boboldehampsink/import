@@ -49,7 +49,12 @@
                             <optgroup label="{{ tab.name }}">
                         {% for field in tab.getFields() %}
                             {% set f = field.getField() %}
-                            <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
+                            {% set customOption = craft.import.customOption(f.type) %}
+                            {% if customOption %}
+                                {% include customOption ignore missing %}
+                            {% else %}
+                                <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
+                            {% endif %}
                         {% endfor %}
                             </optgroup>
                     {% endfor %}
