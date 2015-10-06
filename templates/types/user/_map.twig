@@ -32,6 +32,7 @@
                     <div class="select mapper">
                         <select name="fields[{{ column }}]" class="importFields">
                             <option value="dont">{{ "Don't import"|t }}</option>
+                            <option value="id"{% if column|lower == 'id' %} selected{% endif %}>{{ "ID"|t }}</option>
                             <option value="username"{% if column|lower == 'username' or column|lower == 'name' %} selected{% endif %}>{{ "Username"|t }}</option>
                             <option value="photo"{% if column|lower == 'photo' or column|lower == 'userphoto' %} selected{% endif %}>{{ "Photo"|t }}</option>
                             <option value="firstName"{% if column|lower == 'firstname' or column|lower == 'first name' %} selected{% endif %}>{{ "First Name"|t }}</option>

@@ -96,6 +96,13 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
+        // Set ID
+        $id = Import_ElementModel::HandleId;
+        if (isset($fields[$id])) {
+            $element->$id = $fields[$id];
+            unset($fields[$id]);
+        }
+
         // Set locale
         $locale = Import_ElementModel::HandleLocale;
         if (isset($fields[$locale])) {

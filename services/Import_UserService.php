@@ -114,6 +114,12 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
+        // Set ID
+        $id = Import_ElementModel::HandleId;
+        if (isset($fields[$id])) {
+            $element->$id = $fields[$id];
+            unset($fields[$id]);
+        }
 
         // Set username
         $username = Import_ElementModel::HandleUsername;

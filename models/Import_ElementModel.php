@@ -15,6 +15,7 @@ namespace Craft;
  */
 class Import_ElementModel extends BaseModel
 {
+    const HandleId           = 'id';
     const HandleLocale       = 'locale';
     const HandleTitle        = 'title';
     const HandleAuthor       = 'authorId';
