@@ -1,5 +1,10 @@
 Changelog
 =================
+###0.8.27###
+ - Adds the ability to import in a specific locale, closing issue #62
+ - Adds the ability to import specific ID's, closing issue #65
+ - Revert the validate content option, closing issue #64
+
 ###0.8.26###
  - Added the "registerImportOptionPaths" hook (thanks to @lindseydiloreto)
  - Replace "sourceId" with "folderId" criteria when linking an asset field (thanks to @damiani)
