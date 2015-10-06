@@ -37,6 +37,7 @@
                             <option value="parentId"{% if column|lower == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
                             <option value="ancestors"{% if column|lower == 'ancestors' %} selected{% endif %}>{{ "Ancestors"|t }}</option>
                             <option value="enabled"{% if column|lower == 'enabled' %} selected{% endif %}>{{ "Enabled"|t }}</option>
+                            <option value="locale"{% if column|lower == 'locale' %} selected{% endif %}>{{ "Locale"|t }}</option>
                         {% for field in fieldLayout.getFields() %}
                             {% set f = field.getField() %}
                             <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>

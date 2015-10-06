@@ -107,6 +107,13 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
+        // Set locale
+        $locale = Import_ElementModel::HandleLocale;
+        if (isset($fields[$locale])) {
+            $element->$locale = $fields[$locale];
+            unset($fields[$locale]);
+        }
+
         // Set author
         $author = Import_ElementModel::HandleAuthor;
         if (isset($fields[$author])) {

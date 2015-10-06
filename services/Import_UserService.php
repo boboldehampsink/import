@@ -161,11 +161,11 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
             unset($fields[$status]);
         }
 
-        // Set locale
-        $locale = Import_ElementModel::HandleLocale;
-        if (isset($fields[$locale])) {
-            $element->$locale = $fields[$locale];
-            unset($fields[$locale]);
+        // Set preferred locale
+        $preflocale = Import_ElementModel::HandlePrefLocale;
+        if (isset($fields[$preflocale])) {
+            $element->$preflocale = $fields[$preflocale];
+            unset($fields[$preflocale]);
         }
 
         // Set password
