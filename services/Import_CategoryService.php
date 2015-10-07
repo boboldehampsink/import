@@ -107,6 +107,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
         $locale = Import_ElementModel::HandleLocale;
         if (isset($fields[$locale])) {
             $element->$locale = $fields[$locale];
+            $element->localeEnabled = true;
             unset($fields[$locale]);
         }
 

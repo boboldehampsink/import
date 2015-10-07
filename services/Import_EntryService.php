@@ -118,6 +118,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         $locale = Import_ElementModel::HandleLocale;
         if (isset($fields[$locale])) {
             $element->$locale = $fields[$locale];
+            $element->localeEnabled = true;
             unset($fields[$locale]);
         }
 
