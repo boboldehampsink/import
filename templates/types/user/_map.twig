@@ -43,7 +43,12 @@
                             <option value="newPassword"{% if column|lower == 'password' %} selected{% endif %}>{{ "Password"|t }}</option>
                         {% for field in fieldLayout.getFields() %}
                             {% set f = field.getField() %}
-                            <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
+                            {% set customOption = craft.import.customOption(f.type) %}
+                            {% if customOption %}
+                                {% include customOption ignore missing %}
+                            {% else %}
+                                <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
+                            {% endif %}
                         {% endfor %}
                         </select>
                     </div>
