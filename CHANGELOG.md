@@ -1,9 +1,11 @@
 Changelog
 =================
 ###0.8.27###
+ - Allow custom options for categories and users too,
+ - Use correct category fieldlayout, closing issue #61
  - Adds the ability to import in a specific locale, closing issue #62
- - Adds the ability to import specific ID's, closing issue #65
  - Revert the validate content option, closing issue #64
+ - Adds the ability to import specific ID's, closing issue #65
 
 ###0.8.26###
  - Added the "registerImportOptionPaths" hook (thanks to @lindseydiloreto)
