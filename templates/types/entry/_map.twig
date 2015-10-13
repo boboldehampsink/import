@@ -73,7 +73,7 @@
             instructions: "Criterium for finding existing data."|t,
             name: "unique[" ~ column ~ "]",
             class: "unique",
-            checked: loop.first
+            checked: loop.first or column|lower == 'locale'
         }) }}
         </td>
         {% endif %}
