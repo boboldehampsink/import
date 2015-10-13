@@ -164,6 +164,9 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
         $status = Import_ElementModel::HandleStatus;
         if (isset($fields[$status])) {
             $element->$status = $fields[$status];
+            if ($element->$status == UserStatus::Pending) {
+                $element->pending = true;
+            }
             unset($fields[$status]);
         }
 
