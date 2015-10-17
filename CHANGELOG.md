@@ -7,6 +7,7 @@ Changelog
  - Adds the ability to import in a specific locale, closing issue #62
  - Revert the validate content option, closing issue #64
  - Adds the ability to import specific ID's, closing issue #65
+ - Fix redirect after importing in some cases, closing issue #78
 
 ###0.8.26###
  - Added the "registerImportOptionPaths" hook (thanks to @lindseydiloreto)
