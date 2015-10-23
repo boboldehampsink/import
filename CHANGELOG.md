@@ -1,5 +1,14 @@
 Changelog
 =================
+###0.8.27###
+ - Allow custom options for categories and users too,
+ - Set user pending when status field is pending, closing issue #53
+ - Use correct category fieldlayout, closing issue #61
+ - Adds the ability to import in a specific locale, closing issue #62
+ - Revert the validate content option, closing issue #64
+ - Adds the ability to import specific ID's, closing issue #65
+ - Fix redirect after importing in some cases, closing issue #78
+
 ###0.8.26###
  - Added the "registerImportOptionPaths" hook (thanks to @lindseydiloreto)
  - Replace "sourceId" with "folderId" criteria when linking an asset field (thanks to @damiani)

@@ -96,6 +96,21 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
+        // Set ID
+        $id = Import_ElementModel::HandleId;
+        if (isset($fields[$id])) {
+            $element->$id = $fields[$id];
+            unset($fields[$id]);
+        }
+
+        // Set locale
+        $locale = Import_ElementModel::HandleLocale;
+        if (isset($fields[$locale])) {
+            $element->$locale = $fields[$locale];
+            $element->localeEnabled = true;
+            unset($fields[$locale]);
+        }
+
         // Set slug
         $slug = Import_ElementModel::HandleSlug;
         if (isset($fields[$slug])) {
@@ -124,11 +139,8 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      */
     public function save(BaseElementModel &$element, $settings)
     {
-        if ($settings->validate) {
-            return craft()->categories->saveCategory($element);
-        } else {
-            return craft()->elements->saveElement($element, false);
-        }
+        // Save category
+        return craft()->categories->saveCategory($element);
     }
 
     /**

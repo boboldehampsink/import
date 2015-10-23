@@ -107,6 +107,21 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
+        // Set ID
+        $id = Import_ElementModel::HandleId;
+        if (isset($fields[$id])) {
+            $element->$id = $fields[$id];
+            unset($fields[$id]);
+        }
+
+        // Set locale
+        $locale = Import_ElementModel::HandleLocale;
+        if (isset($fields[$locale])) {
+            $element->$locale = $fields[$locale];
+            $element->localeEnabled = true;
+            unset($fields[$locale]);
+        }
+
         // Set author
         $author = Import_ElementModel::HandleAuthor;
         if (isset($fields[$author])) {
@@ -233,15 +248,8 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      */
     public function save(BaseElementModel &$element, $settings)
     {
-        // Save element
-        if ($settings->validate) {
-            $result = craft()->entries->saveEntry($element);
-        } else {
-            $result = craft()->elements->saveElement($element, false);
-        }
-
-        // Save version
-        if ($result) {
+        // Save user
+        if (craft()->entries->saveEntry($element)) {
 
             // If entry revisions are supported
             if (craft()->getEdition() == Craft::Pro) {

@@ -114,6 +114,12 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
+        // Set ID
+        $id = Import_ElementModel::HandleId;
+        if (isset($fields[$id])) {
+            $element->$id = $fields[$id];
+            unset($fields[$id]);
+        }
 
         // Set username
         $username = Import_ElementModel::HandleUsername;
@@ -158,14 +164,17 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
         $status = Import_ElementModel::HandleStatus;
         if (isset($fields[$status])) {
             $element->$status = $fields[$status];
+            if ($element->$status == UserStatus::Pending) {
+                $element->pending = true;
+            }
             unset($fields[$status]);
         }
 
-        // Set locale
-        $locale = Import_ElementModel::HandleLocale;
-        if (isset($fields[$locale])) {
-            $element->$locale = $fields[$locale];
-            unset($fields[$locale]);
+        // Set preferred locale
+        $preflocale = Import_ElementModel::HandlePrefLocale;
+        if (isset($fields[$preflocale])) {
+            $element->$preflocale = $fields[$preflocale];
+            unset($fields[$preflocale]);
         }
 
         // Set password
@@ -189,15 +198,8 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function save(BaseElementModel &$element, $settings)
     {
-        // Save element
-        if ($settings->validate) {
-            $result = craft()->users->saveUser($element);
-        } else {
-            $result = craft()->elements->saveElement($element, false);
-        }
-
-        // Save usergroup
-        if ($result) {
+        // Save user
+        if (craft()->users->saveUser($element)) {
 
             // Assign to groups
             craft()->userGroups->assignUserToGroups($element->id, $settings['elementvars']['groups']);

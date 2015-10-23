@@ -147,11 +147,11 @@ class ImportController extends BaseController
             craft()->userSession->setNotice(Craft::t('Import process started.'));
 
             // Redirect to history
-            $this->redirect('import/history?task='.$task->id);
+            $this->redirect(UrlHelper::getCpUrl('import/history', array('task' => $task->id)));
         } else {
 
             // Redirect to history
-            $this->redirect('import/history');
+            $this->redirect(UrlHelper::getCpUrl('import/history'));
         }
     }
 }

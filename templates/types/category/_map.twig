@@ -1,4 +1,4 @@
-{% set fieldLayout = craft.fields.getLayoutByType(import.type) %}
+{% set categoryGroup = craft.categoryGroups.getGroupById(import.elementvars.group) %}
 
 <p>{{ 'Choose the destination fields for your imported data. "Title" is always required.'|t }}</p>
 {% if import.behavior != 'append' %}
@@ -32,15 +32,26 @@
                     <div class="select mapper">
                         <select name="fields[{{ column }}]" class="importFields">
                             <option value="dont">{{ "Don't import"|t }}</option>
+                            <option value="id"{% if column|lower == 'id' %} selected{% endif %}>{{ "ID"|t }}</option>
                             <option value="title"{% if column|lower == 'title' or column|lower == 'name' %} selected{% endif %}>{{ "Title"|t }} *</option>
                             <option value="slug"{% if column|lower == 'slug' %} selected{% endif %}>{{ "Slug"|t }}</option>
                             <option value="parentId"{% if column|lower == 'parent' %} selected{% endif %}>{{ "Parent Entry"|t }}</option>
                             <option value="ancestors"{% if column|lower == 'ancestors' %} selected{% endif %}>{{ "Ancestors"|t }}</option>
                             <option value="enabled"{% if column|lower == 'enabled' %} selected{% endif %}>{{ "Enabled"|t }}</option>
-                        {% for field in fieldLayout.getFields() %}
+                            <option value="locale"{% if column|lower == 'locale' %} selected{% endif %}>{{ "Locale"|t }}</option>
+                    {% for tab in craft.fields.getLayoutById(categoryGroup.fieldLayoutId).getTabs() %}
+                            <optgroup label="{{ tab.name }}">
+                        {% for field in tab.getFields() %}
                             {% set f = field.getField() %}
-                            <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
+                            {% set customOption = craft.import.customOption(f.type) %}
+                            {% if customOption %}
+                                {% include customOption ignore missing %}
+                            {% else %}
+                                <option value="{{ f.handle }}"{% if column|lower == f.name|lower or column|lower == f.handle|lower %} selected{% endif %}>{{ f.name }}{% if f.required %} *{% endif %}</option>
+                            {% endif %}
                         {% endfor %}
+                            </optgroup>
+                    {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -53,7 +64,7 @@
             instructions: "Criterium for finding existing data."|t,
             name: "unique[" ~ column ~ "]",
             class: "unique",
-            checked: loop.first
+            checked: loop.first or column|lower == 'locale'
         }) }}
         </td>
         {% endif %}
