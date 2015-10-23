@@ -36,7 +36,7 @@ function checkForTask(task, file)
                 
                     // Clear task and redirect
                     clearInterval(taskCheck);
-                    window.location.href = 'history';
+                    window.location.href = Craft.getCpUrl('import/history');
                     
                 }
                 
