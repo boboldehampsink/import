@@ -148,7 +148,8 @@ class Import_HistoryService extends BaseApplicationComponent
     {
 
         // Get previous version
-        $version = end(craft()->entryRevisions->getVersionsByEntryId($entry, false, 2));
+        $entryRevisions = craft()->entryRevisions->getVersionsByEntryId($entry, false, 2);
+        $version = end($entryRevisions);
 
         // Save
         $log = new Import_EntriesRecord();
