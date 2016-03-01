@@ -339,7 +339,7 @@ class Import_EntryServiceTest extends BaseTest
                 'expectedAttributes' => array_merge($defaultExpectedAttributes, array(
                     'parentId' => 2,
                 )),
-            )
+            ),
         );
     }
 

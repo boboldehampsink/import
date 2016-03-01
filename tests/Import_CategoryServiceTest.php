@@ -59,9 +59,7 @@ class Import_CategoryServiceTest extends BaseTest
      */
     public function testGetGroupsShouldReturnEditableCategoryGroups()
     {
-        $mockCategoryGroup = $this->getMockBuilder('Craft\CategoryGroupModel')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockCategoryGroup = $this->getMockCategoryGroup();
 
         $mockEditableCategoryGroups = array($mockCategoryGroup);
 
@@ -214,15 +212,44 @@ class Import_CategoryServiceTest extends BaseTest
     }
 
     /**
+     * @param array $fields
+     *
      * @covers ::callback
+     * @dataProvider provideValidFieldsForCallback
      */
-    public function testCallbackShouldDoNothing()
+    public function testCallbackShouldSetParent(array $fields)
     {
-        $fields = array();
-        $mockCategory = $this->getMockCategory();
+        $category = new CategoryModel();
+        $category->groupId = 1;
+        $mockParentCategory = $this->getMockCategory();
+        $mockCategoryGroup = $this->getMockCategoryGroup();
+
+        if (isset($fields[Import_ElementModel::HandleParent]) || isset($fields[Import_ElementModel::HandleAncestors])) {
+            $mockCriteria = $this->getMockCriteria();
+            $mockCriteria->expects($this->exactly(1))->method('first')->willReturn($mockParentCategory);
+
+            $this->setMockElementsService($mockCriteria);
+
+            $mockCategoriesService = $this->getMock('Craft\CategoriesService');
+            $mockCategoriesService->expects($this->any())->method('getGroupById')
+                ->with(1)->willReturn($mockCategoryGroup);
+            $this->setComponent(craft(), 'categories', $mockCategoriesService);
+
+            $mockStructuresService = $this->getMock('Craft\StructuresService');
+            $mockStructuresService->expects($this->exactly(1))->method('append')
+                ->with(null, $category, $mockParentCategory, 'auto');
+            $this->setComponent(craft(), 'structures', $mockStructuresService);
+        }
+
+        if (isset($fields[Import_ElementModel::HandleAncestors])) {
+            $mockImportService = $this->getMock('Craft\ImportService');
+            $mockImportService->expects($this->exactly(1))->method('slugify')
+                ->with($fields['ancestors'])->willReturn('slugified-slug');
+            $this->setComponent(craft(), 'import', $mockImportService);
+        }
 
         $service = new Import_CategoryService();
-        $service->callback($fields, $mockCategory);
+        $service->callback($fields, $category);
     }
 
     /**
@@ -263,6 +290,26 @@ class Import_CategoryServiceTest extends BaseTest
                     'slug' => 'test-slug',
                 )),
             ),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function provideValidFieldsForCallback()
+    {
+
+        return array(
+            'Parent given' => array(
+                'fields' => array(
+                    'parentId' => 'news',
+                ),
+            ),
+            'Ancestors given' => array(
+                'fields' => array(
+                    'ancestors' => 'news and stuff',
+                ),
+            )
         );
     }
 
@@ -318,5 +365,16 @@ class Import_CategoryServiceTest extends BaseTest
         $categoriesService = $this->getMock('Craft\CategoriesService');
         $categoriesService->expects($this->exactly(1))->method('saveCategory')->with($mockCategory)->willReturn($success);
         $this->setComponent(craft(), 'categories', $categoriesService);
+    }
+
+    /**
+     * @return MockObject
+     */
+    private function getMockCategoryGroup()
+    {
+        $mockCategoryGroup = $this->getMockBuilder('Craft\CategoryGroupModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        return $mockCategoryGroup;
     }
 }
