@@ -111,9 +111,8 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         $parent = Import_ElementModel::HandleParent;
         $checkAncestors = !isset($fields[$parent]);
 
-        foreach($fields as $handle => $value){
-            switch($handle)
-            {
+        foreach ($fields as $handle => $value) {
+            switch ($handle) {
                 case Import_ElementModel::HandleLocale:
                     $element->localeEnabled = true;
                 case Import_ElementModel::HandleId;
@@ -139,10 +138,10 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
                     $element->$handle = $this->prepareParentForElement($value, $element->sectionId);
                     break;
                 case Import_ElementModel::HandleAncestors:
-                    if($checkAncestors){
+                    if ($checkAncestors) {
                         $element->$parent = $this->prepareAncestorsForElement($value, $element->sectionId);
                     }
-                break;
+                    break;
                 default:
                     continue 2;
             }
@@ -150,7 +149,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         }
 
         // Set default author if not set
-        if(!$element->$author){
+        if (!$element->$author) {
             $user = craft()->userSession->getUser();
             $element->$author = ($element->$author ? $element->$author : ($user ? $user->id : 1));
         }
@@ -202,7 +201,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      */
     private function prepAuthorForElement($author)
     {
-        if(!is_numeric($author)){
+        if (!is_numeric($author)) {
             $user = craft()->users->getUserByUsernameOrEmail($author);
             $author = $user ? $user->id : 1;
         }

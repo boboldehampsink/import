@@ -96,36 +96,25 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
-        // Set ID
-        $id = Import_ElementModel::HandleId;
-        if (isset($fields[$id])) {
-            $element->$id = $fields[$id];
-            unset($fields[$id]);
+        foreach ($fields as $handle => $value) {
+            switch ($handle) {
+                case Import_ElementModel::HandleLocale:
+                    $element->localeEnabled = true;
+                case Import_ElementModel::HandleId;
+                    $element->$handle = $value;
+                    break;
+                case Import_ElementModel::HandleSlug:
+                    $element->$handle = ElementHelper::createSlug($value);
+                    break;
+                case Import_ElementModel::HandleTitle:
+                    $element->getContent()->$handle = $value;
+                    break;
+                default:
+                    continue 2;
+            }
+            unset($fields[$handle]);
         }
 
-        // Set locale
-        $locale = Import_ElementModel::HandleLocale;
-        if (isset($fields[$locale])) {
-            $element->$locale = $fields[$locale];
-            $element->localeEnabled = true;
-            unset($fields[$locale]);
-        }
-
-        // Set slug
-        $slug = Import_ElementModel::HandleSlug;
-        if (isset($fields[$slug])) {
-            $element->$slug = ElementHelper::createSlug($fields[$slug]);
-            unset($fields[$slug]);
-        }
-
-        // Set title
-        $title = Import_ElementModel::HandleTitle;
-        if (isset($fields[$title])) {
-            $element->getContent()->$title = $fields[$title];
-            unset($fields[$title]);
-        }
-
-        // Return element
         return $element;
     }
 
@@ -173,7 +162,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
                 $criteria->groupId = $element->groupId;
 
                 // Exact match
-                $criteria->search = '"'.$data.'"';
+                $criteria->search = '"' . $data . '"';
 
                 // Return the first found element for connecting
                 if ($criteria->total()) {
@@ -206,7 +195,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
                 // Find matching element by URI (dirty, not all categories have URI's)
                 $criteria = craft()->elements->getCriteria(ElementType::Category);
                 $criteria->groupId = $element->groupId;
-                $criteria->uri = $categoryUrl.craft()->import->slugify($data);
+                $criteria->uri = $categoryUrl . craft()->import->slugify($data);
                 $criteria->limit = 1;
 
                 // Return the first found element for connecting
