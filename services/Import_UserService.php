@@ -32,6 +32,7 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function getGroups()
     {
+        $result = false;
         // Check if usergroups are allowed in this installation
         if (craft()->getEdition() == Craft::Pro) {
 
@@ -39,16 +40,12 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
             $groups = craft()->userGroups->getAllGroups();
 
             // Return when groups found
-            if (count($groups)) {
-                return $groups;
-            }
-
             // Still return true when no groups found
-            return true;
+            $result = count($groups) ? $groups : true;
         }
 
         // Else, dont proceed with the user element
-        return false;
+        return $result;
     }
 
     /**
