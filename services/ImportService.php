@@ -109,55 +109,136 @@ class ImportService extends BaseApplicationComponent
 
         // If unique is non-empty array, we're replacing or deleting
         if (is_array($settings['unique']) && count($settings['unique']) > 1) {
-            $this->replaceOrDelete($row, $settings, $service, $fields, $entry);
-        } else {
-            // Prepare element model
-            $entry = $service->prepForElementModel($fields, $entry);
-
-            try {
-
-                // Hook to prepare as appropriate fieldtypes
-                array_walk($fields, function (&$data, $handle) {
-                    return craft()->plugins->call('registerImportOperation', array(&$data, $handle));
-                });
-            } catch (Exception $e) {
-
-                // Something went terribly wrong, assume its only this row
-                $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
-            }
-
-            // Set fields on entry model
-            $entry->setContentFromPost($fields);
-
-            try {
-
-                // Hook called after all the field values are set, allowing for modification
-                // of the entire entry before it's saved. Include the mapping table and row data.
-                craft()->plugins->call('modifyImportRow', array($entry, $settings['map'], $data));
-            } catch (Exception $e) {
-
-                // Something went terribly wrong, assume its only this row
-                $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
-            }
-
-            try {
-
-                // Log
-                if (!$service->save($entry, $settings)) {
-
-                    // Log errors when unsuccessful
-                    $this->log[$row] = craft()->import_history->log($settings['history'], $row, $entry->getErrors());
-                } else {
-
-                    // Some functions need calling after saving
-                    $service->callback($fields, $entry);
-                }
-            } catch (Exception $e) {
-
-                // Something went terribly wrong, assume its only this row
-                $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+            $entry = $this->replaceOrDelete($row, $settings, $service, $fields, $entry);
+            if ($entry === null) {
+                return;
             }
         }
+
+        // Prepare element model
+        $entry = $service->prepForElementModel($fields, $entry);
+
+        try {
+
+            // Hook to prepare as appropriate fieldtypes
+            array_walk($fields, function (&$data, $handle) {
+                return craft()->plugins->call('registerImportOperation', array(&$data, $handle));
+            });
+        } catch (Exception $e) {
+
+            // Something went terribly wrong, assume its only this row
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+        }
+
+        // Set fields on entry model
+        $entry->setContentFromPost($fields);
+
+        try {
+
+            // Hook called after all the field values are set, allowing for modification
+            // of the entire entry before it's saved. Include the mapping table and row data.
+            craft()->plugins->call('modifyImportRow', array($entry, $settings['map'], $data));
+        } catch (Exception $e) {
+
+            // Something went terribly wrong, assume its only this row
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+        }
+
+        try {
+
+            // Log
+            if (!$service->save($entry, $settings)) {
+
+                // Log errors when unsuccessful
+                $this->log[$row] = craft()->import_history->log($settings['history'], $row, $entry->getErrors());
+            } else {
+
+                // Some functions need calling after saving
+                $service->callback($fields, $entry);
+            }
+        } catch (Exception $e) {
+
+            // Something went terribly wrong, assume its only this row
+            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+        }
+    }
+
+    /**
+     * @param int $row
+     * @param array $settings
+     * @param IImportElementType $service
+     * @param array $fields
+     * @return null|EntryModel
+     * @throws Exception
+     */
+    private function replaceOrDelete($row, array &$settings, IImportElementType $service, array $fields)
+    {
+        // Set criteria according to elementtype
+        $criteria = $service->setCriteria($settings);
+
+        // Set up criteria model for matching
+        $cmodel = array();
+        foreach ($settings['map'] as $key => $value) {
+            if (isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && $value != 'dont') {
+                // Unique value should have a value
+                if (trim($fields[$value]) != '') {
+                    $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
+                } else {
+                    // Else stop the operation - chance of success is only small
+                    $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Tried to match criteria but its value was not set.'))));
+
+                    return null;
+                }
+            }
+        }
+
+        // Get current user
+        $currentUser = craft()->userSession->getUser();
+
+        // If there's a match...
+        if (count($cmodel) && $criteria->count()) {
+
+            // If we're deleting
+            if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
+
+                // Get elements to delete
+                $elements = $criteria->find();
+
+                // Fire an 'onBeforeImportDelete' event
+                $event = new Event($this, array('elements' => $elements));
+                $this->onBeforeImportDelete($event);
+
+                // Give event the chance to blow off deletion
+                if ($event->performAction) {
+                    try {
+
+                        // Do it
+                        if (!$service->delete($elements)) {
+
+                            // Log errors when unsuccessful
+                            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));
+                        }
+                    } catch (Exception $e) {
+
+                        // Something went terribly wrong, assume its only this row
+                        $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+                    }
+                }
+
+                // Skip rest and continue
+                return null;
+            } elseif ($currentUser->can('append') || $currentUser->can('replace')) {
+
+                // Fill new EntryModel with match
+                return $criteria->first();
+            } else {
+
+                // No permissions!
+                throw new Exception(Craft::t('Tried to import without permission.'));
+            }
+        }
+        // Else do nothing
+        return null;
     }
 
     /**
@@ -549,7 +630,7 @@ class ImportService extends BaseApplicationComponent
      *
      * @param stirng $elementType
      *
-     * @return object|bool
+     * @return IImportElementType|bool
      */
     public function getService($elementType)
     {
@@ -641,34 +722,6 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Function to use when debugging.
-     *
-     * @param array|object $settings
-     * @param int $history
-     * @param int $step
-     */
-    public function debug($settings, $history, $step)
-    {
-
-        // Open file
-        $data = $this->data($settings['file']);
-
-        // Adjust settings for one row
-        $model = Import_HistoryRecord::model()->findById($history);
-        $model->rows = 1;
-        $model->save();
-
-        // Import row
-        $this->row($step, $data[$step], $settings);
-
-        // Finish
-        $this->finish($settings, false);
-
-        // Redirect to history
-        craft()->request->redirect('import/history');
-    }
-
-    /**
      * Special function that handles csv delimiter detection.
      *
      * @param string $file
@@ -718,6 +771,38 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
+     * Function to use when debugging.
+     *
+     * @param array|object $settings
+     * @param int $history
+     * @param int $step
+     */
+    public function debug($settings, $history, $step)
+    {
+
+        // Open file
+        $data = $this->data($settings['file']);
+
+        // Adjust settings for one row
+        $model = Import_HistoryRecord::model()->findById($history);
+        $model->rows = 1;
+        $model->save();
+
+        // Import row
+        $this->row($step, $data[$step], $settings);
+
+        // Finish
+        $this->finish($settings, false);
+
+        // Redirect to history
+        craft()->request->redirect('import/history');
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
      * Fires an "onBeforeImportDelete" event.
      *
      * @param Event $event
@@ -728,6 +813,8 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * Fires an "onImportStart" event.
      *
      * @param Event $event
@@ -738,6 +825,8 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * Fires an "onImportFinish" event.
      *
      * @param Event $event
@@ -745,85 +834,5 @@ class ImportService extends BaseApplicationComponent
     public function onImportFinish(Event $event)
     {
         $this->raiseEvent('onImportFinish', $event);
-    }
-
-    /**
-     * @param $row
-     * @param $settings
-     * @param $service
-     * @param $fields
-     * @param $entry
-     * @throws Exception
-     */
-    private function replaceOrDelete($row, &$settings, $service, $fields, &$entry)
-    {
-        // Set criteria according to elementtype
-        $criteria = $service->setCriteria($settings);
-
-        // Set up criteria model for matching
-        $cmodel = array();
-        foreach ($settings['map'] as $key => $value) {
-            if (isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && $value != 'dont') {
-                // Unique value should have a value
-                if (trim($fields[$value]) != '') {
-                    $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
-                } else {
-                    // Else stop the operation - chance of success is only small
-                    $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Tried to match criteria but its value was not set.'))));
-
-                    return;
-                }
-            }
-        }
-
-        // Get current user
-        $currentUser = craft()->userSession->getUser();
-
-        // If there's a match...
-        if (count($cmodel) && $criteria->count()) {
-
-            // If we're deleting
-            if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
-
-                // Get elements to delete
-                $elements = $criteria->find();
-
-                // Fire an 'onBeforeImportDelete' event
-                $event = new Event($this, array('elements' => $elements));
-                $this->onBeforeImportDelete($event);
-
-                // Give event the chance to blow off deletion
-                if ($event->performAction) {
-                    try {
-
-                        // Do it
-                        if (!$service->delete($elements)) {
-
-                            // Log errors when unsuccessful
-                            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));
-                        }
-                    } catch (Exception $e) {
-
-                        // Something went terribly wrong, assume its only this row
-                        $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
-                    }
-                }
-
-                // Skip rest and continue
-                return;
-            } elseif ($currentUser->can('append') || $currentUser->can('replace')) {
-
-                // Fill new EntryModel with match
-                $entry = $criteria->first();
-            } else {
-
-                // No permissions!
-                throw new Exception(Craft::t('Tried to import without permission.'));
-            }
-        } else {
-
-            // Else do nothing
-            return;
-        }
     }
 }

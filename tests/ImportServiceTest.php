@@ -157,9 +157,266 @@ class ImportServiceTest extends BaseTest
         $mockEntry->expects($this->exactly(1))->method('setContentFromPost')->with($fields);
         $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields, true);
         $mockImportEntryService->expects($this->exactly(1))->method('callback')->with($fields, $mockEntry);
+
+        $service = new ImportService();
+        $service->row($row, $data, $settings);
+    }
+
+    /**
+     * @covers ::row
+     * @covers ::getService
+     */
+    public function testRowShouldCatchExceptions()
+    {
+        $row = 1;
+        $historyId = 2;
+        $settings = array(
+            'map' => array('field1', 'field2'),
+            'type' => 'TypeExists',
+            'unique' => false,
+            'history' => $historyId,
+        );
+
+        $mockException = $this->getMock('Craft\Exception');
+        $data = array('settings1' => array(), 'settings2' => array());
+        $fields = array_combine($settings['map'], $data);
+
+        $mockEntry = $this->getMockEntry();
+        $mockEntry->expects($this->exactly(1))->method('setContentFromPost')->with($fields);
+        $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields);
+        $mockImportEntryService->expects($this->exactly(1))->method('save')->willThrowException($mockException);
+        $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
+
+        $mockPluginsService = $this->getMock('Craft\PluginsService');
+        $mockPluginsService->expects($this->any())->method('call')->willReturnCallback(
+            function($method) use ($mockException) {
+                if($method == 'registerImportService'){
+                    return null;
+                } else {
+                    throw $mockException;
+                }
+            }
+        );
+        $this->setComponent(craft(), 'plugins', $mockPluginsService);
+
+        $service = new ImportService();
+        $service->row($row, $data, $settings);
+    }
+
+    /**
+     * @covers ::row
+     * @covers ::getService
+     */
+    public function testRowUniqueReplaceOrDeleteShouldLogErrorWhenFieldValueEmpty()
+    {
+        $row = 1;
+        $historyId = 2;
+        $settings = array(
+            'map' => array('field1' => 'field1', 'field2' => 'field2'),
+            'type' => 'TypeExists',
+            'unique' => array('field1' => 1, 'field2' => 0),
+            'history' => $historyId,
+        );
+
+        $data = array('settings1' => '', 'settings2' => '');
+        $fields = array_combine($settings['map'], $data);
+
+        $mockEntry = $this->getMockEntry();
+        $mockCriteria = $this->getMockCriteria();
+        $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields);
+        $mockImportEntryService->expects($this->exactly(1))->method('setCriteria')
+            ->with($settings)->willReturn($mockCriteria);
         $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
 
         $service = new ImportService();
+        $service->row($row, $data, $settings);
+    }
+
+    /**
+     * @covers ::row
+     * @covers ::getService
+     */
+    public function testRowUniqueReplaceOrDeleteShouldDoNothingWhenNoResultFound()
+    {
+        $row = 1;
+        $historyId = 2;
+        $settings = array(
+            'map' => array('field1' => 'field1', 'field2' => 'field2'),
+            'type' => 'TypeExists',
+            'unique' => array('field1' => 1, 'field2' => 0),
+            'history' => $historyId,
+        );
+
+        $data = array('settings1' => 'value1', 'settings2' => 'value2');
+        $fields = array_combine($settings['map'], $data);
+
+        $mockEntry = $this->getMockEntry();
+        $mockCriteria = $this->getMockCriteria();
+        $mockCriteria->expects($this->exactly(1))->method('count')->willReturn(0);
+
+        $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields);
+        $mockImportEntryService->expects($this->exactly(1))->method('setCriteria')
+            ->with($settings)->willReturn($mockCriteria);
+
+        $service = new ImportService();
+        $service->row($row, $data, $settings);
+    }
+
+    /**
+     * @covers ::row
+     * @covers ::getService
+     *
+     * @expectedException Exception
+     * @expectedExceptionMessage Tried to import without permission
+     */
+    public function testRowUniqueReplaceOrDeleteShouldThrowExceptionWhenPermissionDenied()
+    {
+        $row = 1;
+        $historyId = 2;
+        $settings = array(
+            'map' => array('field1' => 'field1', 'field2' => 'field2'),
+            'type' => 'TypeExists',
+            'unique' => array('field1' => 1, 'field2' => 0),
+            'history' => $historyId,
+        );
+
+        $data = array('settings1' => 'value1', 'settings2' => 'value2');
+        $fields = array_combine($settings['map'], $data);
+
+        $mockEntry = $this->getMockEntry();
+        $mockCriteria = $this->getMockCriteria();
+        $mockCriteria->expects($this->exactly(1))->method('count')->willReturn(1);
+
+        $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields);
+        $mockImportEntryService->expects($this->exactly(1))->method('setCriteria')
+            ->with($settings)->willReturn($mockCriteria);
+        $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
+
+        $mockUser = $this->getMockUser();
+        $this->setMockUserSession($mockUser);
+
+        $service = new ImportService();
+        $service->row($row, $data, $settings);
+    }
+
+    /**
+     * @covers ::row
+     * @covers ::getService
+     */
+    public function testRowUniqueReplaceOrDeleteShouldFindExistingElement()
+    {
+        $row = 1;
+        $historyId = 2;
+        $settings = array(
+            'map' => array('field1' => 'field1', 'field2' => 'field2'),
+            'type' => 'TypeExists',
+            'unique' => array('field1' => 1, 'field2' => 0),
+            'history' => $historyId,
+        );
+
+        $data = array('settings1' => 'value1', 'settings2' => 'value2');
+        $fields = array_combine($settings['map'], $data);
+
+        $mockEntry = $this->getMockEntry();
+        $mockCriteria = $this->getMockCriteria();
+        $mockCriteria->expects($this->exactly(1))->method('count')->willReturn(1);
+        $mockCriteria->expects($this->exactly(1))->method('first')->willReturn($mockEntry);
+
+        $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields, true);
+        $mockImportEntryService->expects($this->exactly(1))->method('setCriteria')
+            ->with($settings)->willReturn($mockCriteria);
+        $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
+
+        $mockUser = $this->getMockUser();
+        $mockUser->expects($this->exactly(2))->method('can')->willReturnMap(array(
+            array('delete', false),
+            array('append', true),
+        ));
+        $this->setMockUserSession($mockUser);
+
+        $service = new ImportService();
+        $service->row($row, $data, $settings);
+    }
+
+    /**
+     * @covers ::row
+     * @covers ::getService
+     */
+    public function testRowUniqueReplaceOrDeleteShouldDeleteExistingElement()
+    {
+        $row = 1;
+        $historyId = 2;
+        $settings = array(
+            'map' => array('field1' => 'field1', 'field2' => 'field2'),
+            'type' => 'TypeExists',
+            'unique' => array('field1' => 1, 'field2' => 0),
+            'history' => $historyId,
+            'behavior' => ImportModel::BehaviorDelete,
+        );
+
+        $data = array('settings1' => 'value1', 'settings2' => 'value2');
+        $fields = array_combine($settings['map'], $data);
+
+        $mockEntry = $this->getMockEntry();
+        $mockCriteria = $this->getMockCriteria();
+        $mockCriteria->expects($this->exactly(1))->method('count')->willReturn(1);
+        $mockCriteria->expects($this->exactly(1))->method('find')->willReturn(array($mockEntry));
+
+        $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields);
+        $mockImportEntryService->expects($this->exactly(1))->method('setCriteria')
+            ->with($settings)->willReturn($mockCriteria);
+        $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
+
+        $mockUser = $this->getMockUser();
+        $mockUser->expects($this->exactly(1))->method('can')->willReturnMap(array(
+            array('delete', true),
+        ));
+        $this->setMockUserSession($mockUser);
+
+        /** @var ImportService $service */
+        $service = $this->getMock('Craft\ImportService', array('onBeforeImportDelete'));
+        $service->row($row, $data, $settings);
+    }
+
+    /**
+     * @covers ::row
+     * @covers ::getService
+     */
+    public function testRowUniqueReplaceOrDeleteShouldLogErrorWhenDeleteFails()
+    {
+        $row = 1;
+        $historyId = 2;
+        $settings = array(
+            'map' => array('field1' => 'field1', 'field2' => 'field2'),
+            'type' => 'TypeExists',
+            'unique' => array('field1' => 1, 'field2' => 0),
+            'history' => $historyId,
+            'behavior' => ImportModel::BehaviorDelete,
+        );
+
+        $data = array('settings1' => 'value1', 'settings2' => 'value2');
+        $fields = array_combine($settings['map'], $data);
+
+        $mockEntry = $this->getMockEntry();
+        $mockException = $this->getMock('Craft\Exception');;
+        $mockCriteria = $this->getMockCriteria();
+        $mockCriteria->expects($this->exactly(1))->method('count')->willReturn(1);
+        $mockCriteria->expects($this->exactly(1))->method('find')->willReturn(array($mockEntry));
+
+        $mockImportEntryService = $this->setMockImportEntryService($settings, $mockEntry, $fields);
+        $mockImportEntryService->expects($this->exactly(1))->method('setCriteria')
+            ->with($settings)->willReturn($mockCriteria);
+        $mockImportEntryService->expects($this->exactly(1))->method('delete')->willThrowException($mockException);
+        $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
+
+        $mockUser = $this->getMockUser();
+        $mockUser->expects($this->exactly(1))->method('can')->willReturnMap(array(
+            array('delete', true),
+        ));
+        $this->setMockUserSession($mockUser);
+
+        /** @var ImportService $service */
+        $service = $this->getMock('Craft\ImportService', array('onBeforeImportDelete'));
         $service->row($row, $data, $settings);
     }
 
@@ -195,22 +452,34 @@ class ImportServiceTest extends BaseTest
      * @param MockObject $mockEntry
      * @param array $fields
      * @param bool $saveSuccess
-     * @return MockObject
+     * @return MockObject|Import_EntryService
      */
-    private function setMockImportEntryService(array $settings, MockObject $mockEntry, array $fields, $saveSuccess)
+    private function setMockImportEntryService(array $settings, MockObject $mockEntry, array $fields, $saveSuccess = null)
     {
         $mockImportTypeService = $this->getMock('Craft\Import_EntryService');
         $mockImportTypeService->expects($this->exactly(1))->method('setModel')->with($settings)->willReturn($mockEntry);
-        $mockImportTypeService->expects($this->exactly(1))->method('prepForElementModel')
+        $mockImportTypeService->expects($this->any())->method('prepForElementModel')
             ->with($fields, $mockEntry)->willReturn($mockEntry);
-        $mockImportTypeService->expects($this->exactly(1))->method('save')
-            ->with($mockEntry, $settings)->willReturn($saveSuccess);
+        if (!is_null($saveSuccess)) {
+            $mockImportTypeService->expects($this->exactly(1))->method('save')
+                ->with($mockEntry, $settings)->willReturn($saveSuccess);
+        }
         $this->setComponent(craft(), 'import_typeexists', $mockImportTypeService);
         return $mockImportTypeService;
     }
 
     /**
-     * @return MockObject
+     * @param MockObject $mockUser
+     */
+    private function setMockUserSession(MockObject $mockUser)
+    {
+        $mockUserSession = $this->getMock('Craft\UserSessionService');
+        $this->setComponent(craft(), 'userSession', $mockUserSession);
+        $mockUserSession->expects($this->exactly(1))->method('getUser')->willReturn($mockUser);
+    }
+
+    /**
+     * @return MockObject|ElementCriteriaModel
      */
     private function getMockEntry()
     {
@@ -218,5 +487,27 @@ class ImportServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         return $mockEntry;
+    }
+
+    /**
+     * @return MockObject|ElementCriteriaModel
+     */
+    private function getMockCriteria()
+    {
+        $mockCriteria = $this->getMockBuilder('Craft\ElementCriteriaModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        return $mockCriteria;
+    }
+
+    /**
+     * @return MockObject
+     */
+    private function getMockUser()
+    {
+        $mockUser = $this->getMockBuilder('Craft\UserModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        return $mockUser;
     }
 }
