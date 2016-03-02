@@ -29,8 +29,6 @@ class Import_EntryServiceTest extends BaseTest
         // Require dependencies
         require_once __DIR__ . '/../services/IImportElementType.php';
         require_once __DIR__ . '/../services/Import_EntryService.php';
-        require_once __DIR__ . '/../models/Import_ElementModel.php';
-        require_once __DIR__ . '/../services/Import_HistoryService.php';
     }
 
     /**
