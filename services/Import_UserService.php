@@ -111,41 +111,40 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
-        $username = Import_ElementModel::HandleUsername;
-        $email = Import_ElementModel::HandleEmail;
+        if ($element instanceof UserModel) {
+            $username = Import_ElementModel::HandleUsername;
+            $email = Import_ElementModel::HandleEmail;
 
-        foreach ($fields as $handle => $value) {
-            switch ($handle) {
-                case Import_ElementModel::HandleId:
-                case Import_ElementModel::HandleUsername:
-                case Import_ElementModel::HandleFirstname:
-                case Import_ElementModel::HandleLastname:
-                case Import_ElementModel::HandleEmail:
-                case Import_ElementModel::HandlePrefLocale:
-                case Import_ElementModel::HandlePassword:
-                    $element->$handle = $value;
-                    unset($fields[$handle]);
-                    break;
-                case Import_ElementModel::HandlePhoto:
-                    $element->$handle = $value;
-                    break;
-                case Import_ElementModel::HandleStatus:
-                    $element->$handle = $value;
-                    if ($element->$handle == UserStatus::Pending) {
-                        $element->pending = true;
-                    }
-                    unset($fields[$handle]);
+            foreach ($fields as $handle => $value) {
+                switch ($handle) {
+                    case Import_ElementModel::HandleId:
+                    case Import_ElementModel::HandleUsername:
+                    case Import_ElementModel::HandleFirstname:
+                    case Import_ElementModel::HandleLastname:
+                    case Import_ElementModel::HandleEmail:
+                    case Import_ElementModel::HandlePrefLocale:
+                    case Import_ElementModel::HandlePassword:
+                        $element->$handle = $value;
+                        unset($fields[$handle]);
+                        break;
+                    case Import_ElementModel::HandlePhoto:
+                        $element->$handle = $value;
+                        break;
+                    case Import_ElementModel::HandleStatus:
+                        $this->setUserStatus($element, $value);
+                        unset($fields[$handle]);
 
-                    break;
-                default:
-                    continue 2;
+                        break;
+                    default:
+                        continue 2;
+                }
+
             }
 
-        }
-
-        // Set email as username
-        if (craft()->config->get('useEmailAsUsername')) {
-            $element->$username = $element->$email;
+            // Set email as username
+            if (craft()->config->get('useEmailAsUsername')) {
+                $element->$username = $element->$email;
+            }
         }
 
         // Return entry
@@ -183,5 +182,40 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     public function callback(array $fields, BaseElementModel $element)
     {
         // No callback for users
+    }
+
+    /**
+     * @param UserModel $user
+     * @param string $status
+     * @return UserModel
+     */
+    private function setUserStatus(UserModel $user, $status)
+    {
+        switch ($status) {
+            case UserStatus::Locked;
+                $user->locked = true;
+                break;
+            case UserStatus::Suspended;
+                $user->locked = false;
+                $user->suspended = true;
+                break;
+            case UserStatus::Archived:
+                $user->locked = false;
+                $user->suspended = false;
+                $user->archived = true;
+                break;
+            case UserStatus::Pending:
+                $user->locked = false;
+                $user->suspended = false;
+                $user->archived = false;
+                $user->pending = true;
+                break;
+            case UserStatus::Active:
+                $user->suspended = false;
+                $user->locked = false;
+                $user->setActive();
+                break;
+        }
+        return $user;
     }
 }

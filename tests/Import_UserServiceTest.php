@@ -167,12 +167,42 @@ class Import_UserServiceTest extends BaseTest
      */
     public function testPrepForElementModelShouldHandleSpecifiedAttributes(array $fields, array $expectedAttributes)
     {
+        $expectedCount = array_key_exists('photo', $fields) ? 1 : 0;
+        $status = @$fields['status'];
+
         $service = new Import_UserService();
         $user = $service->prepForElementModel($fields, new UserModel());
 
         $this->assertTrue($user instanceof UserModel);
         $this->assertEquals($expectedAttributes, $user->getAttributes());
-        $this->assertCount(1, $fields);
+        $this->assertCount($expectedCount, $fields);
+
+        if($status){
+            $this->assertSame($status, $user->getStatus());
+        }
+    }
+
+    /**
+     * @covers ::prepForElementModel
+     */
+    public function testPrepForElementModelShouldUseEmailAsUsernameWhenSoConfigured()
+    {
+        $email = 'test@example.com';
+        $fields = array(
+            'username' => 'username',
+            'email' => $email,
+        );
+
+        $mockConfigService = $this->getMock('Craft\ConfigService');
+        $mockConfigService->expects($this->any())->method('get')->willReturn(true);
+        $this->setComponent(craft(), 'config', $mockConfigService);
+
+        $service = new Import_UserService();
+        $user = $service->prepForElementModel($fields, new UserModel());
+
+        $this->assertTrue($user instanceof UserModel);
+        $this->assertSame($email, $user->email);
+        $this->assertSame($email, $user->username);
     }
 
     /**
@@ -318,6 +348,44 @@ class Import_UserServiceTest extends BaseTest
                     'email' => 'bob.debouwer@tubbergen',
                     'preferredLocale' => 'nl_nl',
                     'newPassword' => 'welkom123',
+                )),
+            ),
+            'Status active' => array(
+                'fields' => array(
+                    'status' => 'active',
+                ),
+                'expectedAttributes' => $defaultExpectedAttributes,
+            ),
+            'Status locked' => array(
+                'fields' => array(
+                    'status' => 'locked',
+                ),
+                'expectedAttributes' => array_merge($defaultExpectedAttributes, array(
+                    'locked' => true,
+                )),
+            ),
+            'Status suspended' => array(
+                'fields' => array(
+                    'status' => 'suspended',
+                ),
+                'expectedAttributes' => array_merge($defaultExpectedAttributes, array(
+                    'suspended' => true,
+                )),
+            ),
+            'Status Pending' => array(
+                'fields' => array(
+                    'status' => 'pending',
+                ),
+                'expectedAttributes' => array_merge($defaultExpectedAttributes, array(
+                    'pending' => true,
+                )),
+            ),
+            'Status Archived' => array(
+                'fields' => array(
+                    'status' => 'archived',
+                ),
+                'expectedAttributes' => array_merge($defaultExpectedAttributes, array(
+                    'archived' => true,
                 )),
             ),
         );
