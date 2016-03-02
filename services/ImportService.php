@@ -168,7 +168,7 @@ class ImportService extends BaseApplicationComponent
      * @param array $settings
      * @param IImportElementType $service
      * @param array $fields
-     * @return null|EntryModel
+     * @return null|BaseElementModel
      * @throws Exception
      */
     private function replaceOrDelete($row, array &$settings, IImportElementType $service, array $fields)
