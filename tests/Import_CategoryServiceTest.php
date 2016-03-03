@@ -34,6 +34,14 @@ class Import_CategoryServiceTest extends BaseTest
     }
 
     /**
+     * Setup mock localization service
+     */
+    public function setUp()
+    {
+        $this->setMockLocalizationService();
+    }
+
+    /**
      * Import_CategoryService should implement IImportElementType.
      */
     public function testImportCategoryServiceShouldImplementIExportElementType()
@@ -376,5 +384,20 @@ class Import_CategoryServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         return $mockCategoryGroup;
+    }
+
+    /**
+     * Mock LocalizationService.
+     */
+    private function setMockLocalizationService()
+    {
+        $mock = $this->getMockBuilder('Craft\LocalizationService')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrimarySiteLocaleId'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('en_gb');
+
+        $this->setComponent(craft(), 'i18n', $mock);
     }
 }

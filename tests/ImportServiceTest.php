@@ -35,6 +35,14 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
+     * Setup mock localization service
+     */
+    public function setUp()
+    {
+        $this->setMockLocalizationService();
+    }
+
+    /**
      * @covers ::columns
      */
     public function testColumnsShouldReturnColumnRow()
@@ -892,5 +900,20 @@ class ImportServiceTest extends BaseTest
             ->getMock();
         $tagsService->expects($this->any())->method('saveTag')->with($mockTag)->willReturn(true);
         $this->setComponent(craft(), 'tags', $tagsService);
+    }
+
+    /**
+     * Mock LocalizationService.
+     */
+    private function setMockLocalizationService()
+    {
+        $mock = $this->getMockBuilder('Craft\LocalizationService')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrimarySiteLocaleId'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('en_gb');
+
+        $this->setComponent(craft(), 'i18n', $mock);
     }
 }

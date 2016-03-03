@@ -32,6 +32,14 @@ class Import_EntryServiceTest extends BaseTest
     }
 
     /**
+     * Setup mock localization service
+     */
+    public function setUp()
+    {
+        $this->setMockLocalizationService();
+    }
+
+    /**
      * Import_EntryService should implement IImportElementType.
      */
     public function testImportEntryServiceShouldImplementIExportElementType()
@@ -428,5 +436,20 @@ class Import_EntryServiceTest extends BaseTest
         $mockUsersService->expects($this->exactly(1))->method('getUserByUsernameOrEmail')
             ->with($authorId)->willReturn(null);
         $this->setComponent(craft(), 'users', $mockUsersService);
+    }
+
+    /**
+     * Mock LocalizationService.
+     */
+    private function setMockLocalizationService()
+    {
+        $mock = $this->getMockBuilder('Craft\LocalizationService')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrimarySiteLocaleId'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('en_gb');
+
+        $this->setComponent(craft(), 'i18n', $mock);
     }
 }

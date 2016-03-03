@@ -34,6 +34,14 @@ class Import_HistoryServiceTest extends BaseTest
     }
 
     /**
+     * Setup mock localization service
+     */
+    public function setUp()
+    {
+        $this->setMockLocalizationService();
+    }
+
+    /**
      * @covers ::show
      */
     public function testFindAllHistoriesShouldGetAllHistories()
@@ -220,5 +228,20 @@ class Import_HistoryServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         return $mockImportEntriesRecord;
+    }
+
+    /**
+     * Mock LocalizationService.
+     */
+    private function setMockLocalizationService()
+    {
+        $mock = $this->getMockBuilder('Craft\LocalizationService')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrimarySiteLocaleId'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('en_gb');
+
+        $this->setComponent(craft(), 'i18n', $mock);
     }
 }

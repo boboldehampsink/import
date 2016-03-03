@@ -32,6 +32,14 @@ class Import_UserServiceTest extends BaseTest
     }
 
     /**
+     * Setup mock localization service
+     */
+    public function setUp()
+    {
+        $this->setMockLocalizationService();
+    }
+
+    /**
      * Import_UserService should implement IImportElementType.
      */
     public function testImportUserServiceShouldImplementIExportElementType()
@@ -430,5 +438,20 @@ class Import_UserServiceTest extends BaseTest
         $usersService = $this->getMock('Craft\UsersService');
         $usersService->expects($this->exactly(1))->method('saveUser')->with($mockUser)->willReturn($success);
         $this->setComponent(craft(), 'users', $usersService);
+    }
+
+    /**
+     * Mock LocalizationService.
+     */
+    private function setMockLocalizationService()
+    {
+        $mock = $this->getMockBuilder('Craft\LocalizationService')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPrimarySiteLocaleId'))
+            ->getMock();
+
+        $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('en_gb');
+
+        $this->setComponent(craft(), 'i18n', $mock);
     }
 }
