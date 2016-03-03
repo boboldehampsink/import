@@ -457,16 +457,49 @@ class ImportServiceTest extends BaseTest
     /**
      * Test preparing value for field type.
      *
+     * @param string $fieldType
+     * @param string $data
+     * @param array $settingsMap
+     * @param string $criteria
+     * @param string $expectedResult
+     *
      * @covers ::prepForFieldType
+     * @dataProvider provideValidFieldTypeData
      */
-    public function testPrepForFieldType()
+    public function testPrepForFieldType($fieldType, $data, array $settingsMap, $criteria, $expectedResult)
     {
-        $data = ' u0';
+        $fieldHandle = 'handle';
+
+        $mockField = $this->getMockBuilder('Craft\FieldModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockField->expects($this->any())->method('__get')->willReturnMap(array(
+            array('type', $fieldType)
+        ));
+
+        if (!empty($settingsMap)) {
+            $mockSettings = $this->getMockBuilder('Craft\BaseModel')
+                ->disableOriginalConstructor()
+                ->getMock();
+            $mockSettings->expects($this->exactly(1))->method('getAttribute')
+                ->willReturnCallback(function($attribute) use ($settingsMap){
+                    return @$settingsMap[$attribute];
+                });
+
+            $mockFieldType = $this->getMockBuilder('Craft\BaseSavableComponentType')
+                ->disableOriginalConstructor()
+                ->getMock();
+            $mockFieldType->expects($this->exactly(1))->method('getSettings')->willReturn($mockSettings);
+
+            $mockField->expects($this->exactly(1))->method('getFieldType')->willReturn($mockFieldType);
+        }
+
+        $this->setMockFieldsService($fieldHandle, $mockField);
 
         $service = new ImportService();
-        $service->prepForFieldType($data, 'price');
+        $result = $service->prepForFieldType($data, $fieldHandle);
 
-        $this->assertTrue(is_numeric($data));
+        $this->assertEquals($expectedResult, $result);
     }
 
     /**
@@ -516,10 +549,10 @@ class ImportServiceTest extends BaseTest
 
         $mockConfigService = $this->getMock('Craft\ConfigService');
         $mockConfigService->expects($this->any())->method('get')->willReturnCallback(
-            function($option){
-                if($option == 'allowUppercaseInSlug'){
+            function ($option) {
+                if ($option == 'allowUppercaseInSlug') {
                     return false;
-                } elseif($option == 'slugWordSeparator'){
+                } elseif ($option == 'slugWordSeparator') {
                     return '-';
                 }
             }
@@ -530,6 +563,69 @@ class ImportServiceTest extends BaseTest
         $result = $service->slugify($string);
 
         $this->assertSame($slug, $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function provideValidFieldTypeData()
+    {
+        require_once __DIR__ . '/../models/ImportModel.php';
+        return array(
+            'Number field' => array(
+                'fieldType' => ImportModel::FieldTypeNumber,
+                'data' => '4,5.3200',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => '45.32',
+            ),
+            'Date Field' => array(
+                'fieldType' => ImportModel::FieldTypeDate,
+                'data' => '12-12-2012',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => '2012-12-12 00:00:00',
+            ),
+            'Drop Down' => array(
+                'fieldType' => ImportModel::FieldTypeDropdown,
+                'data' => 'label',
+                'settings' => array(
+                    'options' => array(
+                        'option' => array(
+                            'label' => 'label',
+                            'value' => 'optionvalue',
+                        ),
+                        'option2' => array(
+                            'label' => 'label2',
+                            'value' => 'value2',
+                        ),
+                    ),
+                ),
+                'criteria' => false,
+                'result' => 'optionvalue',
+            ),
+            'MultiSelect' => array(
+                'fieldType' => ImportModel::FieldTypeMultiSelect,
+                'data' => '1,2,3,4',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => array('1', '2', '3', '4'),
+            ),
+            'LightSwitch yes' => array(
+                'fieldType' => ImportModel::FieldTypeLightSwitch,
+                'data' => 'Yes',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => true,
+            ),
+            'LightSwitch no' => array(
+                'fieldType' => ImportModel::FieldTypeLightSwitch,
+                'data' => 'No',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => false,
+            ),
+        );
     }
 
     /**
@@ -606,5 +702,19 @@ class ImportServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         return $mockUser;
+    }
+
+    /**
+     * @param $fieldHandle
+     * @param $mockField
+     */
+    private function setMockFieldsService($fieldHandle, $mockField)
+    {
+        $mockFieldsService = $this->getMockBuilder('Craft\FieldsService')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockFieldsService->expects($this->exactly(1))->method('getFieldByHandle')
+            ->with($fieldHandle)->willReturn($mockField);
+        $this->setComponent(craft(), 'fields', $mockFieldsService);
     }
 }
