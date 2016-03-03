@@ -75,9 +75,10 @@ class ImportService extends BaseApplicationComponent
     /**
      * Import row.
      *
-     * @param int          $row
-     * @param array        $data
+     * @param @param int   $row
+     * @param array $data
      * @param array|object $settings
+     * @throws Exception
      */
     public function row($row, array $data, $settings)
     {
@@ -108,73 +109,8 @@ class ImportService extends BaseApplicationComponent
 
         // If unique is non-empty array, we're replacing or deleting
         if (is_array($settings['unique']) && count($settings['unique']) > 1) {
-
-            // Set criteria according to elementtype
-            $criteria = $service->setCriteria($settings);
-
-            // Set up criteria model for matching
-            $cmodel = array();
-            foreach ($settings['map'] as $key => $value) {
-                if (isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && $value != 'dont') {
-                    // Unique value should have a value
-                    if (trim($fields[$value]) != '') {
-                        $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
-                    } else {
-                        // Else stop the operation - chance of success is only small
-                        $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Tried to match criteria but its value was not set.'))));
-
-                        return;
-                    }
-                }
-            }
-
-            // Get current user
-            $currentUser = craft()->userSession->getUser();
-
-            // If there's a match...
-            if (count($cmodel) && $criteria->count()) {
-
-                // If we're deleting
-                if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
-
-                    // Get elements to delete
-                    $elements = $criteria->find();
-
-                    // Fire an 'onBeforeImportDelete' event
-                    $event = new Event($this, array('elements' => $elements));
-                    $this->onBeforeImportDelete($event);
-
-                    // Give event the chance to blow off deletion
-                    if ($event->performAction) {
-                        try {
-
-                            // Do it
-                            if (!$service->delete($elements)) {
-
-                                // Log errors when unsuccessful
-                                $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));
-                            }
-                        } catch (Exception $e) {
-
-                            // Something went terribly wrong, assume its only this row
-                            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
-                        }
-                    }
-
-                    // Skip rest and continue
-                    return;
-                } elseif ($currentUser->can('append') || $currentUser->can('replace')) {
-
-                    // Fill new EntryModel with match
-                    $entry = $criteria->first();
-                } else {
-
-                    // No permissions!
-                    throw new Exception(Craft::t('Tried to import without permission.'));
-                }
-            } else {
-
-                // Else do nothing
+            $entry = $this->replaceOrDelete($row, $settings, $service, $fields, $entry);
+            if ($entry === null) {
                 return;
             }
         }
@@ -228,9 +164,87 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @param int $row
+     * @param array $settings
+     * @param IImportElementType $service
+     * @param array $fields
+     * @return null|BaseElementModel
+     * @throws Exception
+     */
+    private function replaceOrDelete($row, array &$settings, IImportElementType $service, array $fields)
+    {
+        // Set criteria according to elementtype
+        $criteria = $service->setCriteria($settings);
+
+        // Set up criteria model for matching
+        $cmodel = array();
+        foreach ($settings['map'] as $key => $value) {
+            if (isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && $value != 'dont') {
+                // Unique value should have a value
+                if (trim($fields[$value]) != '') {
+                    $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
+                } else {
+                    // Else stop the operation - chance of success is only small
+                    $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Tried to match criteria but its value was not set.'))));
+
+                    return null;
+                }
+            }
+        }
+
+        // Get current user
+        $currentUser = craft()->userSession->getUser();
+
+        // If there's a match...
+        if (count($cmodel) && $criteria->count()) {
+
+            // If we're deleting
+            if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
+
+                // Get elements to delete
+                $elements = $criteria->find();
+
+                // Fire an 'onBeforeImportDelete' event
+                $event = new Event($this, array('elements' => $elements));
+                $this->onBeforeImportDelete($event);
+
+                // Give event the chance to blow off deletion
+                if ($event->performAction) {
+                    try {
+
+                        // Do it
+                        if (!$service->delete($elements)) {
+
+                            // Log errors when unsuccessful
+                            $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));
+                        }
+                    } catch (Exception $e) {
+
+                        // Something went terribly wrong, assume its only this row
+                        $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
+                    }
+                }
+
+                // Skip rest and continue
+                return null;
+            } elseif ($currentUser->can('append') || $currentUser->can('replace')) {
+
+                // Fill new EntryModel with match
+                return $criteria->first();
+            } else {
+
+                // No permissions!
+                throw new Exception(Craft::t('Tried to import without permission.'));
+            }
+        }
+        // Else do nothing
+        return null;
+    }
+
+    /**
      * Finish importing.
      *
-     * @param array  $settings
+     * @param array $settings
      * @param string $backup
      */
     public function finish($settings, $backup)
@@ -262,16 +276,7 @@ class ImportService extends BaseApplicationComponent
             $currentUser = craft()->userSession->getUser();
 
             // Zip the backup
-            if ($currentUser->can('backup') && $settings['backup'] && IOHelper::fileExists($backup)) {
-                $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
-                if (IOHelper::fileExists($destZip)) {
-                    IOHelper::deleteFile($destZip, true);
-                }
-                IOHelper::createFile($destZip);
-                if (Zip::add($destZip, $backup, craft()->path->getDbBackupPath())) {
-                    $backup = $destZip;
-                }
-            }
+            $backup = $this->saveBackup($settings, $backup, $currentUser);
 
             // Set email content
             $email->subject = Craft::t('The import task is finished');
@@ -317,43 +322,8 @@ class ImportService extends BaseApplicationComponent
 
                     // Don't connect empty fields
                     if (!empty($data)) {
-
-                        // Get field settings
-                        $settings = $field->getFieldType()->getSettings();
-
-                        // Get source id's for connecting
-                        $sectionIds = array();
-                        $sources = $settings->sources;
-                        if (is_array($sources)) {
-                            foreach ($sources as $source) {
-                                list($type, $id) = explode(':', $source);
-                                $sectionIds[] = $id;
-                            }
-                        }
-
-                        // Find matching element in sections
-                        $criteria = craft()->elements->getCriteria(ElementType::Entry);
-                        $criteria->sectionId = $sectionIds;
-                        $criteria->limit = $settings->limit;
-
-                        // Get search strings
-                        $search = ArrayHelper::stringToArray($data);
-
-                        // Ability to import multiple Assets at once
-                        $data = array();
-
-                        // Loop through keywords
-                        foreach ($search as $query) {
-
-                            // Search
-                            $criteria->search = $query;
-
-                            // Add to data
-                            $data = array_merge($data, $criteria->ids());
-                        }
+                        $data = $this->prepEntriesFieldType($data, $field);
                     } else {
-
-                        // Return empty array
                         $data = array();
                     }
 
@@ -361,46 +331,9 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeCategories:
 
-                    // Don't connect empty fields
                     if (!empty($data)) {
-
-                        // Get field settings
-                        $settings = $field->getFieldType()->getSettings();
-
-                        // Get source id
-                        $source = $settings->source;
-                        list($type, $id) = explode(':', $source);
-
-                        // Get category data
-                        $category = new CategoryModel();
-                        $category->groupId = $id;
-
-                        // This we append before the slugified path
-                        $categoryUrl = str_replace('{slug}', '', $category->getUrlFormat());
-
-                        // Find matching elements in categories
-                        $criteria = craft()->elements->getCriteria(ElementType::Category);
-                        $criteria->groupId = $id;
-                        $criteria->limit = $settings->limit;
-
-                        // Get search strings
-                        $search = ArrayHelper::stringToArray($data);
-
-                        // Ability to import multiple Categories at once
-                        $data = array();
-
-                        // Loop through keywords
-                        foreach ($search as $query) {
-
-                            // Find matching element by URI (dirty, not all categories have URI's)
-                            $criteria->uri = $categoryUrl.$this->slugify($query);
-
-                            // Add to data
-                            $data = array_merge($data, $criteria->ids());
-                        }
+                        $data = $this->prepCategoriesFieldType($data, $field);
                     } else {
-
-                        // Return empty array
                         $data = array();
                     }
 
@@ -408,45 +341,9 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeAssets:
 
-                    // Don't connect empty fields
                     if (!empty($data)) {
-
-                        // Get field settings
-                        $settings = $field->getFieldType()->getSettings();
-
-                        // Get folder id's for connecting
-                        $folderIds = array();
-                        $folders = $settings->sources;
-                        if (is_array($folders)) {
-                            foreach ($folders as $folder) {
-                                list($type, $id) = explode(':', $folder);
-                                $folderIds[] = $id;
-                            }
-                        }
-
-                        // Find matching element in folders
-                        $criteria = craft()->elements->getCriteria(ElementType::Asset);
-                        $criteria->folderId = $folderIds;
-                        $criteria->limit = $settings->limit;
-
-                        // Get search strings
-                        $search = ArrayHelper::stringToArray($data);
-
-                        // Ability to import multiple Assets at once
-                        $data = array();
-
-                        // Loop through keywords
-                        foreach ($search as $query) {
-
-                            // Search
-                            $criteria->search = $query;
-
-                            // Add to data
-                            $data = array_merge($data, $criteria->ids());
-                        }
+                        $data = $this->prepAssetsFieldType($data, $field);
                     } else {
-
-                        // Return empty array
                         $data = array();
                     }
 
@@ -454,45 +351,9 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeUsers:
 
-                    // Don't connect empty fields
                     if (!empty($data)) {
-
-                        // Get field settings
-                        $settings = $field->getFieldType()->getSettings();
-
-                        // Get group id's for connecting
-                        $groupIds = array();
-                        $sources = $settings->sources;
-                        if (is_array($sources)) {
-                            foreach ($sources as $source) {
-                                list($type, $id) = explode(':', $source);
-                                $groupIds[] = $id;
-                            }
-                        }
-
-                        // Find matching element in sources
-                        $criteria = craft()->elements->getCriteria(ElementType::User);
-                        $criteria->groupId = $groupIds;
-                        $criteria->limit = $settings->limit;
-
-                        // Get search strings
-                        $search = ArrayHelper::stringToArray($data);
-
-                        // Ability to import multiple Users at once
-                        $data = array();
-
-                        // Loop through keywords
-                        foreach ($search as $query) {
-
-                            // Search
-                            $criteria->search = $query;
-
-                            // Add to data
-                            $data = array_merge($data, $criteria->ids());
-                        }
+                        $data = $this->prepUsersFieldType($data, $field);
                     } else {
-
-                        // Return empty array
                         $data = array();
                     }
 
@@ -500,47 +361,13 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeTags:
 
-                    // Get field settings
-                    $settings = $field->getFieldType()->getSettings();
-
-                    // Get tag group id
-                    $source = $settings->getAttribute('source');
-                    list($type, $groupId) = explode(':', $source);
-
-                    $tags = ArrayHelper::stringToArray($data);
-                    $data = array();
-
-                    foreach ($tags as $tag) {
-
-                        // Find existing tag
-                        $criteria = craft()->elements->getCriteria(ElementType::Tag);
-                        $criteria->title = $tag;
-                        $criteria->groupId = $groupId;
-
-                        if (!$criteria->total()) {
-
-                            // Create tag if one doesn't already exist
-                            $newtag = new TagModel();
-                            $newtag->getContent()->title = $tag;
-                            $newtag->groupId = $groupId;
-
-                            // Save tag
-                            if (craft()->tags->saveTag($newtag)) {
-                                $tagArray = array($newtag->id);
-                            }
-                        } else {
-                            $tagArray = $criteria->ids();
-                        }
-
-                        // Add tags to data array
-                        $data = array_merge($data, $tagArray);
-                    }
+                    $data = $this->prepTagsFieldType($data, $field);
 
                     break;
 
                 case ImportModel::FieldTypeNumber:
 
-                    // Parse as number
+                    // Parse as numberx
                     $data = LocalizationHelper::normalizeNumber($data);
 
                     // Parse as float
@@ -559,24 +386,7 @@ class ImportService extends BaseApplicationComponent
                 case ImportModel::FieldTypeDropdown:
 
                     //get field settings
-                    $settings = $field->getFieldType()->getSettings();
-
-                    //get field options
-                    $options = $settings->getAttribute('options');
-
-                    // find matching option label
-                    $labelSelected = false;
-                    foreach ($options as $option) {
-                        if ($labelSelected) {
-                            continue;
-                        }
-
-                        if ($data == $option['label']) {
-                            $data = $option['value'];
-                            //stop looking after first match
-                            $labelSelected = true;
-                        }
-                    }
+                    $data = $this->prepDropDownFieldType($data, $field);
 
                     break;
 
@@ -612,11 +422,22 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
+     * @return TagModel
+     */
+    protected function getNewTagModel()
+    {
+        $newtag = new TagModel();
+        return $newtag;
+    }
+
+    /**
      * Get service to use for importing.
      *
      * @param stirng $elementType
      *
-     * @return object|bool
+     * @return IImportElementType|bool
      */
     public function getService($elementType)
     {
@@ -629,7 +450,7 @@ class ImportService extends BaseApplicationComponent
         if ($service == null) {
 
             // Get from right elementType
-            $service = 'import_'.strtolower($elementType);
+            $service = 'import_' . strtolower($elementType);
         }
 
         // Check if elementtype can be imported
@@ -708,34 +529,6 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * Function to use when debugging.
-     *
-     * @param array|object $settings
-     * @param int          $history
-     * @param int          $step
-     */
-    public function debug($settings, $history, $step)
-    {
-
-        // Open file
-        $data = $this->data($settings['file']);
-
-        // Adjust settings for one row
-        $model = Import_HistoryRecord::model()->findById($history);
-        $model->rows = 1;
-        $model->save();
-
-        // Import row
-        $this->row($step, $data[$step], $settings);
-
-        // Finish
-        $this->finish($settings, false);
-
-        // Redirect to history
-        craft()->request->redirect('import/history');
-    }
-
-    /**
      * Special function that handles csv delimiter detection.
      *
      * @param string $file
@@ -758,8 +551,8 @@ class ImportService extends BaseApplicationComponent
             // Detect delimiter from first row
             $delimiters = array();
             $delimiters[ImportModel::DelimiterSemicolon] = substr_count($lines[0], ImportModel::DelimiterSemicolon);
-            $delimiters[ImportModel::DelimiterComma]     = substr_count($lines[0], ImportModel::DelimiterComma);
-            $delimiters[ImportModel::DelimiterPipe]      = substr_count($lines[0], ImportModel::DelimiterPipe);
+            $delimiters[ImportModel::DelimiterComma] = substr_count($lines[0], ImportModel::DelimiterComma);
+            $delimiters[ImportModel::DelimiterPipe] = substr_count($lines[0], ImportModel::DelimiterPipe);
 
             // Sort by delimiter with most occurences
             arsort($delimiters, SORT_NUMERIC);
@@ -785,6 +578,38 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
+     * Function to use when debugging.
+     *
+     * @param array|object $settings
+     * @param int $history
+     * @param int $step
+     */
+    public function debug($settings, $history, $step)
+    {
+
+        // Open file
+        $data = $this->data($settings['file']);
+
+        // Adjust settings for one row
+        $model = Import_HistoryRecord::model()->findById($history);
+        $model->rows = 1;
+        $model->save();
+
+        // Import row
+        $this->row($step, $data[$step], $settings);
+
+        // Finish
+        $this->finish($settings, false);
+
+        // Redirect to history
+        craft()->request->redirect('import/history');
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
      * Fires an "onBeforeImportDelete" event.
      *
      * @param Event $event
@@ -795,6 +620,8 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * Fires an "onImportStart" event.
      *
      * @param Event $event
@@ -805,6 +632,8 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * Fires an "onImportFinish" event.
      *
      * @param Event $event
@@ -812,5 +641,275 @@ class ImportService extends BaseApplicationComponent
     public function onImportFinish(Event $event)
     {
         $this->raiseEvent('onImportFinish', $event);
+    }
+
+    /**
+     * @param string $data
+     * @param FieldModel $field
+     * @return array
+     */
+    private function prepTagsFieldType($data, FieldModel $field)
+    {
+        // Get field settings
+        $settings = $field->getFieldType()->getSettings();
+
+        // Get tag group id
+        $source = $settings->getAttribute('source');
+        list($type, $groupId) = explode(':', $source);
+
+        $tags = ArrayHelper::stringToArray($data);
+        $data = array();
+
+        foreach ($tags as $tag) {
+
+            // Find existing tag
+            $criteria = craft()->elements->getCriteria(ElementType::Tag);
+            $criteria->title = $tag;
+            $criteria->groupId = $groupId;
+            $tagArray = array();
+
+            if (!$criteria->total()) {
+
+                // Create tag if one doesn't already exist
+                $newtag = $this->getNewTagModel();
+                $newtag->getContent()->title = $tag;
+                $newtag->groupId = $groupId;
+
+                // Save tag
+                if (craft()->tags->saveTag($newtag)) {
+                    $tagArray = array($newtag->id);
+                }
+            } else {
+                $tagArray = $criteria->ids();
+            }
+
+            // Add tags to data array
+            $data = array_merge($data, $tagArray);
+        }
+        return $data;
+    }
+
+    /**
+     * @param mixed $data
+     * @param FieldModel $field
+     * @return mixed
+     */
+    private function prepDropDownFieldType($data, FieldModel $field)
+    {
+        $settings = $field->getFieldType()->getSettings();
+
+        //get field options
+        $options = $settings->getAttribute('options');
+
+        // find matching option label
+        $labelSelected = false;
+        foreach ($options as $option) {
+            if ($labelSelected) {
+                continue;
+            }
+
+            if ($data == $option['label']) {
+                $data = $option['value'];
+                //stop looking after first match
+                $labelSelected = true;
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @param string $data
+     * @param FieldModel $field
+     * @return array
+     */
+    private function prepUsersFieldType($data, FieldModel $field)
+    {
+        // Get field settings
+        $settings = $field->getFieldType()->getSettings();
+
+        // Get group id's for connecting
+        $groupIds = array();
+        $sources = $settings->getAttribute('sources');
+        if (is_array($sources)) {
+            foreach ($sources as $source) {
+                list($type, $id) = explode(':', $source);
+                $groupIds[] = $id;
+            }
+        }
+
+        // Find matching element in sources
+        $criteria = craft()->elements->getCriteria(ElementType::User);
+        $criteria->groupId = $groupIds;
+        $criteria->limit = $settings->limit;
+
+        // Get search strings
+        $search = ArrayHelper::stringToArray($data);
+
+        // Ability to import multiple Users at once
+        $data = array();
+
+        // Loop through keywords
+        foreach ($search as $query) {
+
+            // Search
+            $criteria->search = $query;
+
+            // Add to data
+            $data = array_merge($data, $criteria->ids());
+        }
+        return $data;
+    }
+
+    /**
+     * @param string $data
+     * @param FieldModel $field
+     * @return array
+     */
+    private function prepAssetsFieldType($data, FieldModel $field)
+    {
+        // Get field settings
+        $settings = $field->getFieldType()->getSettings();
+
+        // Get folder id's for connecting
+        $folderIds = array();
+        $folders = $settings->getAttribute('sources');
+        if (is_array($folders)) {
+            foreach ($folders as $folder) {
+                list($type, $id) = explode(':', $folder);
+                $folderIds[] = $id;
+            }
+        }
+
+        // Find matching element in folders
+        $criteria = craft()->elements->getCriteria(ElementType::Asset);
+        $criteria->folderId = $folderIds;
+        $criteria->limit = $settings->limit;
+
+        // Get search strings
+        $search = ArrayHelper::stringToArray($data);
+
+        // Ability to import multiple Assets at once
+        $data = array();
+
+        // Loop through keywords
+        foreach ($search as $query) {
+
+            // Search
+            $criteria->search = $query;
+
+            // Add to data
+            $data = array_merge($data, $criteria->ids());
+        }
+        return $data;
+    }
+
+    /**
+     * @param string $data
+     * @param FieldModel $field
+     * @return array
+     */
+    private function prepCategoriesFieldType($data, FieldModel $field)
+    {
+        // Get field settings
+        $settings = $field->getFieldType()->getSettings();
+
+        // Get source id
+        $source = $settings->getAttribute('source');
+        list($type, $id) = explode(':', $source);
+
+        // Get category data
+        $category = new CategoryModel();
+        $category->groupId = $id;
+
+        // This we append before the slugified path
+        $categoryUrl = str_replace('{slug}', '', $category->getUrlFormat());
+
+        // Find matching elements in categories
+        $criteria = craft()->elements->getCriteria(ElementType::Category);
+        $criteria->groupId = $id;
+        $criteria->limit = $settings->limit;
+
+        // Get search strings
+        $search = ArrayHelper::stringToArray($data);
+
+        // Ability to import multiple Categories at once
+        $data = array();
+
+        // Loop through keywords
+        foreach ($search as $query) {
+
+            // Find matching element by URI (dirty, not all categories have URI's)
+            $criteria->uri = $categoryUrl . $this->slugify($query);
+
+            // Add to data
+            $data = array_merge($data, $criteria->ids());
+        }
+        return $data;
+    }
+
+    /**
+     * @param string $data
+     * @param FieldModel $field
+     * @return array
+     */
+    private function prepEntriesFieldType($data, FieldModel $field)
+    {
+        // Get field settings
+        $settings = $field->getFieldType()->getSettings();
+
+        // Get source id's for connecting
+        $sectionIds = array();
+        $sources = $settings->getAttribute('sources');
+        if (is_array($sources)) {
+            foreach ($sources as $source) {
+                list($type, $id) = explode(':', $source);
+                $sectionIds[] = $id;
+            }
+        }
+
+        // Find matching element in sections
+        $criteria = craft()->elements->getCriteria(ElementType::Entry);
+        $criteria->sectionId = $sectionIds;
+        $criteria->limit = $settings->limit;
+
+        // Get search strings
+        $search = ArrayHelper::stringToArray($data);
+
+        // Ability to import multiple Assets at once
+        $data = array();
+
+        // Loop through keywords
+        foreach ($search as $query) {
+
+            // Search
+            $criteria->search = $query;
+
+            // Add to data
+            $data = array_merge($data, $criteria->ids());
+        }
+        return $data;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @param array $settings
+     * @param string $backup
+     * @param UserModel $currentUser
+     * @return string Backup filename
+     */
+    protected function saveBackup($settings, $backup, $currentUser)
+    {
+        if ($currentUser->can('backup') && $settings['backup'] && IOHelper::fileExists($backup)) {
+            $destZip = craft()->path->getTempPath() . IOHelper::getFileName($backup, false) . '.zip';
+            if (IOHelper::fileExists($destZip)) {
+                IOHelper::deleteFile($destZip, true);
+            }
+            IOHelper::createFile($destZip);
+            if (Zip::add($destZip, $backup, craft()->path->getDbBackupPath())) {
+                $backup = $destZip;
+            }
+        }
+        return $backup;
     }
 }

@@ -26,7 +26,7 @@ class Import_HistoryService extends BaseApplicationComponent
         $criteria = new \CDbCriteria();
         $criteria->order = 'id desc';
 
-        return Import_HistoryRecord::model()->findAll($criteria);
+        return $this->findAllHistories($criteria);
     }
 
     /**
@@ -47,13 +47,13 @@ class Import_HistoryService extends BaseApplicationComponent
 
         // Get errors
         $errors = array();
-        $logs = Import_LogRecord::model()->findAll($criteria);
+        $logs = $this->findAllHistories($criteria);
         foreach ($logs as $log) {
             $errors[$log['line']] = $log['errors'];
         }
 
         // Get total rows
-        $model = Import_HistoryRecord::model()->findById($history);
+        $model = $this->findHistoryById($history);
 
         $total = array();
 
@@ -78,7 +78,7 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function start($settings)
     {
-        $history              = new Import_HistoryRecord();
+        $history              = $this->getNewImportHistoryRecord();
         $history->userId      = craft()->userSession->getUser()->id;
         $history->type        = $settings['type'];
         $history->file        = basename($settings['file']);
@@ -102,8 +102,8 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function log($history, $line, array $errors)
     {
-        if (Import_HistoryRecord::model()->findById($history)) {
-            $log = new Import_LogRecord();
+        if ($this->findHistoryById($history)) {
+            $log = $this->getNewImportLogRecord();
             $log->historyId = $history;
             $log->line = $line + 2;
             $log->errors = $errors;
@@ -122,7 +122,7 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function end($history, $status)
     {
-        $history = Import_HistoryRecord::model()->findById($history);
+        $history = $this->findHistoryById($history);
         $history->status = $status;
 
         $history->save(false);
@@ -146,17 +146,70 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function version($history, $entry)
     {
-
         // Get previous version
         $entryRevisions = craft()->entryRevisions->getVersionsByEntryId($entry, false, 2);
         $version = end($entryRevisions);
 
         // Save
-        $log = new Import_EntriesRecord();
+        $log = $this->getNewImportEntriesRecord();
         $log->historyId = $history;
         $log->entryId = $entry;
         $log->versionId = $version ? $version->versionId : null;
 
         $log->save(false);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @param \CDbCriteria $criteria
+     *
+     * @return Import_HistoryRecord[]
+     */
+    protected function findAllHistories(\CDbCriteria $criteria)
+    {
+        return Import_HistoryRecord::model()->findAll($criteria);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @param int $historyId
+     *
+     * @return Import_HistoryRecord
+     */
+    protected function findHistoryById($historyId)
+    {
+        return Import_HistoryRecord::model()->findById($historyId);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return Import_HistoryRecord
+     */
+    protected function getNewImportHistoryRecord()
+    {
+        return new Import_HistoryRecord();
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return Import_EntriesRecord
+     */
+    protected function getNewImportEntriesRecord()
+    {
+        return new Import_EntriesRecord();
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return Import_LogRecord
+     */
+    protected  function getNewImportLogRecord()
+    {
+        return new Import_LogRecord();
     }
 }
