@@ -892,7 +892,7 @@ class ImportService extends BaseApplicationComponent
 
     /**
      * @codeCoverageIgnore
-     * 
+     *
      * @param array $settings
      * @param string $backup
      * @param UserModel $currentUser
