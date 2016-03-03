@@ -579,6 +579,96 @@ class ImportServiceTest extends BaseTest
     {
         require_once __DIR__ . '/../models/ImportModel.php';
         return array(
+            'Entries' => array(
+                'fieldType' => ImportModel::FieldTypeEntries,
+                'data' => 'asset1',
+                'settings' => array(
+                    'sources' => array(
+                        'section:1',
+                    ),
+                ),
+                'criteria' => array(
+                    'elementType' => ElementType::Entry,
+                    'methods' => array(
+                        'ids' => array(1,2,3),
+                    ),
+                ),
+                'result' => array(1,2,3),
+            ),
+            'Empty Entries' => array(
+                'fieldType' => ImportModel::FieldTypeEntries,
+                'data' => '',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => array(),
+            ),
+            'Categories' => array(
+                'fieldType' => ImportModel::FieldTypeCategories,
+                'data' => 'asset1',
+                'settings' => array(
+                    'source' => 'group:1',
+                ),
+                'criteria' => array(
+                    'elementType' => ElementType::Category,
+                    'methods' => array(
+                        'ids' => array(1,2,3),
+                    ),
+                ),
+                'result' => array(1,2,3),
+            ),
+            'Empty Categories' => array(
+                'fieldType' => ImportModel::FieldTypeCategories,
+                'data' => '',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => array(),
+            ),
+            'Assets' => array(
+                'fieldType' => ImportModel::FieldTypeAssets,
+                'data' => 'asset1',
+                'settings' => array(
+                    'sources' => array(
+                        'folder:1',
+                    ),
+                ),
+                'criteria' => array(
+                    'elementType' => ElementType::Asset,
+                    'methods' => array(
+                        'ids' => array(1,2,3),
+                    ),
+                ),
+                'result' => array(1,2,3),
+            ),
+            'Empty Assets' => array(
+                'fieldType' => ImportModel::FieldTypeAssets,
+                'data' => '',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => array(),
+            ),
+            'Users' => array(
+                'fieldType' => ImportModel::FieldTypeUsers,
+                'data' => 'user1',
+                'settings' => array(
+                    'sources' => array(
+                        'group:1',
+                    ),
+                ),
+                'criteria' => array(
+                    'elementType' => ElementType::User,
+                    'methods' => array(
+                        'ids' => array(1,2,3),
+                    ),
+                ),
+                'result' => array(1,2,3)
+            ),
+            'Empty Users' => array(
+                'fieldType' => ImportModel::FieldTypeUsers,
+                'data' => '',
+                'settings' => array(),
+                'criteria' => false,
+                'result' => array(),
+            ),
             'Existing tags' => array(
                 'fieldType' => ImportModel::FieldTypeTags,
                 'data' => 'tag1',
@@ -590,7 +680,7 @@ class ImportServiceTest extends BaseTest
                     'methods' => array(
                         'total' => 1,
                         'ids' => array(1,2,3),
-                    )
+                    ),
                 ),
                 'result' => array(1,2,3),
             ),
@@ -768,7 +858,7 @@ class ImportServiceTest extends BaseTest
                 return @$settingsMap[$attribute];
             });
 
-        $mockFieldType = $this->getMockBuilder('Craft\BaseSavableComponentType')
+        $mockFieldType = $this->getMockBuilder('Craft\BaseElementFieldType')
             ->disableOriginalConstructor()
             ->getMock();
         $mockFieldType->expects($this->exactly(1))->method('getSettings')->willReturn($mockSettings);
