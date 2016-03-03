@@ -477,26 +477,33 @@ class ImportServiceTest extends BaseTest
             array('type', $fieldType)
         ));
 
-        if (!empty($settingsMap)) {
-            $mockSettings = $this->getMockBuilder('Craft\BaseModel')
-                ->disableOriginalConstructor()
-                ->getMock();
-            $mockSettings->expects($this->exactly(1))->method('getAttribute')
-                ->willReturnCallback(function($attribute) use ($settingsMap){
-                    return @$settingsMap[$attribute];
-                });
-
-            $mockFieldType = $this->getMockBuilder('Craft\BaseSavableComponentType')
-                ->disableOriginalConstructor()
-                ->getMock();
-            $mockFieldType->expects($this->exactly(1))->method('getSettings')->willReturn($mockSettings);
-
-            $mockField->expects($this->exactly(1))->method('getFieldType')->willReturn($mockFieldType);
-        }
-
         $this->setMockFieldsService($fieldHandle, $mockField);
 
-        $service = new ImportService();
+        if (!empty($settingsMap)) {
+            $this->setMockSettings($settingsMap, $mockField);
+        }
+
+        if(!empty($criteria)){
+            $mockCriteria = $this->getMockCriteria();
+            foreach($criteria['methods'] as $method => $return){
+                $mockCriteria->expects($this->atLeast(1))->method($method)->willReturn($return);
+            }
+
+            $mockElementsService = $this->getMock('Craft\ElementsService');
+            $mockElementsService->expects($this->atLeast(1))->method('getCriteria')
+                ->with($criteria['elementType'])->willReturn($mockCriteria);
+            $this->setComponent(craft(), 'elements', $mockElementsService);
+        }
+
+        $service = $this->getMock('Craft\ImportService', array('getNewTagModel'));
+
+        if($fieldType == ImportModel::FieldTypeTags){
+            $mockTag = $this->getMockTag();
+            $mockTag->expects($this->any())->method('__get')->with('id')->willReturn($expectedResult[0]);
+            $this->setMockTagsService($mockTag);
+            $service->expects($this->any())->method('getNewTagModel')->willReturn($mockTag);
+        }
+
         $result = $service->prepForFieldType($data, $fieldHandle);
 
         $this->assertEquals($expectedResult, $result);
@@ -572,6 +579,35 @@ class ImportServiceTest extends BaseTest
     {
         require_once __DIR__ . '/../models/ImportModel.php';
         return array(
+            'Existing tags' => array(
+                'fieldType' => ImportModel::FieldTypeTags,
+                'data' => 'tag1',
+                'settings' => array(
+                    'source' => 'group:1'
+                ),
+                'criteria' => array(
+                    'elementType' => ElementType::Tag,
+                    'methods' => array(
+                        'total' => 1,
+                        'ids' => array(1,2,3),
+                    )
+                ),
+                'result' => array(1,2,3),
+            ),
+            'New tags' => array(
+                'fieldType' => ImportModel::FieldTypeTags,
+                'data' => 'tag1',
+                'settings' => array(
+                    'source' => 'group:1'
+                ),
+                'criteria' => array(
+                    'elementType' => ElementType::Tag,
+                    'methods' => array(
+                        'total' => 0,
+                    )
+                ),
+                'result' => array(1),
+            ),
             'Number field' => array(
                 'fieldType' => ImportModel::FieldTypeNumber,
                 'data' => '4,5.3200',
@@ -705,10 +741,10 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
-     * @param $fieldHandle
-     * @param $mockField
+     * @param string $fieldHandle
+     * @param MockObject $mockField
      */
-    private function setMockFieldsService($fieldHandle, $mockField)
+    private function setMockFieldsService($fieldHandle, MockObject $mockField)
     {
         $mockFieldsService = $this->getMockBuilder('Craft\FieldsService')
             ->disableOriginalConstructor()
@@ -716,5 +752,55 @@ class ImportServiceTest extends BaseTest
         $mockFieldsService->expects($this->exactly(1))->method('getFieldByHandle')
             ->with($fieldHandle)->willReturn($mockField);
         $this->setComponent(craft(), 'fields', $mockFieldsService);
+    }
+
+    /**
+     * @param array $settingsMap
+     * @param MockObject $mockField
+     */
+    private function setMockSettings(array $settingsMap, MockObject $mockField)
+    {
+        $mockSettings = $this->getMockBuilder('Craft\BaseModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockSettings->expects($this->exactly(1))->method('getAttribute')
+            ->willReturnCallback(function ($attribute) use ($settingsMap) {
+                return @$settingsMap[$attribute];
+            });
+
+        $mockFieldType = $this->getMockBuilder('Craft\BaseSavableComponentType')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockFieldType->expects($this->exactly(1))->method('getSettings')->willReturn($mockSettings);
+
+        $mockField->expects($this->exactly(1))->method('getFieldType')->willReturn($mockFieldType);
+    }
+
+    /**
+     * @return MockObject
+     */
+    protected function getMockTag()
+    {
+        $mockTag = $this->getMockBuilder('Craft\TagModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mockContent = $this->getMockBuilder('Craft\Basemodel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockTag->expects($this->any())->method('getContent')->willReturn($mockContent);
+        return $mockTag;
+    }
+
+    /**
+     * @param MockObject $mockTag
+     */
+    protected function setMockTagsService(MockObject $mockTag)
+    {
+        $tagsService = $this->getMockBuilder('Craft\TagsService')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $tagsService->expects($this->any())->method('saveTag')->with($mockTag)->willReturn(true);
+        $this->setComponent(craft(), 'tags', $tagsService);
     }
 }
