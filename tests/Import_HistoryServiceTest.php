@@ -93,8 +93,15 @@ class Import_HistoryServiceTest extends BaseTest
      */
     public function testLogShouldReturnErrors()
     {
-        $service = new Import_HistoryService();
-        $log = $service->log($historyId = 1, $line = 0, $errors = array());
+        $historyId = 1;
+        $mockImportLogRecord = $this->getMockBuilder('Craft\Import_LogRecord')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $service = $this->getImportHistoryService(array('findHistoryById', 'getNewImportLogRecord'));
+        $service->expects($this->exactly(1))->method('findHistoryById')->with($historyId)->willReturn(true);
+        $service->expects($this->exactly(1))->method('getNewImportLogRecord')->willReturn($mockImportLogRecord);
+
+        $log = $service->log($historyId, 0, $errors = array());
 
         $this->assertSame($log, $errors);
     }

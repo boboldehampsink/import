@@ -185,11 +185,10 @@ class Import_EntryServiceTest extends BaseTest
         }
 
         $service = new Import_EntryService();
-        $entry = $service->prepForElementModel($fields, new EntryModel());
+        $mockEntry = $this->getMockEntry();
+        $entry = $service->prepForElementModel($fields, $mockEntry);
 
         $this->assertTrue($entry instanceof EntryModel);
-        $this->assertEquals($expectedAttributes, $entry->getAttributes());
-        $this->assertSame($title, $entry->title);
         $this->assertCount(0, $fields);
     }
 
@@ -222,6 +221,7 @@ class Import_EntryServiceTest extends BaseTest
             'history' => 'historySettings',
         );
 
+
         $mockEntry = $this->getMockEntry();
         $mockEntry->expects($this->exactly(1))->method('__get')->with('id')->willReturn($entryId);
 
@@ -231,7 +231,11 @@ class Import_EntryServiceTest extends BaseTest
         $mockImportHistoryService->expects($this->exactly(1))->method('version')->with($settings['history'], $entryId);
         $this->setComponent(craft(), 'import_history', $mockImportHistoryService);
 
-        $service = new Import_EntryService();
+        $service = $this->getMockBuilder('Craft\Import_EntryService')
+            ->setMethods(array('getCraftEdition'))
+            ->getMock();
+        $service->expects($this->exactly(1))->method('getCraftEdition')->willReturn(Craft::Pro);
+
         $result = $service->save($mockEntry, $settings);
 
         $this->assertTrue($result);
@@ -403,6 +407,10 @@ class Import_EntryServiceTest extends BaseTest
         $mockEntry = $this->getMockBuilder('Craft\EntryModel')
             ->disableOriginalConstructor()
             ->getMock();
+        $mockContent = $this->getMockBuilder('Craft\BaseModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockEntry->expects($this->any())->method('getContent')->willReturn($mockContent);
         return $mockEntry;
     }
 

@@ -71,7 +71,11 @@ class Import_UserServiceTest extends BaseTest
         $mockUserGroupsService->expects($this->exactly(1))->method('getAllGroups')->willReturn($expectedResult);
         $this->setComponent(craft(), 'userGroups', $mockUserGroupsService);
 
-        $service = new Import_UserService();
+        $service = $this->getMockBuilder('Craft\Import_UserService')
+            ->setMethods(array('getCraftEdition'))
+            ->getMock();
+        $service->expects($this->exactly(1))->method('getCraftEdition')->willReturn(Craft::Pro);
+
         $result = $service->getGroups();
 
         $this->assertEquals($expectedResult, $result);
@@ -86,7 +90,11 @@ class Import_UserServiceTest extends BaseTest
         $mockUserGroupsService->expects($this->exactly(1))->method('getAllGroups')->willReturn(array());
         $this->setComponent(craft(), 'userGroups', $mockUserGroupsService);
 
-        $service = new Import_UserService();
+        $service = $this->getMockBuilder('Craft\Import_UserService')
+            ->setMethods(array('getCraftEdition'))
+            ->getMock();
+        $service->expects($this->exactly(1))->method('getCraftEdition')->willReturn(Craft::Pro);
+
         $result = $service->getGroups();
 
         $this->assertTrue($result);

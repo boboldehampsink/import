@@ -492,15 +492,7 @@ class ImportServiceTest extends BaseTest
         }
 
         if(!empty($criteria)){
-            $mockCriteria = $this->getMockCriteria();
-            foreach($criteria['methods'] as $method => $return){
-                $mockCriteria->expects($this->atLeast(1))->method($method)->willReturn($return);
-            }
-
-            $mockElementsService = $this->getMock('Craft\ElementsService');
-            $mockElementsService->expects($this->atLeast(1))->method('getCriteria')
-                ->with($criteria['elementType'])->willReturn($mockCriteria);
-            $this->setComponent(craft(), 'elements', $mockElementsService);
+            $this->setMockElementsServiceForFieldType($criteria);
         }
 
         $service = $this->getMock('Craft\ImportService', array('getNewTagModel'));
@@ -510,6 +502,10 @@ class ImportServiceTest extends BaseTest
             $mockTag->expects($this->any())->method('__get')->with('id')->willReturn($expectedResult[0]);
             $this->setMockTagsService($mockTag);
             $service->expects($this->any())->method('getNewTagModel')->willReturn($mockTag);
+        }
+
+        if($fieldType == ImportModel::FieldTypeCategories){
+            $this->setMockCategoriesService();
         }
 
         $result = $service->prepForFieldType($data, $fieldHandle);
@@ -915,5 +911,33 @@ class ImportServiceTest extends BaseTest
         $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('en_gb');
 
         $this->setComponent(craft(), 'i18n', $mock);
+    }
+
+    /**
+     * @param array $criteria
+     */
+    protected function setMockElementsServiceForFieldType(array $criteria)
+    {
+        $mockCriteria = $this->getMockCriteria();
+        foreach ($criteria['methods'] as $method => $return) {
+            $mockCriteria->expects($this->atLeast(1))->method($method)->willReturn($return);
+        }
+
+        $mockElementsService = $this->getMock('Craft\ElementsService');
+        $mockElementsService->expects($this->atLeast(1))->method('getCriteria')
+            ->with($criteria['elementType'])->willReturn($mockCriteria);
+        $this->setComponent(craft(), 'elements', $mockElementsService);
+    }
+
+    /**
+     * Set mock categories service getGroupLocales
+     */
+    protected function setMockCategoriesService()
+    {
+        $mockCategoriesService = $this->getMockBuilder('Craft\CategoriesService')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockCategoriesService->expects($this->any())->method('getGroupLocales')->willReturn(array());
+        $this->setComponent(craft(), 'categories', $mockCategoriesService);
     }
 }

@@ -102,8 +102,8 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function log($history, $line, array $errors)
     {
-        if (Import_HistoryRecord::model()->findById($history)) {
-            $log = new Import_LogRecord();
+        if ($this->findHistoryById($history)) {
+            $log = $this->getNewImportLogRecord();
             $log->historyId = $history;
             $log->line = $line + 2;
             $log->errors = $errors;
@@ -201,5 +201,15 @@ class Import_HistoryService extends BaseApplicationComponent
     protected function getNewImportEntriesRecord()
     {
         return new Import_EntriesRecord();
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return Import_LogRecord
+     */
+    protected  function getNewImportLogRecord()
+    {
+        return new Import_LogRecord();
     }
 }

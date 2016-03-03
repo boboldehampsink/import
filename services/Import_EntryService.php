@@ -172,7 +172,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         if (craft()->entries->saveEntry($element)) {
 
             // If entry revisions are supported
-            if (craft()->getEdition() == Craft::Pro) {
+            if ($this->getCraftEdition() == Craft::Pro) {
 
                 // Log element id's when successful
                 craft()->import_history->version($settings['history'], $element->id);
@@ -280,5 +280,15 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         $data = str_replace("\r", '', $data);
         $data = trim($data);
         return $data;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return mixed
+     */
+    protected function getCraftEdition()
+    {
+        return craft()->getEdition();
     }
 }

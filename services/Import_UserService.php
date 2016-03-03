@@ -34,7 +34,7 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     {
         $result = false;
         // Check if usergroups are allowed in this installation
-        if (craft()->getEdition() == Craft::Pro) {
+        if ($this->getCraftEdition() == Craft::Pro) {
 
             // Get usergroups
             $groups = craft()->userGroups->getAllGroups();
@@ -217,5 +217,15 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
                 break;
         }
         return $user;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return mixed
+     */
+    protected function getCraftEdition()
+    {
+        return craft()->getEdition();
     }
 }

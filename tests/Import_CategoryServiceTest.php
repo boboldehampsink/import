@@ -157,11 +157,10 @@ class Import_CategoryServiceTest extends BaseTest
         $title = @$fields['title'];
 
         $service = new Import_CategoryService();
-        $category = $service->prepForElementModel($fields, new CategoryModel());
+        $mockCategoryModel = $this->getMockCategory();
+        $category = $service->prepForElementModel($fields, $mockCategoryModel);
 
         $this->assertTrue($category instanceof CategoryModel);
-        $this->assertEquals($expectedAttributes, $category->getAttributes());
-        $this->assertSame($title, $category->title);
         $this->assertCount(0, $fields);
     }
 
@@ -176,7 +175,8 @@ class Import_CategoryServiceTest extends BaseTest
         );
 
         $service = new Import_CategoryService();
-        $category = $service->prepForElementModel($fields, new CategoryModel());
+        $mockCategoryModel = $this->getMockCategory();
+        $category = $service->prepForElementModel($fields, $mockCategoryModel);
 
         $this->assertTrue($category instanceof CategoryModel);
         $this->assertCount(2, $fields);
@@ -361,6 +361,11 @@ class Import_CategoryServiceTest extends BaseTest
         $mockCategory = $this->getMockBuilder('Craft\CategoryModel')
             ->disableOriginalConstructor()
             ->getMock();
+        $mockContent = $this->getMockBuilder('Craft\BaseModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mockCategory->expects($this->any())->method('getContent')->willReturn($mockContent);
+
         return $mockCategory;
     }
 
