@@ -189,8 +189,8 @@ class ImportServiceTest extends BaseTest
 
         $mockPluginsService = $this->getMock('Craft\PluginsService');
         $mockPluginsService->expects($this->any())->method('call')->willReturnCallback(
-            function($method) use ($mockException) {
-                if($method == 'registerImportService'){
+            function ($method) use ($mockException) {
+                if ($method == 'registerImportService') {
                     return null;
                 } else {
                     throw $mockException;
@@ -421,6 +421,40 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
+     * @covers ::finish
+     */
+    public function testFinishShouldMailResults()
+    {
+        $historyId = 1;
+        $settings = array(
+            'history' => $historyId,
+            'email' => true,
+            'rows' => 1,
+        );
+
+        $mockImportHistoryService = $this->getMock('Craft\Import_HistoryService');
+        $mockImportHistoryService->expects($this->any())->method('end')->with($historyId, ImportModel::StatusFinished);
+        $this->setComponent(craft(), 'import_history', $mockImportHistoryService);
+
+        $mockEmailService = $this->getMock('Craft\EmailService');
+        $mockEmailService->expects($this->exactly(1))->method('sendEmail')->with($this->isInstanceOf('Craft\EmailModel'));
+        $this->setComponent(craft(), 'email', $mockEmailService);
+
+        $mockTwigEnvironment = $this->getMock('Craft\TwigEnvironment');
+        $mockTemplatesService = $this->getMock('Craft\TemplatesService');
+        $mockTemplatesService->expects($this->exactly(1))->method('render')->willReturn('renderedtemplate');
+        $mockTemplatesService->expects($this->exactly(1))->method('getTwig')->willReturn($mockTwigEnvironment);
+        $this->setComponent(craft(), 'templates', $mockTemplatesService);
+
+        $mockUser = $this->getMockUser();
+        $this->setMockUserSession($mockUser);
+
+        $service = new ImportService();
+        $service->log = array(1 => 'Error message');
+        $service->finish($settings, false);
+    }
+
+    /**
      * Test preparing value for field type.
      *
      * @covers ::prepForFieldType
@@ -433,6 +467,69 @@ class ImportServiceTest extends BaseTest
         $service->prepForFieldType($data, 'price');
 
         $this->assertTrue(is_numeric($data));
+    }
+
+    /**
+     * @covers ::getCustomOption
+     */
+    public function testGetCustomOptionShouldReturnFalseWhenNoCustomOptionFound()
+    {
+        $fieldHandle = 'handle';
+
+        $mockPluginsService = $this->getMock('Craft\PluginsService');
+        $mockPluginsService->expects($this->any())->method('call')
+            ->with('registerImportOptionPaths')->willReturn(array());
+        $this->setComponent(craft(), 'plugins', $mockPluginsService);
+
+        $service = new ImportService();
+        $result = $service->getCustomOption($fieldHandle);
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @covers ::getCustomOption
+     */
+    public function testGetCustomOptionShouldReturnOptionWhenFound()
+    {
+        $fieldHandle = 'handle';
+        $option = array('optionkey' => 'optionvalue');
+
+        $mockPluginsService = $this->getMock('Craft\PluginsService');
+        $mockPluginsService->expects($this->any())->method('call')
+            ->with('registerImportOptionPaths')->willReturn(array(array($fieldHandle => $option)));
+        $this->setComponent(craft(), 'plugins', $mockPluginsService);
+
+        $service = new ImportService();
+        $result = $service->getCustomOption($fieldHandle);
+
+        $this->assertSame($option, $result);
+    }
+
+    /**
+     * @covers ::slugify
+     */
+    public function testSlugifyShouldSlugifyString()
+    {
+        $string = 'Test string';
+        $slug = 'test-string';
+
+        $mockConfigService = $this->getMock('Craft\ConfigService');
+        $mockConfigService->expects($this->any())->method('get')->willReturnCallback(
+            function($option){
+                if($option == 'allowUppercaseInSlug'){
+                    return false;
+                } elseif($option == 'slugWordSeparator'){
+                    return '-';
+                }
+            }
+        );
+        $this->setComponent(craft(), 'config', $mockConfigService);
+
+        $service = new ImportService();
+        $result = $service->slugify($string);
+
+        $this->assertSame($slug, $result);
     }
 
     /**
