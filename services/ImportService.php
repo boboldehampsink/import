@@ -174,7 +174,7 @@ class ImportService extends BaseApplicationComponent
      *
      * @throws Exception
      */
-    private function replaceOrDelete($row, array &$settings, IImportElementType $service, array $fields)
+    private function replaceOrDelete($row, &$settings, IImportElementType $service, array $fields)
     {
         // Set criteria according to elementtype
         $criteria = $service->setCriteria($settings);
