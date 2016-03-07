@@ -277,9 +277,9 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     }
 
     /**
-     * @param $data
+     * @param string $data
      *
-     * @return mixed|string
+     * @return string
      */
     private function freshenString($data)
     {
