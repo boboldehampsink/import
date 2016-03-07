@@ -1,5 +1,8 @@
 Changelog
 =================
+###0.8.29###
+ - All service code is now fully covered by unit tests (thanks to @bvangennep)
+
 ###0.8.28###
  - Fix history overview item url, closing issue #93 (thanks to @timkelty)
  - Fix for "only variables should be passed by reference" (PHP7), closing issue #96 (thanks to @ianshea)
