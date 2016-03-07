@@ -741,7 +741,7 @@ class ImportService extends BaseApplicationComponent
         $sources = $settings->getAttribute('sources');
         if (is_array($sources)) {
             foreach ($sources as $source) {
-                list($type, $id) = explode(':', $source);
+                list(, $id) = explode(':', $source);
                 $groupIds[] = $id;
             }
         }
@@ -786,7 +786,7 @@ class ImportService extends BaseApplicationComponent
         $folders = $settings->getAttribute('sources');
         if (is_array($folders)) {
             foreach ($folders as $folder) {
-                list($type, $id) = explode(':', $folder);
+                list(, $id) = explode(':', $folder);
                 $folderIds[] = $id;
             }
         }
@@ -828,7 +828,7 @@ class ImportService extends BaseApplicationComponent
 
         // Get source id
         $source = $settings->getAttribute('source');
-        list($type, $id) = explode(':', $source);
+        list(, $id) = explode(':', $source);
 
         // Get category data
         $category = new CategoryModel();
