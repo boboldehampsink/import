@@ -61,7 +61,7 @@ class Import_HistoryService extends BaseApplicationComponent
             $rows = $model->rows;
 
             // Make "total" list
-            for ($i = 2; $i <= ($rows + 1); $i++) {
+            for ($i = 2; $i <= ($rows + 1); ++$i) {
                 $total[$i] = isset($errors[$i]) ? $errors[$i] : array(Craft::t('None'));
             }
         }
@@ -78,13 +78,13 @@ class Import_HistoryService extends BaseApplicationComponent
      */
     public function start($settings)
     {
-        $history              = $this->getNewImportHistoryRecord();
-        $history->userId      = craft()->userSession->getUser()->id;
-        $history->type        = $settings['type'];
-        $history->file        = basename($settings['file']);
-        $history->rows        = $settings['rows'];
-        $history->behavior    = $settings['behavior'];
-        $history->status      = ImportModel::StatusStarted;
+        $history = $this->getNewImportHistoryRecord();
+        $history->userId = craft()->userSession->getUser()->id;
+        $history->type = $settings['type'];
+        $history->file = basename($settings['file']);
+        $history->rows = $settings['rows'];
+        $history->behavior = $settings['behavior'];
+        $history->status = ImportModel::StatusStarted;
 
         $history->save(false);
 
@@ -208,7 +208,7 @@ class Import_HistoryService extends BaseApplicationComponent
      *
      * @return Import_LogRecord
      */
-    protected  function getNewImportLogRecord()
+    protected function getNewImportLogRecord()
     {
         return new Import_LogRecord();
     }

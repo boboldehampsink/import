@@ -33,11 +33,11 @@ class Import_HistoryRecord extends BaseRecord
     protected function defineAttributes()
     {
         return array(
-            'type'     => AttributeType::String,
-            'file'     => AttributeType::Name,
-            'rows'     => AttributeType::Number,
+            'type' => AttributeType::String,
+            'file' => AttributeType::Name,
+            'rows' => AttributeType::Number,
             'behavior' => array(AttributeType::Enum, 'values' => array(ImportModel::BehaviorAppend, ImportModel::BehaviorReplace, ImportModel::BehaviorDelete)),
-            'status'   => array(AttributeType::Enum, 'values' => array(ImportModel::StatusStarted, ImportModel::StatusFinished, ImportModel::StatusReverted)),
+            'status' => array(AttributeType::Enum, 'values' => array(ImportModel::StatusStarted, ImportModel::StatusFinished, ImportModel::StatusReverted)),
         );
     }
 
@@ -50,7 +50,7 @@ class Import_HistoryRecord extends BaseRecord
     {
         return array(
             'user' => array(static::BELONGS_TO, 'UserRecord',       'onDelete' => static::CASCADE, 'required' => false),
-            'log'  => array(static::HAS_MANY,   'Import_LogRecord', 'logId'),
+            'log' => array(static::HAS_MANY,   'Import_LogRecord', 'logId'),
         );
     }
 }

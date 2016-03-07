@@ -27,15 +27,15 @@ class ImportServiceTest extends BaseTest
         parent::setUpBeforeClass();
 
         // Require dependencies
-        require_once __DIR__ . '/../services/ImportService.php';
-        require_once __DIR__ . '/../services/Import_HistoryService.php';
-        require_once __DIR__ . '/../services/IImportElementType.php';
-        require_once __DIR__ . '/../services/Import_EntryService.php';
-        require_once __DIR__ . '/../models/ImportModel.php';
+        require_once __DIR__.'/../services/ImportService.php';
+        require_once __DIR__.'/../services/Import_HistoryService.php';
+        require_once __DIR__.'/../services/IImportElementType.php';
+        require_once __DIR__.'/../services/Import_EntryService.php';
+        require_once __DIR__.'/../models/ImportModel.php';
     }
 
     /**
-     * Setup mock localization service
+     * Setup mock localization service.
      */
     public function setUp()
     {
@@ -47,7 +47,7 @@ class ImportServiceTest extends BaseTest
      */
     public function testColumnsShouldReturnColumnRow()
     {
-        $file = __DIR__ . '/tst_csv.csv';
+        $file = __DIR__.'/tst_csv.csv';
         $expectedColumns = array('column1', 'column2', 'column3', 'column4', 'column5');
 
         $service = new ImportService();
@@ -56,13 +56,12 @@ class ImportServiceTest extends BaseTest
         $this->assertSame($expectedColumns, $result);
     }
 
-
     /**
      * @covers ::data
      */
     public function testDataShouldReturnDataRows()
     {
-        $file = __DIR__ . '/tst_csv.csv';
+        $file = __DIR__.'/tst_csv.csv';
         $expectedData = array(
             array('row1value1', 'row1value2', 'row1value3', 'row1value4', 'row1value5'),
             array('row1value1', 'row2value2', 'row3value3', 'row4value4', 'row5value5'),
@@ -199,7 +198,7 @@ class ImportServiceTest extends BaseTest
         $mockPluginsService->expects($this->any())->method('call')->willReturnCallback(
             function ($method) use ($mockException) {
                 if ($method == 'registerImportService') {
-                    return null;
+                    return;
                 } else {
                     throw $mockException;
                 }
@@ -406,7 +405,7 @@ class ImportServiceTest extends BaseTest
         $fields = array_combine($settings['map'], $data);
 
         $mockEntry = $this->getMockEntry();
-        $mockException = $this->getMock('Craft\Exception');;
+        $mockException = $this->getMock('Craft\Exception');
         $mockCriteria = $this->getMockCriteria();
         $mockCriteria->expects($this->exactly(1))->method('count')->willReturn(1);
         $mockCriteria->expects($this->exactly(1))->method('find')->willReturn(array($mockEntry));
@@ -467,7 +466,7 @@ class ImportServiceTest extends BaseTest
      *
      * @param string $fieldType
      * @param string $data
-     * @param array $settingsMap
+     * @param array  $settingsMap
      * @param string $criteria
      * @param string $expectedResult
      *
@@ -482,7 +481,7 @@ class ImportServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         $mockField->expects($this->any())->method('__get')->willReturnMap(array(
-            array('type', $fieldType)
+            array('type', $fieldType),
         ));
 
         $this->setMockFieldsService($fieldHandle, $mockField);
@@ -491,20 +490,20 @@ class ImportServiceTest extends BaseTest
             $this->setMockSettings($settingsMap, $mockField);
         }
 
-        if(!empty($criteria)){
+        if (!empty($criteria)) {
             $this->setMockElementsServiceForFieldType($criteria);
         }
 
         $service = $this->getMock('Craft\ImportService', array('getNewTagModel'));
 
-        if($fieldType == ImportModel::FieldTypeTags){
+        if ($fieldType == ImportModel::FieldTypeTags) {
             $mockTag = $this->getMockTag();
             $mockTag->expects($this->any())->method('__get')->with('id')->willReturn($expectedResult[0]);
             $this->setMockTagsService($mockTag);
             $service->expects($this->any())->method('getNewTagModel')->willReturn($mockTag);
         }
 
-        if($fieldType == ImportModel::FieldTypeCategories){
+        if ($fieldType == ImportModel::FieldTypeCategories) {
             $this->setMockCategoriesService();
         }
 
@@ -581,7 +580,8 @@ class ImportServiceTest extends BaseTest
      */
     public function provideValidFieldTypeData()
     {
-        require_once __DIR__ . '/../models/ImportModel.php';
+        require_once __DIR__.'/../models/ImportModel.php';
+
         return array(
             'Entries' => array(
                 'fieldType' => ImportModel::FieldTypeEntries,
@@ -594,10 +594,10 @@ class ImportServiceTest extends BaseTest
                 'criteria' => array(
                     'elementType' => ElementType::Entry,
                     'methods' => array(
-                        'ids' => array(1,2,3),
+                        'ids' => array(1, 2, 3),
                     ),
                 ),
-                'result' => array(1,2,3),
+                'result' => array(1, 2, 3),
             ),
             'Empty Entries' => array(
                 'fieldType' => ImportModel::FieldTypeEntries,
@@ -615,10 +615,10 @@ class ImportServiceTest extends BaseTest
                 'criteria' => array(
                     'elementType' => ElementType::Category,
                     'methods' => array(
-                        'ids' => array(1,2,3),
+                        'ids' => array(1, 2, 3),
                     ),
                 ),
-                'result' => array(1,2,3),
+                'result' => array(1, 2, 3),
             ),
             'Empty Categories' => array(
                 'fieldType' => ImportModel::FieldTypeCategories,
@@ -638,10 +638,10 @@ class ImportServiceTest extends BaseTest
                 'criteria' => array(
                     'elementType' => ElementType::Asset,
                     'methods' => array(
-                        'ids' => array(1,2,3),
+                        'ids' => array(1, 2, 3),
                     ),
                 ),
-                'result' => array(1,2,3),
+                'result' => array(1, 2, 3),
             ),
             'Empty Assets' => array(
                 'fieldType' => ImportModel::FieldTypeAssets,
@@ -661,10 +661,10 @@ class ImportServiceTest extends BaseTest
                 'criteria' => array(
                     'elementType' => ElementType::User,
                     'methods' => array(
-                        'ids' => array(1,2,3),
+                        'ids' => array(1, 2, 3),
                     ),
                 ),
-                'result' => array(1,2,3)
+                'result' => array(1, 2, 3),
             ),
             'Empty Users' => array(
                 'fieldType' => ImportModel::FieldTypeUsers,
@@ -677,28 +677,28 @@ class ImportServiceTest extends BaseTest
                 'fieldType' => ImportModel::FieldTypeTags,
                 'data' => 'tag1',
                 'settings' => array(
-                    'source' => 'group:1'
+                    'source' => 'group:1',
                 ),
                 'criteria' => array(
                     'elementType' => ElementType::Tag,
                     'methods' => array(
                         'total' => 1,
-                        'ids' => array(1,2,3),
+                        'ids' => array(1, 2, 3),
                     ),
                 ),
-                'result' => array(1,2,3),
+                'result' => array(1, 2, 3),
             ),
             'New tags' => array(
                 'fieldType' => ImportModel::FieldTypeTags,
                 'data' => 'tag1',
                 'settings' => array(
-                    'source' => 'group:1'
+                    'source' => 'group:1',
                 ),
                 'criteria' => array(
                     'elementType' => ElementType::Tag,
                     'methods' => array(
                         'total' => 0,
-                    )
+                    ),
                 ),
                 'result' => array(1),
             ),
@@ -759,8 +759,8 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
-     * @param int $historyId
-     * @param int $row
+     * @param int    $historyId
+     * @param int    $row
      * @param string $message
      */
     private function setMockImportHistoryService($historyId, $row, $message)
@@ -771,10 +771,11 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
-     * @param array $settings
+     * @param array      $settings
      * @param MockObject $mockEntry
-     * @param array $fields
-     * @param bool $saveSuccess
+     * @param array      $fields
+     * @param bool       $saveSuccess
+     *
      * @return MockObject|Import_EntryService
      */
     private function setMockImportEntryService(array $settings, MockObject $mockEntry, array $fields, $saveSuccess = null)
@@ -788,6 +789,7 @@ class ImportServiceTest extends BaseTest
                 ->with($mockEntry, $settings)->willReturn($saveSuccess);
         }
         $this->setComponent(craft(), 'import_typeexists', $mockImportTypeService);
+
         return $mockImportTypeService;
     }
 
@@ -809,6 +811,7 @@ class ImportServiceTest extends BaseTest
         $mockEntry = $this->getMockBuilder('Craft\EntryModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockEntry;
     }
 
@@ -820,6 +823,7 @@ class ImportServiceTest extends BaseTest
         $mockCriteria = $this->getMockBuilder('Craft\ElementCriteriaModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockCriteria;
     }
 
@@ -831,11 +835,12 @@ class ImportServiceTest extends BaseTest
         $mockUser = $this->getMockBuilder('Craft\UserModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockUser;
     }
 
     /**
-     * @param string $fieldHandle
+     * @param string     $fieldHandle
      * @param MockObject $mockField
      */
     private function setMockFieldsService($fieldHandle, MockObject $mockField)
@@ -849,7 +854,7 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
-     * @param array $settingsMap
+     * @param array      $settingsMap
      * @param MockObject $mockField
      */
     private function setMockSettings(array $settingsMap, MockObject $mockField)
@@ -883,6 +888,7 @@ class ImportServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         $mockTag->expects($this->any())->method('getContent')->willReturn($mockContent);
+
         return $mockTag;
     }
 
@@ -930,7 +936,7 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
-     * Set mock categories service getGroupLocales
+     * Set mock categories service getGroupLocales.
      */
     protected function setMockCategoriesService()
     {

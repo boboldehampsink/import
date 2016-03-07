@@ -161,6 +161,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
     /**
      * @param $data
      * @param $groupId
+     *
      * @return null|CategoryModel
      */
     private function prepareParentForElement($data, $groupId)
@@ -176,15 +177,17 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
             $criteria->groupId = $groupId;
 
             // Exact match
-            $criteria->search = '"' . $data . '"';
+            $criteria->search = '"'.$data.'"';
             $parentCategory = $criteria->first();
         }
+
         return $parentCategory;
     }
 
     /**
      * @param BaseElementModel $element
      * @param $data
+     *
      * @return null|CategoryModel
      */
     private function prepareAncestorsForElement(BaseElementModel $element, $data)
@@ -201,16 +204,18 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
             // Find matching element by URI (dirty, not all categories have URI's)
             $criteria = craft()->elements->getCriteria(ElementType::Category);
             $criteria->groupId = $element->groupId;
-            $criteria->uri = $categoryUrl . craft()->import->slugify($data);
+            $criteria->uri = $categoryUrl.craft()->import->slugify($data);
             $criteria->limit = 1;
 
             $parentCategory = $criteria->first();
         }
+
         return $parentCategory;
     }
 
     /**
      * @param $data
+     *
      * @return mixed|string
      */
     private function freshenString($data)
@@ -218,6 +223,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
         $data = str_replace("\n", '', $data);
         $data = str_replace("\r", '', $data);
         $data = trim($data);
+
         return $data;
     }
 }

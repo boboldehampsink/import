@@ -27,12 +27,12 @@ class Import_UserServiceTest extends BaseTest
         parent::setUpBeforeClass();
 
         // Require dependencies
-        require_once __DIR__ . '/../services/IImportElementType.php';
-        require_once __DIR__ . '/../services/Import_UserService.php';
+        require_once __DIR__.'/../services/IImportElementType.php';
+        require_once __DIR__.'/../services/Import_UserService.php';
     }
 
     /**
-     * Setup mock localization service
+     * Setup mock localization service.
      */
     public function setUp()
     {
@@ -191,7 +191,7 @@ class Import_UserServiceTest extends BaseTest
         $this->assertEquals($expectedAttributes, $user->getAttributes());
         $this->assertCount($expectedCount, $fields);
 
-        if($status){
+        if ($status) {
             $this->assertSame($status, $user->getStatus());
         }
     }
@@ -237,7 +237,7 @@ class Import_UserServiceTest extends BaseTest
     }
 
     /**
-     * Save should call users save
+     * Save should call users save.
      *
      * @covers ::save
      */
@@ -247,7 +247,7 @@ class Import_UserServiceTest extends BaseTest
         $settings = array(
             'elementvars' => array(
                 'groups' => array(1, 2, 3),
-            )
+            ),
         );
 
         $mockUser = $this->getMockUser();
@@ -267,7 +267,7 @@ class Import_UserServiceTest extends BaseTest
     }
 
     /**
-     * Save should return false when saveUser fails
+     * Save should return false when saveUser fails.
      *
      * @covers ::save
      */
@@ -305,7 +305,7 @@ class Import_UserServiceTest extends BaseTest
             'id' => null,
             'enabled' => true,
             'archived' => false,
-            'locale' => "en_gb",
+            'locale' => 'en_gb',
             'localeEnabled' => true,
             'slug' => null,
             'uri' => null,
@@ -413,6 +413,7 @@ class Import_UserServiceTest extends BaseTest
         $mockCriteria = $this->getMockBuilder('Craft\ElementCriteriaModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockCriteria;
     }
 
@@ -434,12 +435,13 @@ class Import_UserServiceTest extends BaseTest
         $mockUser = $this->getMockBuilder('Craft\UserModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockUser;
     }
 
     /**
      * @param MockObject $mockUser
-     * @param bool $success
+     * @param bool       $success
      */
     private function setMockUsersServiceSave(MockObject $mockUser, $success)
     {

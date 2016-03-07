@@ -27,14 +27,14 @@ class Import_HistoryServiceTest extends BaseTest
         parent::setUpBeforeClass();
 
         // Require dependencies
-        require_once __DIR__ . '/../services/Import_HistoryService.php';
-        require_once __DIR__ . '/../records/Import_LogRecord.php';
-        require_once __DIR__ . '/../records/Import_HistoryRecord.php';
-        require_once __DIR__ . '/../records/Import_EntriesRecord.php';
+        require_once __DIR__.'/../services/Import_HistoryService.php';
+        require_once __DIR__.'/../records/Import_LogRecord.php';
+        require_once __DIR__.'/../records/Import_HistoryRecord.php';
+        require_once __DIR__.'/../records/Import_EntriesRecord.php';
     }
 
     /**
-     * Setup mock localization service
+     * Setup mock localization service.
      */
     public function setUp()
     {
@@ -66,13 +66,13 @@ class Import_HistoryServiceTest extends BaseTest
     {
         $historyId = 1;
         $mockHistory = $this->getMockHistory(array(
-            array('rows', 3)
+            array('rows', 3),
         ));
         $mockResult = array(
             'histories' => array(
                 'line' => 2,
                 'errors' => array(),
-            )
+            ),
         );
 
         $service = $this->getImportHistoryService(array('findAllHistories', 'findHistoryById'));
@@ -119,7 +119,7 @@ class Import_HistoryServiceTest extends BaseTest
             'behavior' => 'behavior',
         );
         $mockHistory = $this->getMockHistory(array(
-            array('id', $historyId)
+            array('id', $historyId),
         ));
         $mockHistory->expects($this->exactly(1))->method('save')->with(false);
 
@@ -184,6 +184,7 @@ class Import_HistoryServiceTest extends BaseTest
 
     /**
      * @param array $attributesMap
+     *
      * @return MockObject
      */
     private function getMockHistory(array $attributesMap = array())
@@ -192,6 +193,7 @@ class Import_HistoryServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         $mockHistory->expects($this->any())->method('__get')->willReturnMap($attributesMap);
+
         return $mockHistory;
     }
 
@@ -213,16 +215,19 @@ class Import_HistoryServiceTest extends BaseTest
         $mockUser = $this->getMockBuilder('Craft\UserModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockUser;
     }
 
     /**
      * @param array $mockedMethods
+     *
      * @return MockObject|Import_historyService $service
      */
     private function getImportHistoryService(array $mockedMethods)
     {
         $service = $this->getMock('Craft\Import_HistoryService', $mockedMethods);
+
         return $service;
     }
 
@@ -234,6 +239,7 @@ class Import_HistoryServiceTest extends BaseTest
         $mockImportEntriesRecord = $this->getMockBuilder('Craft\Import_EntriesRecord')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockImportEntriesRecord;
     }
 

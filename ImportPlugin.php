@@ -84,11 +84,11 @@ class ImportPlugin extends BasePlugin
     {
         return array(
             // Behavior permissions
-            ImportModel::BehaviorAppend  => array('label' => Craft::t('Append data')),
+            ImportModel::BehaviorAppend => array('label' => Craft::t('Append data')),
             ImportModel::BehaviorReplace => array('label' => Craft::t('Replace data')),
-            ImportModel::BehaviorDelete  => array('label' => Craft::t('Delete data')),
+            ImportModel::BehaviorDelete => array('label' => Craft::t('Delete data')),
             // Backup permissions
-            ImportModel::Backup          => array('label' => Craft::t('Backup Database')),
+            ImportModel::Backup => array('label' => Craft::t('Backup Database')),
         );
     }
 

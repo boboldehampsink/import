@@ -129,7 +129,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
                     $element->$handle = DateTime::createFromString($value, craft()->timezone);
                     break;
                 case Import_ElementModel::HandleEnabled:
-                    $element->$handle = (bool)$value;
+                    $element->$handle = (bool) $value;
                     break;
                 case Import_ElementModel::HandleTitle:
                     $element->getContent()->$handle = $value;
@@ -197,6 +197,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
 
     /**
      * @param string|int $author Author id, username or email
+     *
      * @return int authorId
      */
     private function prepAuthorForElement($author)
@@ -205,12 +206,14 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
             $user = craft()->users->getUserByUsernameOrEmail($author);
             $author = $user ? $user->id : 1;
         }
+
         return $author;
     }
 
     /**
      * @param string $data
-     * @param int $sectionId
+     * @param int    $sectionId
+     *
      * @return null|int
      */
     private function prepareParentForElement($data, $sectionId)
@@ -226,19 +229,21 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
             $criteria->sectionId = $sectionId;
 
             // Exact match
-            $criteria->search = '"' . $data . '"';
+            $criteria->search = '"'.$data.'"';
 
             // Return the first found element for connecting
             if ($criteria->total()) {
                 $parentId = $criteria->ids()[0];
             }
         }
+
         return $parentId;
     }
 
     /**
      * @param string $data
-     * @param int $sectionId
+     * @param int    $sectionId
+     *
      * @return null|int
      */
     private function prepareAncestorsForElement($data, $sectionId)
@@ -259,7 +264,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
             // Find matching element by URI (dirty, not all structures have URI's)
             $criteria = craft()->elements->getCriteria(ElementType::Entry);
             $criteria->sectionId = $sectionId;
-            $criteria->uri = $sectionUrl . craft()->import->slugify($data);
+            $criteria->uri = $sectionUrl.craft()->import->slugify($data);
             $criteria->limit = 1;
 
             // Return the first found element for connecting
@@ -267,11 +272,13 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
                 $parentId = $criteria->ids()[0];
             }
         }
+
         return $parentId;
     }
 
     /**
      * @param $data
+     *
      * @return mixed|string
      */
     private function freshenString($data)
@@ -279,6 +286,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         $data = str_replace("\n", '', $data);
         $data = str_replace("\r", '', $data);
         $data = trim($data);
+
         return $data;
     }
 

@@ -33,8 +33,8 @@ class Import_LogRecord extends BaseRecord
     protected function defineAttributes()
     {
         return array(
-            'line'     => AttributeType::Number,
-            'errors'   => AttributeType::Mixed,
+            'line' => AttributeType::Number,
+            'errors' => AttributeType::Mixed,
         );
     }
 
@@ -46,7 +46,7 @@ class Import_LogRecord extends BaseRecord
     public function defineRelations()
     {
         return array(
-            'history'  => array(static::BELONGS_TO, 'Import_HistoryRecord'),
+            'history' => array(static::BELONGS_TO, 'Import_HistoryRecord'),
         );
     }
 }

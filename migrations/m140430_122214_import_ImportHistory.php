@@ -17,13 +17,13 @@ class m140430_122214_import_ImportHistory extends BaseMigration
 
         // Create the craft_import_history table
         craft()->db->createCommand()->createTable('import_history', array(
-            'userId'      => array('column' => 'integer', 'required' => false),
-            'sectionId'   => array('column' => 'integer', 'required' => false),
+            'userId' => array('column' => 'integer', 'required' => false),
+            'sectionId' => array('column' => 'integer', 'required' => false),
             'entrytypeId' => array('column' => 'integer', 'required' => false),
-            'file'        => array('maxLength' => 255, 'column' => 'varchar'),
-            'rows'        => array('maxLength' => 11, 'decimals' => 0, 'unsigned' => false, 'length' => 10, 'column' => 'integer'),
-            'behavior'    => array('values' => array('append', 'replace', 'delete'), 'column' => 'enum'),
-            'status'      => array('values' => array('started', 'finished'), 'column' => 'enum'),
+            'file' => array('maxLength' => 255, 'column' => 'varchar'),
+            'rows' => array('maxLength' => 11, 'decimals' => 0, 'unsigned' => false, 'length' => 10, 'column' => 'integer'),
+            'behavior' => array('values' => array('append', 'replace', 'delete'), 'column' => 'enum'),
+            'status' => array('values' => array('started', 'finished'), 'column' => 'enum'),
         ), null, true);
 
         // Add foreign keys to craft_import_history
@@ -34,8 +34,8 @@ class m140430_122214_import_ImportHistory extends BaseMigration
         // Create the craft_import_log table
         craft()->db->createCommand()->createTable('import_log', array(
             'historyId' => array('column' => 'integer', 'required' => false),
-            'line'      => array('maxLength' => 11, 'decimals' => 0, 'unsigned' => false, 'length' => 10, 'column' => 'integer'),
-            'errors'    => array('column' => 'text'),
+            'line' => array('maxLength' => 11, 'decimals' => 0, 'unsigned' => false, 'length' => 10, 'column' => 'integer'),
+            'errors' => array('column' => 'text'),
         ), null, true);
 
         // Add foreign keys to craft_import_log

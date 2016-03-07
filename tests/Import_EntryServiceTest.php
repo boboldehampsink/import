@@ -27,12 +27,12 @@ class Import_EntryServiceTest extends BaseTest
         parent::setUpBeforeClass();
 
         // Require dependencies
-        require_once __DIR__ . '/../services/IImportElementType.php';
-        require_once __DIR__ . '/../services/Import_EntryService.php';
+        require_once __DIR__.'/../services/IImportElementType.php';
+        require_once __DIR__.'/../services/Import_EntryService.php';
     }
 
     /**
-     * Setup mock localization service
+     * Setup mock localization service.
      */
     public function setUp()
     {
@@ -90,7 +90,7 @@ class Import_EntryServiceTest extends BaseTest
             'elementvars' => array(
                 'section' => $sectionId,
                 'entrytype' => $entryTypeId,
-            )
+            ),
         );
 
         $service = new Import_EntryService();
@@ -113,7 +113,7 @@ class Import_EntryServiceTest extends BaseTest
             'elementvars' => array(
                 'section' => $sectionId,
                 'entrytype' => $entryTypeId,
-            )
+            ),
         );
 
         $mockCriteria = $this->getMockCriteria();
@@ -210,7 +210,7 @@ class Import_EntryServiceTest extends BaseTest
     }
 
     /**
-     * Save should call entries save
+     * Save should call entries save.
      *
      * @covers ::save
      */
@@ -220,7 +220,6 @@ class Import_EntryServiceTest extends BaseTest
         $settings = array(
             'history' => 'historySettings',
         );
-
 
         $mockEntry = $this->getMockEntry();
         $mockEntry->expects($this->exactly(1))->method('__get')->with('id')->willReturn($entryId);
@@ -242,7 +241,7 @@ class Import_EntryServiceTest extends BaseTest
     }
 
     /**
-     * Save should return false when saveEntry fails
+     * Save should return false when saveEntry fails.
      *
      * @covers ::save
      */
@@ -282,7 +281,7 @@ class Import_EntryServiceTest extends BaseTest
             'id' => null,
             'enabled' => true,
             'archived' => false,
-            'locale' => "en_gb",
+            'locale' => 'en_gb',
             'localeEnabled' => true,
             'slug' => null,
             'uri' => null,
@@ -317,7 +316,7 @@ class Import_EntryServiceTest extends BaseTest
                 'expectedAttributes' => array_merge($defaultExpectedAttributes, array(
                     'id' => 1,
                     'enabled' => false,
-                    'locale' => "nl_nl",
+                    'locale' => 'nl_nl',
                     'slug' => 'test-slug',
                     'authorId' => 2,
                     'postDate' => $now,
@@ -355,6 +354,7 @@ class Import_EntryServiceTest extends BaseTest
 
     /**
      * @param string $sectionType
+     *
      * @return MockObject|SectionModel
      */
     private function getMockSection($sectionType)
@@ -386,6 +386,7 @@ class Import_EntryServiceTest extends BaseTest
         $mockCriteria = $this->getMockBuilder('Craft\ElementCriteriaModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockCriteria;
     }
 
@@ -411,12 +412,13 @@ class Import_EntryServiceTest extends BaseTest
             ->disableOriginalConstructor()
             ->getMock();
         $mockEntry->expects($this->any())->method('getContent')->willReturn($mockContent);
+
         return $mockEntry;
     }
 
     /**
      * @param MockObject $mockEntry
-     * @param bool $success
+     * @param bool       $success
      */
     private function setMockEntriesServiceSave(MockObject $mockEntry, $success)
     {
@@ -426,7 +428,7 @@ class Import_EntryServiceTest extends BaseTest
     }
 
     /**
-     * Set mock user session
+     * Set mock user session.
      */
     private function setMockUserSession()
     {

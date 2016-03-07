@@ -76,8 +76,9 @@ class ImportService extends BaseApplicationComponent
      * Import row.
      *
      * @param @param int   $row
-     * @param array $data
+     * @param array        $data
      * @param array|object $settings
+     *
      * @throws Exception
      */
     public function row($row, array $data, $settings)
@@ -164,11 +165,13 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * @param int $row
-     * @param array $settings
+     * @param int                $row
+     * @param array              $settings
      * @param IImportElementType $service
-     * @param array $fields
+     * @param array              $fields
+     *
      * @return null|BaseElementModel
+     *
      * @throws Exception
      */
     private function replaceOrDelete($row, array &$settings, IImportElementType $service, array $fields)
@@ -187,7 +190,7 @@ class ImportService extends BaseApplicationComponent
                     // Else stop the operation - chance of success is only small
                     $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Tried to match criteria but its value was not set.'))));
 
-                    return null;
+                    return;
                 }
             }
         }
@@ -226,7 +229,7 @@ class ImportService extends BaseApplicationComponent
                 }
 
                 // Skip rest and continue
-                return null;
+                return;
             } elseif ($currentUser->can('append') || $currentUser->can('replace')) {
 
                 // Fill new EntryModel with match
@@ -238,13 +241,13 @@ class ImportService extends BaseApplicationComponent
             }
         }
         // Else do nothing
-        return null;
+        return;
     }
 
     /**
      * Finish importing.
      *
-     * @param array $settings
+     * @param array  $settings
      * @param string $backup
      */
     public function finish($settings, $backup)
@@ -429,6 +432,7 @@ class ImportService extends BaseApplicationComponent
     protected function getNewTagModel()
     {
         $newtag = new TagModel();
+
         return $newtag;
     }
 
@@ -450,7 +454,7 @@ class ImportService extends BaseApplicationComponent
         if ($service == null) {
 
             // Get from right elementType
-            $service = 'import_' . strtolower($elementType);
+            $service = 'import_'.strtolower($elementType);
         }
 
         // Check if elementtype can be imported
@@ -583,8 +587,8 @@ class ImportService extends BaseApplicationComponent
      * Function to use when debugging.
      *
      * @param array|object $settings
-     * @param int $history
-     * @param int $step
+     * @param int          $history
+     * @param int          $step
      */
     public function debug($settings, $history, $step)
     {
@@ -644,8 +648,9 @@ class ImportService extends BaseApplicationComponent
     }
 
     /**
-     * @param string $data
+     * @param string     $data
      * @param FieldModel $field
+     *
      * @return array
      */
     private function prepTagsFieldType($data, FieldModel $field)
@@ -686,12 +691,14 @@ class ImportService extends BaseApplicationComponent
             // Add tags to data array
             $data = array_merge($data, $tagArray);
         }
+
         return $data;
     }
 
     /**
-     * @param mixed $data
+     * @param mixed      $data
      * @param FieldModel $field
+     *
      * @return mixed
      */
     private function prepDropDownFieldType($data, FieldModel $field)
@@ -714,12 +721,14 @@ class ImportService extends BaseApplicationComponent
                 $labelSelected = true;
             }
         }
+
         return $data;
     }
 
     /**
-     * @param string $data
+     * @param string     $data
      * @param FieldModel $field
+     *
      * @return array
      */
     private function prepUsersFieldType($data, FieldModel $field)
@@ -757,12 +766,14 @@ class ImportService extends BaseApplicationComponent
             // Add to data
             $data = array_merge($data, $criteria->ids());
         }
+
         return $data;
     }
 
     /**
-     * @param string $data
+     * @param string     $data
      * @param FieldModel $field
+     *
      * @return array
      */
     private function prepAssetsFieldType($data, FieldModel $field)
@@ -800,12 +811,14 @@ class ImportService extends BaseApplicationComponent
             // Add to data
             $data = array_merge($data, $criteria->ids());
         }
+
         return $data;
     }
 
     /**
-     * @param string $data
+     * @param string     $data
      * @param FieldModel $field
+     *
      * @return array
      */
     private function prepCategoriesFieldType($data, FieldModel $field)
@@ -839,17 +852,19 @@ class ImportService extends BaseApplicationComponent
         foreach ($search as $query) {
 
             // Find matching element by URI (dirty, not all categories have URI's)
-            $criteria->uri = $categoryUrl . $this->slugify($query);
+            $criteria->uri = $categoryUrl.$this->slugify($query);
 
             // Add to data
             $data = array_merge($data, $criteria->ids());
         }
+
         return $data;
     }
 
     /**
-     * @param string $data
+     * @param string     $data
      * @param FieldModel $field
+     *
      * @return array
      */
     private function prepEntriesFieldType($data, FieldModel $field)
@@ -887,21 +902,23 @@ class ImportService extends BaseApplicationComponent
             // Add to data
             $data = array_merge($data, $criteria->ids());
         }
+
         return $data;
     }
 
     /**
      * @codeCoverageIgnore
      *
-     * @param array $settings
-     * @param string $backup
+     * @param array     $settings
+     * @param string    $backup
      * @param UserModel $currentUser
+     *
      * @return string Backup filename
      */
     protected function saveBackup($settings, $backup, $currentUser)
     {
         if ($currentUser->can('backup') && $settings['backup'] && IOHelper::fileExists($backup)) {
-            $destZip = craft()->path->getTempPath() . IOHelper::getFileName($backup, false) . '.zip';
+            $destZip = craft()->path->getTempPath().IOHelper::getFileName($backup, false).'.zip';
             if (IOHelper::fileExists($destZip)) {
                 IOHelper::deleteFile($destZip, true);
             }
@@ -910,6 +927,7 @@ class ImportService extends BaseApplicationComponent
                 $backup = $destZip;
             }
         }
+
         return $backup;
     }
 }

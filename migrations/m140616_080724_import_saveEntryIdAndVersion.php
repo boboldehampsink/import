@@ -18,7 +18,7 @@ class m140616_080724_import_saveEntryIdAndVersion extends BaseMigration
         // Create the craft_import_entries table
         craft()->db->createCommand()->createTable('import_entries', array(
             'historyId' => array('column' => 'integer', 'required' => false),
-            'entryId'   => array('column' => 'integer', 'required' => false),
+            'entryId' => array('column' => 'integer', 'required' => false),
             'versionId' => array('column' => 'integer', 'required' => false),
         ), null, true);
 

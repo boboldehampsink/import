@@ -27,14 +27,14 @@ class Import_CategoryServiceTest extends BaseTest
         parent::setUpBeforeClass();
 
         // Require dependencies
-        require_once __DIR__ . '/../services/IImportElementType.php';
-        require_once __DIR__ . '/../services/Import_CategoryService.php';
-        require_once __DIR__ . '/../models/Import_ElementModel.php';
-        require_once __DIR__ . '/../services/Import_HistoryService.php';
+        require_once __DIR__.'/../services/IImportElementType.php';
+        require_once __DIR__.'/../services/Import_CategoryService.php';
+        require_once __DIR__.'/../models/Import_ElementModel.php';
+        require_once __DIR__.'/../services/Import_HistoryService.php';
     }
 
     /**
-     * Setup mock localization service
+     * Setup mock localization service.
      */
     public function setUp()
     {
@@ -89,7 +89,7 @@ class Import_CategoryServiceTest extends BaseTest
         $settings = array(
             'elementvars' => array(
                 'group' => $groupId,
-            )
+            ),
         );
 
         $service = new Import_CategoryService();
@@ -109,7 +109,7 @@ class Import_CategoryServiceTest extends BaseTest
         $settings = array(
             'elementvars' => array(
                 'group' => $groupId,
-            )
+            ),
         );
 
         $mockCriteria = $this->getMockCriteria();
@@ -183,7 +183,7 @@ class Import_CategoryServiceTest extends BaseTest
     }
 
     /**
-     * Save should call categories save
+     * Save should call categories save.
      *
      * @covers ::save
      */
@@ -202,7 +202,7 @@ class Import_CategoryServiceTest extends BaseTest
     }
 
     /**
-     * Save should return false when saveCategory fails
+     * Save should return false when saveCategory fails.
      *
      * @covers ::save
      */
@@ -269,7 +269,7 @@ class Import_CategoryServiceTest extends BaseTest
             'id' => null,
             'enabled' => true,
             'archived' => false,
-            'locale' => "en_gb",
+            'locale' => 'en_gb',
             'localeEnabled' => true,
             'slug' => null,
             'uri' => null,
@@ -294,7 +294,7 @@ class Import_CategoryServiceTest extends BaseTest
                 ),
                 'expectedAttributes' => array_merge($defaultExpectedAttributes, array(
                     'id' => 1,
-                    'locale' => "nl_nl",
+                    'locale' => 'nl_nl',
                     'slug' => 'test-slug',
                 )),
             ),
@@ -306,7 +306,6 @@ class Import_CategoryServiceTest extends BaseTest
      */
     public function provideValidFieldsForCallback()
     {
-
         return array(
             'Parent given' => array(
                 'fields' => array(
@@ -317,7 +316,7 @@ class Import_CategoryServiceTest extends BaseTest
                 'fields' => array(
                     'ancestors' => 'news and stuff',
                 ),
-            )
+            ),
         );
     }
 
@@ -340,6 +339,7 @@ class Import_CategoryServiceTest extends BaseTest
         $mockCriteria = $this->getMockBuilder('Craft\ElementCriteriaModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockCriteria;
     }
 
@@ -371,7 +371,7 @@ class Import_CategoryServiceTest extends BaseTest
 
     /**
      * @param MockObject $mockCategory
-     * @param bool $success
+     * @param bool       $success
      */
     private function setMockCategoriesServiceSave(MockObject $mockCategory, $success)
     {
@@ -388,6 +388,7 @@ class Import_CategoryServiceTest extends BaseTest
         $mockCategoryGroup = $this->getMockBuilder('Craft\CategoryGroupModel')
             ->disableOriginalConstructor()
             ->getMock();
+
         return $mockCategoryGroup;
     }
 

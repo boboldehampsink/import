@@ -138,7 +138,6 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
                     default:
                         continue 2;
                 }
-
             }
 
             // Set email as username
@@ -186,7 +185,8 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
 
     /**
      * @param UserModel $user
-     * @param string $status
+     * @param string    $status
+     *
      * @return UserModel
      */
     private function setUserStatus(UserModel $user, $status)
@@ -216,6 +216,7 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
                 $user->setActive();
                 break;
         }
+
         return $user;
     }
 
