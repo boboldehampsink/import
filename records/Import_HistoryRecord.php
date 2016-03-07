@@ -49,8 +49,8 @@ class Import_HistoryRecord extends BaseRecord
     public function defineRelations()
     {
         return array(
-            'user' => array(static::BELONGS_TO, 'UserRecord',       'onDelete' => static::CASCADE, 'required' => false),
-            'log' => array(static::HAS_MANY,   'Import_LogRecord', 'logId'),
+            'user' => array(static::BELONGS_TO, 'UserRecord', 'onDelete' => static::CASCADE, 'required' => false),
+            'log' => array(static::HAS_MANY, 'Import_LogRecord', 'logId'),
         );
     }
 }
