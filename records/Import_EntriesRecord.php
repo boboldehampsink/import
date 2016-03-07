@@ -34,7 +34,7 @@ class Import_EntriesRecord extends BaseRecord
     {
         $relations = array(
             'history' => array(static::BELONGS_TO, 'Import_HistoryRecord'),
-            'entry'   => array(static::BELONGS_TO, 'EntryRecord', 'onDelete' => static::CASCADE),
+            'entry' => array(static::BELONGS_TO, 'EntryRecord', 'onDelete' => static::CASCADE),
         );
 
         // If entry revisions are supported

@@ -107,131 +107,51 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
-        // Set ID
-        $id = Import_ElementModel::HandleId;
-        if (isset($fields[$id])) {
-            $element->$id = $fields[$id];
-            unset($fields[$id]);
-        }
-
-        // Set locale
-        $locale = Import_ElementModel::HandleLocale;
-        if (isset($fields[$locale])) {
-            $element->$locale = $fields[$locale];
-            $element->localeEnabled = true;
-            unset($fields[$locale]);
-        }
-
-        // Set author
         $author = Import_ElementModel::HandleAuthor;
-        if (isset($fields[$author])) {
-            $user = craft()->users->getUserByUsernameOrEmail($fields[$author]);
-            $element->$author = (is_numeric($fields[$author]) ? $fields[$author] : ($user ? $user->id : 1));
-            unset($fields[$author]);
-        } else {
+        $parent = Import_ElementModel::HandleParent;
+        $checkAncestors = !isset($fields[$parent]);
+
+        foreach ($fields as $handle => $value) {
+            switch ($handle) {
+                case Import_ElementModel::HandleLocale:
+                    $element->localeEnabled = true;
+                case Import_ElementModel::HandleId;
+                    $element->$handle = $value;
+                    break;
+                case Import_ElementModel::HandleAuthor;
+                    $element->$handle = $this->prepAuthorForElement($value);
+                    break;
+                case Import_ElementModel::HandleSlug;
+                    $element->$handle = ElementHelper::createSlug($value);
+                    break;
+                case Import_ElementModel::HandlePostDate:
+                case Import_ElementModel::HandleExpiryDate;
+                    $element->$handle = DateTime::createFromString($value, craft()->timezone);
+                    break;
+                case Import_ElementModel::HandleEnabled:
+                    $element->$handle = (bool) $value;
+                    break;
+                case Import_ElementModel::HandleTitle:
+                    $element->getContent()->$handle = $value;
+                    break;
+                case Import_ElementModel::HandleParent:
+                    $element->$handle = $this->prepareParentForElement($value, $element->sectionId);
+                    break;
+                case Import_ElementModel::HandleAncestors:
+                    if ($checkAncestors) {
+                        $element->$parent = $this->prepareAncestorsForElement($value, $element->sectionId);
+                    }
+                    break;
+                default:
+                    continue 2;
+            }
+            unset($fields[$handle]);
+        }
+
+        // Set default author if not set
+        if (!$element->$author) {
             $user = craft()->userSession->getUser();
             $element->$author = ($element->$author ? $element->$author : ($user ? $user->id : 1));
-        }
-
-        // Set slug
-        $slug = Import_ElementModel::HandleSlug;
-        if (isset($fields[$slug])) {
-            $element->$slug = ElementHelper::createSlug($fields[$slug]);
-            unset($fields[$slug]);
-        }
-
-        // Set postdate
-        $postDate = Import_ElementModel::HandlePostDate;
-        if (isset($fields[$postDate])) {
-            $element->$postDate = DateTime::createFromString($fields[$postDate], craft()->timezone);
-            unset($fields[$postDate]);
-        }
-
-        // Set expiry date
-        $expiryDate = Import_ElementModel::HandleExpiryDate;
-        if (isset($fields[$expiryDate])) {
-            $element->$expiryDate = DateTime::createFromString($fields[$expiryDate], craft()->timezone);
-            unset($fields[$expiryDate]);
-        }
-
-        // Set enabled
-        $enabled = Import_ElementModel::HandleEnabled;
-        if (isset($fields[$enabled])) {
-            $element->$enabled = (bool) $fields[$enabled];
-            unset($fields[$enabled]);
-        }
-
-        // Set title
-        $title = Import_ElementModel::HandleTitle;
-        if (isset($fields[$title])) {
-            $element->getContent()->$title = $fields[$title];
-            unset($fields[$title]);
-        }
-
-        // Set parent or ancestors
-        $parent = Import_ElementModel::HandleParent;
-        $ancestors = Import_ElementModel::HandleAncestors;
-
-        if (isset($fields[$parent])) {
-
-            // Get data
-            $data = $fields[$parent];
-
-            // Fresh up $data
-            $data = str_replace("\n", '', $data);
-            $data = str_replace("\r", '', $data);
-            $data = trim($data);
-
-            // Don't connect empty fields
-            if (!empty($data)) {
-
-                // Find matching element
-                $criteria = craft()->elements->getCriteria(ElementType::Entry);
-                $criteria->sectionId = $element->sectionId;
-
-                // Exact match
-                $criteria->search = '"'.$data.'"';
-
-                // Return the first found element for connecting
-                if ($criteria->total()) {
-                    $element->$parent = $criteria->first()->id;
-                }
-            }
-
-            unset($fields[$parent]);
-        } elseif (isset($fields[$ancestors])) {
-
-            // Get data
-            $data = $fields[$ancestors];
-
-            // Fresh up $data
-            $data = str_replace("\n", '', $data);
-            $data = str_replace("\r", '', $data);
-            $data = trim($data);
-
-            // Don't connect empty fields
-            if (!empty($data)) {
-
-                // Get section data
-                $section = new SectionModel();
-                $section->id = $element->sectionId;
-
-                // This we append before the slugified path
-                $sectionUrl = str_replace('{slug}', '', $section->getUrlFormat());
-
-                // Find matching element by URI (dirty, not all structures have URI's)
-                $criteria = craft()->elements->getCriteria(ElementType::Entry);
-                $criteria->sectionId = $element->sectionId;
-                $criteria->uri = $sectionUrl.craft()->import->slugify($data);
-                $criteria->limit = 1;
-
-                // Return the first found element for connecting
-                if ($criteria->total()) {
-                    $element->$parent = $criteria->first()->id;
-                }
-            }
-
-            unset($fields[$ancestors]);
         }
 
         // Return element
@@ -252,7 +172,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
         if (craft()->entries->saveEntry($element)) {
 
             // If entry revisions are supported
-            if (craft()->getEdition() == Craft::Pro) {
+            if ($this->getCraftEdition() == Craft::Pro) {
 
                 // Log element id's when successful
                 craft()->import_history->version($settings['history'], $element->id);
@@ -273,5 +193,110 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
     public function callback(array $fields, BaseElementModel $element)
     {
         // No callback for entries
+    }
+
+    /**
+     * @param string|int $author Author id, username or email
+     *
+     * @return int authorId
+     */
+    private function prepAuthorForElement($author)
+    {
+        if (!is_numeric($author)) {
+            $user = craft()->users->getUserByUsernameOrEmail($author);
+            $author = $user ? $user->id : 1;
+        }
+
+        return $author;
+    }
+
+    /**
+     * @param string $data
+     * @param int    $sectionId
+     *
+     * @return null|int
+     */
+    private function prepareParentForElement($data, $sectionId)
+    {
+        $parentId = null;
+        $data = $this->freshenString($data);
+
+        // Don't connect empty fields
+        if (!empty($data)) {
+
+            // Find matching element
+            $criteria = craft()->elements->getCriteria(ElementType::Entry);
+            $criteria->sectionId = $sectionId;
+
+            // Exact match
+            $criteria->search = '"'.$data.'"';
+
+            // Return the first found element for connecting
+            if ($criteria->total()) {
+                $parentId = $criteria->ids()[0];
+            }
+        }
+
+        return $parentId;
+    }
+
+    /**
+     * @param string $data
+     * @param int    $sectionId
+     *
+     * @return null|int
+     */
+    private function prepareAncestorsForElement($data, $sectionId)
+    {
+        $parentId = null;
+        $data = $this->freshenString($data);
+
+        // Don't connect empty fields
+        if (!empty($data)) {
+
+            // Get section data
+            $section = new SectionModel();
+            $section->id = $sectionId;
+
+            // This we append before the slugified path
+            $sectionUrl = str_replace('{slug}', '', $section->getUrlFormat());
+
+            // Find matching element by URI (dirty, not all structures have URI's)
+            $criteria = craft()->elements->getCriteria(ElementType::Entry);
+            $criteria->sectionId = $sectionId;
+            $criteria->uri = $sectionUrl.craft()->import->slugify($data);
+            $criteria->limit = 1;
+
+            // Return the first found element for connecting
+            if ($criteria->total()) {
+                $parentId = $criteria->ids()[0];
+            }
+        }
+
+        return $parentId;
+    }
+
+    /**
+     * @param string $data
+     *
+     * @return string
+     */
+    private function freshenString($data)
+    {
+        $data = str_replace("\n", '', $data);
+        $data = str_replace("\r", '', $data);
+        $data = trim($data);
+
+        return $data;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return mixed
+     */
+    protected function getCraftEdition()
+    {
+        return craft()->getEdition();
     }
 }

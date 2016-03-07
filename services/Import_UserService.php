@@ -32,23 +32,20 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function getGroups()
     {
+        $result = false;
         // Check if usergroups are allowed in this installation
-        if (craft()->getEdition() == Craft::Pro) {
+        if ($this->getCraftEdition() == Craft::Pro) {
 
             // Get usergroups
             $groups = craft()->userGroups->getAllGroups();
 
             // Return when groups found
-            if (count($groups)) {
-                return $groups;
-            }
-
             // Still return true when no groups found
-            return true;
+            $result = count($groups) ? $groups : true;
         }
 
         // Else, dont proceed with the user element
-        return false;
+        return $result;
     }
 
     /**
@@ -114,74 +111,39 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
-        // Set ID
-        $id = Import_ElementModel::HandleId;
-        if (isset($fields[$id])) {
-            $element->$id = $fields[$id];
-            unset($fields[$id]);
-        }
+        if ($element instanceof UserModel) {
+            $username = Import_ElementModel::HandleUsername;
+            $email = Import_ElementModel::HandleEmail;
 
-        // Set username
-        $username = Import_ElementModel::HandleUsername;
-        if (isset($fields[$username])) {
-            $element->$username = $fields[$username];
-            unset($fields[$username]);
-        }
+            foreach ($fields as $handle => $value) {
+                switch ($handle) {
+                    case Import_ElementModel::HandleId:
+                    case Import_ElementModel::HandleUsername:
+                    case Import_ElementModel::HandleFirstname:
+                    case Import_ElementModel::HandleLastname:
+                    case Import_ElementModel::HandleEmail:
+                    case Import_ElementModel::HandlePrefLocale:
+                    case Import_ElementModel::HandlePassword:
+                        $element->$handle = $value;
+                        unset($fields[$handle]);
+                        break;
+                    case Import_ElementModel::HandlePhoto:
+                        $element->$handle = $value;
+                        break;
+                    case Import_ElementModel::HandleStatus:
+                        $this->setUserStatus($element, $value);
+                        unset($fields[$handle]);
 
-        // Set photo
-        $photo = Import_ElementModel::HandlePhoto;
-        if (isset($fields[$photo])) {
-            $element->$photo = $fields[$photo];
-        }
-
-        // Set firstname
-        $firstName = Import_ElementModel::HandleFirstname;
-        if (isset($fields[$firstName])) {
-            $element->$firstName = $fields[$firstName];
-            unset($fields[$firstName]);
-        }
-
-        // Set lastname
-        $lastName = Import_ElementModel::HandleLastname;
-        if (isset($fields[$lastName])) {
-            $element->$lastName = $fields[$lastName];
-            unset($fields[$lastName]);
-        }
-
-        // Set email
-        $email = Import_ElementModel::HandleEmail;
-        if (isset($fields[$email])) {
-            $element->$email = $fields[$email];
-            unset($fields[$email]);
+                        break;
+                    default:
+                        continue 2;
+                }
+            }
 
             // Set email as username
             if (craft()->config->get('useEmailAsUsername')) {
                 $element->$username = $element->$email;
             }
-        }
-
-        // Set status
-        $status = Import_ElementModel::HandleStatus;
-        if (isset($fields[$status])) {
-            $element->$status = $fields[$status];
-            if ($element->$status == UserStatus::Pending) {
-                $element->pending = true;
-            }
-            unset($fields[$status]);
-        }
-
-        // Set preferred locale
-        $preflocale = Import_ElementModel::HandlePrefLocale;
-        if (isset($fields[$preflocale])) {
-            $element->$preflocale = $fields[$preflocale];
-            unset($fields[$preflocale]);
-        }
-
-        // Set password
-        $password = Import_ElementModel::HandlePassword;
-        if (isset($fields[$password])) {
-            $element->$password = $fields[$password];
-            unset($fields[$password]);
         }
 
         // Return entry
@@ -219,5 +181,52 @@ class Import_UserService extends BaseApplicationComponent implements IImportElem
     public function callback(array $fields, BaseElementModel $element)
     {
         // No callback for users
+    }
+
+    /**
+     * @param UserModel $user
+     * @param string    $status
+     *
+     * @return UserModel
+     */
+    private function setUserStatus(UserModel $user, $status)
+    {
+        switch ($status) {
+            case UserStatus::Locked;
+                $user->locked = true;
+                break;
+            case UserStatus::Suspended;
+                $user->locked = false;
+                $user->suspended = true;
+                break;
+            case UserStatus::Archived:
+                $user->locked = false;
+                $user->suspended = false;
+                $user->archived = true;
+                break;
+            case UserStatus::Pending:
+                $user->locked = false;
+                $user->suspended = false;
+                $user->archived = false;
+                $user->pending = true;
+                break;
+            case UserStatus::Active:
+                $user->suspended = false;
+                $user->locked = false;
+                $user->setActive();
+                break;
+        }
+
+        return $user;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @return mixed
+     */
+    protected function getCraftEdition()
+    {
+        return craft()->getEdition();
     }
 }

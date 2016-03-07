@@ -64,7 +64,7 @@ class ImportController extends BaseController
             $file->saveAs($path);
 
             // Put vars in model
-            $model           = new ImportModel();
+            $model = new ImportModel();
             $model->filetype = $file->getType();
 
             // Validate filetype
@@ -75,9 +75,9 @@ class ImportController extends BaseController
 
                 // Send variables to template and display
                 $this->renderTemplate('import/_map', array(
-                    'import'    => $import,
-                    'file'      => $path,
-                    'columns'   => $columns,
+                    'import' => $import,
+                    'file' => $path,
+                    'columns' => $columns,
                 ));
             } else {
 
@@ -115,10 +115,10 @@ class ImportController extends BaseController
 
             // Set more settings
             $settings = array_merge(array(
-                'file'        => $file,
-                'rows'        => $rows,
-                'map'         => $map,
-                'unique'      => $unique,
+                'file' => $file,
+                'rows' => $rows,
+                'map' => $map,
+                'unique' => $unique,
             ), $settings);
 
             // Create history

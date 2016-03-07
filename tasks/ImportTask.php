@@ -30,16 +30,16 @@ class ImportTask extends BaseTask
     protected function defineSettings()
     {
         return array(
-            'file'        => AttributeType::Name,
-            'rows'        => AttributeType::Number,
-            'map'         => AttributeType::Mixed,
-            'unique'      => AttributeType::Mixed,
-            'type'        => AttributeType::String,
+            'file' => AttributeType::Name,
+            'rows' => AttributeType::Number,
+            'map' => AttributeType::Mixed,
+            'unique' => AttributeType::Mixed,
+            'type' => AttributeType::String,
             'elementvars' => array(AttributeType::Mixed, 'default' => array()),
-            'behavior'    => array(AttributeType::Name, 'default' => ImportModel::BehaviorAppend),
-            'email'       => AttributeType::Email,
-            'backup'      => array(AttributeType::Bool, 'default' => false),
-            'history'     => AttributeType::Number,
+            'behavior' => array(AttributeType::Name, 'default' => ImportModel::BehaviorAppend),
+            'email' => AttributeType::Email,
+            'backup' => array(AttributeType::Bool, 'default' => false),
+            'history' => AttributeType::Number,
         );
     }
 

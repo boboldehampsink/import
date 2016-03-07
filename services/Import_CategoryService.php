@@ -96,36 +96,25 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      */
     public function prepForElementModel(array &$fields, BaseElementModel $element)
     {
-        // Set ID
-        $id = Import_ElementModel::HandleId;
-        if (isset($fields[$id])) {
-            $element->$id = $fields[$id];
-            unset($fields[$id]);
+        foreach ($fields as $handle => $value) {
+            switch ($handle) {
+                case Import_ElementModel::HandleLocale:
+                    $element->localeEnabled = true;
+                case Import_ElementModel::HandleId;
+                    $element->$handle = $value;
+                    break;
+                case Import_ElementModel::HandleSlug:
+                    $element->$handle = ElementHelper::createSlug($value);
+                    break;
+                case Import_ElementModel::HandleTitle:
+                    $element->getContent()->$handle = $value;
+                    break;
+                default:
+                    continue 2;
+            }
+            unset($fields[$handle]);
         }
 
-        // Set locale
-        $locale = Import_ElementModel::HandleLocale;
-        if (isset($fields[$locale])) {
-            $element->$locale = $fields[$locale];
-            $element->localeEnabled = true;
-            unset($fields[$locale]);
-        }
-
-        // Set slug
-        $slug = Import_ElementModel::HandleSlug;
-        if (isset($fields[$slug])) {
-            $element->$slug = ElementHelper::createSlug($fields[$slug]);
-            unset($fields[$slug]);
-        }
-
-        // Set title
-        $title = Import_ElementModel::HandleTitle;
-        if (isset($fields[$title])) {
-            $element->getContent()->$title = $fields[$title];
-            unset($fields[$title]);
-        }
-
-        // Return element
         return $element;
     }
 
@@ -151,76 +140,90 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
      */
     public function callback(array $fields, BaseElementModel $element)
     {
-        // Set parent or ancestors
         $parent = Import_ElementModel::HandleParent;
         $ancestors = Import_ElementModel::HandleAncestors;
+        $parentCategory = null;
 
         if (isset($fields[$parent])) {
-
-            // Get data
-            $data = $fields[$parent];
-
-            // Fresh up $data
-            $data = str_replace("\n", '', $data);
-            $data = str_replace("\r", '', $data);
-            $data = trim($data);
-
-            // Don't connect empty fields
-            if (!empty($data)) {
-
-                // Find matching element
-                $criteria = craft()->elements->getCriteria(ElementType::Category);
-                $criteria->groupId = $element->groupId;
-
-                // Exact match
-                $criteria->search = '"'.$data.'"';
-
-                // Return the first found element for connecting
-                if ($criteria->total()) {
-
-                    // Get category group
-                    $categoryGroup = craft()->categories->getGroupById($element->groupId);
-
-                    // Set structure
-                    craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
-                }
-            }
-
+            $parentCategory = $this->prepareParentForElement($fields[$parent], $element->groupId);
             unset($fields[$parent]);
         } elseif (isset($fields[$ancestors])) {
-
-            // Get data
-            $data = $fields[$ancestors];
-
-            // Fresh up $data
-            $data = str_replace("\n", '', $data);
-            $data = str_replace("\r", '', $data);
-            $data = trim($data);
-
-            // Don't connect empty fields
-            if (!empty($data)) {
-
-                // This we append before the slugified path
-                $categoryUrl = str_replace('{slug}', '', $element->getUrlFormat());
-
-                // Find matching element by URI (dirty, not all categories have URI's)
-                $criteria = craft()->elements->getCriteria(ElementType::Category);
-                $criteria->groupId = $element->groupId;
-                $criteria->uri = $categoryUrl.craft()->import->slugify($data);
-                $criteria->limit = 1;
-
-                // Return the first found element for connecting
-                if ($criteria->total()) {
-
-                    // Get category group
-                    $categoryGroup = craft()->categories->getGroupById($element->groupId);
-
-                    // Set structure
-                    craft()->structures->append($categoryGroup->structureId, $element, $criteria->first(), 'auto');
-                }
-            }
-
+            $parentCategory = $this->prepareAncestorsForElement($element, $fields[$ancestors]);
             unset($fields[$ancestors]);
         }
+
+        if ($parentCategory) {
+            $categoryGroup = craft()->categories->getGroupById($element->groupId);
+            craft()->structures->append($categoryGroup->structureId, $element, $parentCategory, 'auto');
+        }
+    }
+
+    /**
+     * @param $data
+     * @param $groupId
+     *
+     * @return null|CategoryModel
+     */
+    private function prepareParentForElement($data, $groupId)
+    {
+        $parentCategory = null;
+        $data = $this->freshenString($data);
+
+        // Don't connect empty fields
+        if (!empty($data)) {
+
+            // Find matching element
+            $criteria = craft()->elements->getCriteria(ElementType::Category);
+            $criteria->groupId = $groupId;
+
+            // Exact match
+            $criteria->search = '"'.$data.'"';
+            $parentCategory = $criteria->first();
+        }
+
+        return $parentCategory;
+    }
+
+    /**
+     * @param BaseElementModel $element
+     * @param $data
+     *
+     * @return null|CategoryModel
+     */
+    private function prepareAncestorsForElement(BaseElementModel $element, $data)
+    {
+        $parentCategory = null;
+        $data = $this->freshenString($data);
+
+        // Don't connect empty fields
+        if (!empty($data)) {
+
+            // This we append before the slugified path
+            $categoryUrl = str_replace('{slug}', '', $element->getUrlFormat());
+
+            // Find matching element by URI (dirty, not all categories have URI's)
+            $criteria = craft()->elements->getCriteria(ElementType::Category);
+            $criteria->groupId = $element->groupId;
+            $criteria->uri = $categoryUrl.craft()->import->slugify($data);
+            $criteria->limit = 1;
+
+            $parentCategory = $criteria->first();
+        }
+
+        return $parentCategory;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return mixed|string
+     */
+    private function freshenString($data)
+    {
+        $data = str_replace("\n", '', $data);
+        $data = str_replace("\r", '', $data);
+        $data = trim($data);
+
+        return $data;
     }
 }
