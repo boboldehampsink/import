@@ -1,6 +1,7 @@
 Changelog
 =================
 ###0.8.30###
+ - Added the ability to upload the import file to an asset source for better persistency
  - Fixed a bug where logs didn't show
 
 ###0.8.29###

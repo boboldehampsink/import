@@ -45,7 +45,6 @@ class ImportService extends BaseApplicationComponent
      */
     public function columns($file)
     {
-
         // Open CSV file
         $data = $this->_open($file);
 
@@ -303,7 +302,6 @@ class ImportService extends BaseApplicationComponent
      */
     public function prepForFieldType(&$data, $handle)
     {
-
         // Fresh up $data
         $data = StringHelper::convertToUTF8($data);
         $data = trim($data);
@@ -543,6 +541,12 @@ class ImportService extends BaseApplicationComponent
     {
         $data = array();
 
+        // Turn asset into a file
+        $asset = craft()->assets->getFileById($file);
+        $source = $asset->getSource();
+        $sourceType = $source->getSourceType();
+        $file = $sourceType->getLocalCopy($asset);
+
         // Check if file exists in the first place
         if (file_exists($file)) {
 
@@ -592,7 +596,6 @@ class ImportService extends BaseApplicationComponent
      */
     public function debug($settings, $history, $step)
     {
-
         // Open file
         $data = $this->data($settings['file']);
 
