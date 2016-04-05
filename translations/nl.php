@@ -36,6 +36,8 @@ return array(
     'Choose the groups you want to import into.' => 'Kies de groepen waar je in wilt importeren.',
     'Import behavior' => 'Importeergedrag',
     'Choose the behaviour you want to import with.' => 'Kies het gedrag waarmee je wilt importeren.',
+    'Asset Source' => 'Bestandsbron',
+    'Choose the asset source you want to upload the import file to.' => 'Kies de bestandsbron waar naar je het import bestand wilt uploaden.',
     'Append data' => 'Gegevens toevoegen',
     'Replace data' => 'Gegevens vervangen',
     'Delete data' => 'Gegevens verwijderen',
