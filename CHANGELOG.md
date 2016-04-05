@@ -1,5 +1,8 @@
 Changelog
 =================
+###0.8.30###
+ - Fixed a bug where logs didn't show
+
 ###0.8.29###
  - All service code is now fully covered by unit tests (thanks to @bvangennep)
 
