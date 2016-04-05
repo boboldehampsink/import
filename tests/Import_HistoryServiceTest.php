@@ -75,8 +75,8 @@ class Import_HistoryServiceTest extends BaseTest
             ),
         );
 
-        $service = $this->getImportHistoryService(array('findAllHistories', 'findHistoryById'));
-        $service->expects($this->exactly(1))->method('findAllHistories')
+        $service = $this->getImportHistoryService(array('findAllLogs', 'findHistoryById'));
+        $service->expects($this->exactly(1))->method('findAllLogs')
             ->with($this->isInstanceOf('CDbCriteria'))->willReturn($mockResult);
         $service->expects($this->exactly(1))->method('findHistoryById')->with($historyId)->willReturn($mockHistory);
 

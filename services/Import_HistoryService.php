@@ -47,7 +47,7 @@ class Import_HistoryService extends BaseApplicationComponent
 
         // Get errors
         $errors = array();
-        $logs = $this->findAllHistories($criteria);
+        $logs = $this->findAllLogs($criteria);
         foreach ($logs as $log) {
             $errors[$log['line']] = $log['errors'];
         }
@@ -169,6 +169,18 @@ class Import_HistoryService extends BaseApplicationComponent
     protected function findAllHistories(\CDbCriteria $criteria)
     {
         return Import_HistoryRecord::model()->findAll($criteria);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @param \CDbCriteria $criteria
+     *
+     * @return Import_LogRecord[]
+     */
+    protected function findAllLogs(\CDbCriteria $criteria)
+    {
+        return Import_LogRecord::model()->findAll($criteria);
     }
 
     /**
