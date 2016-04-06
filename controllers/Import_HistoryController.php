@@ -68,9 +68,18 @@ class Import_HistoryController extends BaseController
 
         // Check if file exists
         if (file_exists($path)) {
+            craft()->request->sendFile($model->file, IOHelper::getFileContents($path), array('forceDownload' => true));
+        }
+
+        // OR get file from cloud
+        $asset = craft()->assets->getFileById($model->file);
+        if ($asset) {
+            $source = $asset->getSource();
+            $sourceType = $source->getSourceType();
+            $file = $sourceType->getLocalCopy($asset);
 
             // Send the file to the browser
-            craft()->request->sendFile($model->file, IOHelper::getFileContents($path), array('forceDownload' => true));
+            craft()->request->sendFile($asset->filename, IOHelper::getFileContents($file), array('forceDownload' => true));
         }
 
         // Not found, = 404

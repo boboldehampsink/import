@@ -47,7 +47,7 @@ class Import_HistoryService extends BaseApplicationComponent
 
         // Get errors
         $errors = array();
-        $logs = $this->findAllHistories($criteria);
+        $logs = $this->findAllLogs($criteria);
         foreach ($logs as $log) {
             $errors[$log['line']] = $log['errors'];
         }
@@ -79,9 +79,9 @@ class Import_HistoryService extends BaseApplicationComponent
     public function start($settings)
     {
         $history = $this->getNewImportHistoryRecord();
-        $history->userId = craft()->userSession->getUser()->id;
+        $history->userId = $settings['user'];
         $history->type = $settings['type'];
-        $history->file = basename($settings['file']);
+        $history->file = craft()->assets->getFileById($settings['file'])->filename;
         $history->rows = $settings['rows'];
         $history->behavior = $settings['behavior'];
         $history->status = ImportModel::StatusStarted;
@@ -169,6 +169,18 @@ class Import_HistoryService extends BaseApplicationComponent
     protected function findAllHistories(\CDbCriteria $criteria)
     {
         return Import_HistoryRecord::model()->findAll($criteria);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @param \CDbCriteria $criteria
+     *
+     * @return Import_LogRecord[]
+     */
+    protected function findAllLogs(\CDbCriteria $criteria)
+    {
+        return Import_LogRecord::model()->findAll($criteria);
     }
 
     /**

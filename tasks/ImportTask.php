@@ -30,6 +30,7 @@ class ImportTask extends BaseTask
     protected function defineSettings()
     {
         return array(
+            'user' => AttributeType::Number,
             'file' => AttributeType::Name,
             'rows' => AttributeType::Number,
             'map' => AttributeType::Mixed,

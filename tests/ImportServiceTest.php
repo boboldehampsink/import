@@ -50,6 +50,8 @@ class ImportServiceTest extends BaseTest
         $file = __DIR__.'/tst_csv.csv';
         $expectedColumns = array('column1', 'column2', 'column3', 'column4', 'column5');
 
+        $this->setMockAssetsService($file);
+
         $service = new ImportService();
         $result = $service->columns($file);
 
@@ -66,6 +68,8 @@ class ImportServiceTest extends BaseTest
             array('row1value1', 'row1value2', 'row1value3', 'row1value4', 'row1value5'),
             array('row1value1', 'row2value2', 'row3value3', 'row4value4', 'row5value5'),
         );
+
+        $this->setMockAssetsService($file);
 
         $service = new ImportService();
         $result = $service->data($file);
@@ -219,6 +223,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -248,6 +253,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -281,6 +287,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -300,7 +307,7 @@ class ImportServiceTest extends BaseTest
         $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
 
         $mockUser = $this->getMockUser();
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         $service = new ImportService();
         $service->row($row, $data, $settings);
@@ -315,6 +322,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -339,7 +347,7 @@ class ImportServiceTest extends BaseTest
             array('delete', false),
             array('append', true),
         ));
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         $service = new ImportService();
         $service->row($row, $data, $settings);
@@ -354,6 +362,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -378,7 +387,7 @@ class ImportServiceTest extends BaseTest
         $mockUser->expects($this->exactly(1))->method('can')->willReturnMap(array(
             array('delete', true),
         ));
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         /** @var ImportService $service */
         $service = $this->getMock('Craft\ImportService', array('onBeforeImportDelete'));
@@ -394,6 +403,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -420,7 +430,7 @@ class ImportServiceTest extends BaseTest
         $mockUser->expects($this->exactly(1))->method('can')->willReturnMap(array(
             array('delete', true),
         ));
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         /** @var ImportService $service */
         $service = $this->getMock('Craft\ImportService', array('onBeforeImportDelete'));
@@ -434,6 +444,7 @@ class ImportServiceTest extends BaseTest
     {
         $historyId = 1;
         $settings = array(
+            'user' => 1,
             'history' => $historyId,
             'email' => true,
             'rows' => 1,
@@ -454,7 +465,7 @@ class ImportServiceTest extends BaseTest
         $this->setComponent(craft(), 'templates', $mockTemplatesService);
 
         $mockUser = $this->getMockUser();
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         $service = new ImportService();
         $service->log = array(1 => 'Error message');
@@ -804,6 +815,16 @@ class ImportServiceTest extends BaseTest
     }
 
     /**
+     * @param MockObject $mockUser
+     */
+    private function setMockUsersService(MockObject $mockUser)
+    {
+        $mockUsersService = $this->getMock('Craft\UsersService');
+        $this->setComponent(craft(), 'users', $mockUsersService);
+        $mockUsersService->expects($this->exactly(1))->method('getUserById')->willReturn($mockUser);
+    }
+
+    /**
      * @return MockObject|ElementCriteriaModel
      */
     private function getMockEntry()
@@ -945,5 +966,81 @@ class ImportServiceTest extends BaseTest
             ->getMock();
         $mockCategoriesService->expects($this->any())->method('getGroupLocales')->willReturn(array());
         $this->setComponent(craft(), 'categories', $mockCategoriesService);
+    }
+
+    /**
+     * Set mock assets service.
+     *
+     * @param string $file
+     */
+    protected function setMockAssetsService($file)
+    {
+        $mockAssetsService = $this->getMockBuilder('Craft\AssetsService')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $asset = $this->getMockAssetFileModel($file);
+
+        $mockAssetsService->expects($this->any())->method('getFileById')->willReturn($asset);
+
+        $this->setComponent(craft(), 'assets', $mockAssetsService);
+    }
+
+    /**
+     * Get mock asset file model.
+     *
+     * @param string $file
+     *
+     * @return AssetFileModel
+     */
+    protected function getMockAssetFileModel($file)
+    {
+        $mockAssetFileModel = $this->getMockBuilder('Craft\AssetFileModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $source = $this->getMockAssetSourceModel($file);
+
+        $mockAssetFileModel->expects($this->any())->method('getSource')->willReturn($source);
+
+        return $mockAssetFileModel;
+    }
+
+    /**
+     * Get mock asset source model.
+     *
+     * @param string $file
+     *
+     * @return AssetSourceModel
+     */
+    protected function getMockAssetSourceModel($file)
+    {
+        $mockAssetSourceModel = $this->getMockBuilder('Craft\AssetSourceModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $sourcetype = $this->getMockLocalAssetSourceType($file);
+
+        $mockAssetSourceModel->expects($this->any())->method('getSourceType')->willReturn($sourcetype);
+
+        return $mockAssetSourceModel;
+    }
+
+    /**
+     * Mock LocalAssetSourceType.
+     *
+     * @param string $file
+     *
+     * @return AssetSourceModel
+     */
+    private function getMockLocalAssetSourceType($file)
+    {
+        $mock = $this->getMockBuilder('Craft\LocalAssetSourceType')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())->method('getLocalCopy')->willReturn($file);
+
+        return $mock;
     }
 }

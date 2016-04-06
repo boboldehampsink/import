@@ -45,7 +45,6 @@ class ImportService extends BaseApplicationComponent
      */
     public function columns($file)
     {
-
         // Open CSV file
         $data = $this->_open($file);
 
@@ -185,7 +184,7 @@ class ImportService extends BaseApplicationComponent
             if (isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && $value != 'dont') {
                 // Unique value should have a value
                 if (trim($fields[$value]) != '') {
-                    $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
+                    $criteria->$value = $cmodel[$value] = $fields[$value];
                 } else {
                     // Else stop the operation - chance of success is only small
                     $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Tried to match criteria but its value was not set.'))));
@@ -195,11 +194,11 @@ class ImportService extends BaseApplicationComponent
             }
         }
 
-        // Get current user
-        $currentUser = craft()->userSession->getUser();
-
         // If there's a match...
         if (count($cmodel) && $criteria->count()) {
+
+            // Get current user
+            $currentUser = craft()->users->getUserById($settings['user']);
 
             // If we're deleting
             if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
@@ -276,7 +275,7 @@ class ImportService extends BaseApplicationComponent
             $email->toEmail = $emailSettings['emailAddress'];
 
             // Get current user
-            $currentUser = craft()->userSession->getUser();
+            $currentUser = craft()->users->getUserById($settings['user']);
 
             // Zip the backup
             $backup = $this->saveBackup($settings, $backup, $currentUser);
@@ -303,7 +302,6 @@ class ImportService extends BaseApplicationComponent
      */
     public function prepForFieldType(&$data, $handle)
     {
-
         // Fresh up $data
         $data = StringHelper::convertToUTF8($data);
         $data = trim($data);
@@ -543,6 +541,12 @@ class ImportService extends BaseApplicationComponent
     {
         $data = array();
 
+        // Turn asset into a file
+        $asset = craft()->assets->getFileById($file);
+        $source = $asset->getSource();
+        $sourceType = $source->getSourceType();
+        $file = $sourceType->getLocalCopy($asset);
+
         // Check if file exists in the first place
         if (file_exists($file)) {
 
@@ -592,7 +596,6 @@ class ImportService extends BaseApplicationComponent
      */
     public function debug($settings, $history, $step)
     {
-
         // Open file
         $data = $this->data($settings['file']);
 
