@@ -79,7 +79,7 @@ class Import_HistoryService extends BaseApplicationComponent
     public function start($settings)
     {
         $history = $this->getNewImportHistoryRecord();
-        $history->userId = craft()->userSession->getUser()->id;
+        $history->userId = $settings['user'];
         $history->type = $settings['type'];
         $history->file = craft()->assets->getFileById($settings['file'])->filename;
         $history->rows = $settings['rows'];

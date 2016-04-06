@@ -194,11 +194,11 @@ class ImportService extends BaseApplicationComponent
             }
         }
 
-        // Get current user
-        $currentUser = craft()->userSession->getUser();
-
         // If there's a match...
         if (count($cmodel) && $criteria->count()) {
+
+            // Get current user
+            $currentUser = craft()->users->getUserById($settings['user']);
 
             // If we're deleting
             if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
@@ -275,7 +275,7 @@ class ImportService extends BaseApplicationComponent
             $email->toEmail = $emailSettings['emailAddress'];
 
             // Get current user
-            $currentUser = craft()->userSession->getUser();
+            $currentUser = craft()->users->getUserById($settings['user']);
 
             // Zip the backup
             $backup = $this->saveBackup($settings, $backup, $currentUser);

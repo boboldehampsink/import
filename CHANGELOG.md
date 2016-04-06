@@ -2,6 +2,7 @@ Changelog
 =================
 ###0.8.30###
  - Added the ability to upload the import file to an asset source for better persistency
+ - Save user id to settings so we can run the task without user session
  - Fixed a bug where logs didn't show
 
 ###0.8.29###

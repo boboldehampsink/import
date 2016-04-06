@@ -128,6 +128,7 @@ class ImportController extends BaseController
 
             // Set more settings
             $settings = array_merge(array(
+                'user' => craft()->userSession->getUser()->id,
                 'file' => $file->id,
                 'rows' => $rows,
                 'map' => $map,
