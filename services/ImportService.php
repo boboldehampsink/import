@@ -184,7 +184,7 @@ class ImportService extends BaseApplicationComponent
             if (isset($settings['unique'][$key]) && intval($settings['unique'][$key]) == 1 && $value != 'dont') {
                 // Unique value should have a value
                 if (trim($fields[$value]) != '') {
-                    $criteria->$settings['map'][$key] = $cmodel[$settings['map'][$key]] = $fields[$value];
+                    $criteria->$value = $cmodel[$value] = $fields[$value];
                 } else {
                     // Else stop the operation - chance of success is only small
                     $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Tried to match criteria but its value was not set.'))));
