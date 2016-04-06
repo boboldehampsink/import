@@ -223,6 +223,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -252,6 +253,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -285,6 +287,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -304,7 +307,7 @@ class ImportServiceTest extends BaseTest
         $this->setMockImportHistoryService($historyId, $row, $this->isType('array'));
 
         $mockUser = $this->getMockUser();
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         $service = new ImportService();
         $service->row($row, $data, $settings);
@@ -319,6 +322,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -343,7 +347,7 @@ class ImportServiceTest extends BaseTest
             array('delete', false),
             array('append', true),
         ));
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         $service = new ImportService();
         $service->row($row, $data, $settings);
@@ -358,6 +362,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -382,7 +387,7 @@ class ImportServiceTest extends BaseTest
         $mockUser->expects($this->exactly(1))->method('can')->willReturnMap(array(
             array('delete', true),
         ));
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         /** @var ImportService $service */
         $service = $this->getMock('Craft\ImportService', array('onBeforeImportDelete'));
@@ -398,6 +403,7 @@ class ImportServiceTest extends BaseTest
         $row = 1;
         $historyId = 2;
         $settings = array(
+            'user' => 1,
             'map' => array('field1' => 'field1', 'field2' => 'field2'),
             'type' => 'TypeExists',
             'unique' => array('field1' => 1, 'field2' => 0),
@@ -424,7 +430,7 @@ class ImportServiceTest extends BaseTest
         $mockUser->expects($this->exactly(1))->method('can')->willReturnMap(array(
             array('delete', true),
         ));
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         /** @var ImportService $service */
         $service = $this->getMock('Craft\ImportService', array('onBeforeImportDelete'));
@@ -438,6 +444,7 @@ class ImportServiceTest extends BaseTest
     {
         $historyId = 1;
         $settings = array(
+            'user' => 1,
             'history' => $historyId,
             'email' => true,
             'rows' => 1,
@@ -458,7 +465,7 @@ class ImportServiceTest extends BaseTest
         $this->setComponent(craft(), 'templates', $mockTemplatesService);
 
         $mockUser = $this->getMockUser();
-        $this->setMockUserSession($mockUser);
+        $this->setMockUsersService($mockUser);
 
         $service = new ImportService();
         $service->log = array(1 => 'Error message');
@@ -805,6 +812,16 @@ class ImportServiceTest extends BaseTest
         $mockUserSession = $this->getMock('Craft\UserSessionService');
         $this->setComponent(craft(), 'userSession', $mockUserSession);
         $mockUserSession->expects($this->exactly(1))->method('getUser')->willReturn($mockUser);
+    }
+
+    /**
+     * @param MockObject $mockUser
+     */
+    private function setMockUsersService(MockObject $mockUser)
+    {
+        $mockUsersService = $this->getMock('Craft\UsersService');
+        $this->setComponent(craft(), 'users', $mockUsersService);
+        $mockUsersService->expects($this->exactly(1))->method('getUserById')->willReturn($mockUser);
     }
 
     /**

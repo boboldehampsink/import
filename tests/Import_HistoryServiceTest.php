@@ -113,6 +113,7 @@ class Import_HistoryServiceTest extends BaseTest
     {
         $historyId = 1;
         $settings = array(
+            'user' => 1,
             'type' => 'type',
             'file' => 'file',
             'rows' => 3,
@@ -123,8 +124,8 @@ class Import_HistoryServiceTest extends BaseTest
         ));
         $mockHistory->expects($this->exactly(1))->method('save')->with(false);
 
-        $mockUser = $this->getMockUser();
-        $this->setMockUserSession($mockUser);
+        $file = __DIR__.'/tst_csv.csv';
+        $this->setMockAssetsService($file);
 
         $service = $this->getImportHistoryService(array('getNewImportHistoryRecord'));
         $service->expects($this->exactly(1))->method('getNewImportHistoryRecord')->willReturn($mockHistory);
@@ -198,28 +199,6 @@ class Import_HistoryServiceTest extends BaseTest
     }
 
     /**
-     * @param $mockUser
-     */
-    private function setMockUserSession($mockUser)
-    {
-        $mockUserSession = $this->getMock('Craft\UserSessionService');
-        $mockUserSession->expects($this->exactly(1))->method('getUser')->willReturn($mockUser);
-        $this->setComponent(craft(), 'userSession', $mockUserSession);
-    }
-
-    /**
-     * @return MockObject
-     */
-    private function getMockUser()
-    {
-        $mockUser = $this->getMockBuilder('Craft\UserModel')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return $mockUser;
-    }
-
-    /**
      * @param array $mockedMethods
      *
      * @return MockObject|Import_historyService $service
@@ -256,5 +235,81 @@ class Import_HistoryServiceTest extends BaseTest
         $mock->expects($this->any())->method('getPrimarySiteLocaleId')->willReturn('en_gb');
 
         $this->setComponent(craft(), 'i18n', $mock);
+    }
+
+    /**
+     * Set mock assets service.
+     *
+     * @param string $file
+     */
+    protected function setMockAssetsService($file)
+    {
+        $mockAssetsService = $this->getMockBuilder('Craft\AssetsService')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $asset = $this->getMockAssetFileModel($file);
+
+        $mockAssetsService->expects($this->any())->method('getFileById')->willReturn($asset);
+
+        $this->setComponent(craft(), 'assets', $mockAssetsService);
+    }
+
+    /**
+     * Get mock asset file model.
+     *
+     * @param string $file
+     *
+     * @return AssetFileModel
+     */
+    protected function getMockAssetFileModel($file)
+    {
+        $mockAssetFileModel = $this->getMockBuilder('Craft\AssetFileModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $source = $this->getMockAssetSourceModel($file);
+
+        $mockAssetFileModel->expects($this->any())->method('getSource')->willReturn($source);
+
+        return $mockAssetFileModel;
+    }
+
+    /**
+     * Get mock asset source model.
+     *
+     * @param string $file
+     *
+     * @return AssetSourceModel
+     */
+    protected function getMockAssetSourceModel($file)
+    {
+        $mockAssetSourceModel = $this->getMockBuilder('Craft\AssetSourceModel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $sourcetype = $this->getMockLocalAssetSourceType($file);
+
+        $mockAssetSourceModel->expects($this->any())->method('getSourceType')->willReturn($sourcetype);
+
+        return $mockAssetSourceModel;
+    }
+
+    /**
+     * Mock LocalAssetSourceType.
+     *
+     * @param string $file
+     *
+     * @return AssetSourceModel
+     */
+    private function getMockLocalAssetSourceType($file)
+    {
+        $mock = $this->getMockBuilder('Craft\LocalAssetSourceType')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())->method('getLocalCopy')->willReturn($file);
+
+        return $mock;
     }
 }
