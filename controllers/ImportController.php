@@ -73,6 +73,9 @@ class ImportController extends BaseController
             // Prevent sensitive information leak. Just in case.
             $response->deleteDataItem('filePath');
 
+            // Get file id
+            $fileId = $response->getDataItem('fileId');
+
             // Put vars in model
             $model = new ImportModel();
             $model->filetype = $file->getType();
@@ -81,12 +84,12 @@ class ImportController extends BaseController
             if ($model->validate()) {
 
                 // Get columns
-                $columns = craft()->import->columns($path);
+                $columns = craft()->import->columns($fileId);
 
                 // Send variables to template and display
                 $this->renderTemplate('import/_map', array(
                     'import' => $import,
-                    'file' => $response->getDataItem('fileId'),
+                    'file' => $fileId,
                     'columns' => $columns,
                 ));
             } else {
