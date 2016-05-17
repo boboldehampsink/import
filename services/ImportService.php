@@ -37,6 +37,13 @@ class ImportService extends BaseApplicationComponent
     private $_loadedOptionPaths = false;
 
     /**
+     * Cache import file data
+     *
+     * @var array
+     */
+    private $_data = array();
+
+    /**
      * Read CSV columns.
      *
      * @param string $file
@@ -539,50 +546,51 @@ class ImportService extends BaseApplicationComponent
      */
     protected function _open($file)
     {
-        $data = array();
+        if(!count($this->_data)) {
 
-        // Turn asset into a file
-        $asset = craft()->assets->getFileById($file);
-        $source = $asset->getSource();
-        $sourceType = $source->getSourceType();
-        $file = $sourceType->getLocalCopy($asset);
+            // Turn asset into a file
+            $asset = craft()->assets->getFileById($file);
+            $source = $asset->getSource();
+            $sourceType = $source->getSourceType();
+            $file = $sourceType->getLocalCopy($asset);
 
-        // Check if file exists in the first place
-        if (file_exists($file)) {
+            // Check if file exists in the first place
+            if (file_exists($file)) {
 
-            // Automatically detect line endings
-            @ini_set('auto_detect_line_endings', true);
+                // Automatically detect line endings
+                @ini_set('auto_detect_line_endings', true);
 
-            // Open file into rows
-            $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                // Open file into rows
+                $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-            // Detect delimiter from first row
-            $delimiters = array();
-            $delimiters[ImportModel::DelimiterSemicolon] = substr_count($lines[0], ImportModel::DelimiterSemicolon);
-            $delimiters[ImportModel::DelimiterComma] = substr_count($lines[0], ImportModel::DelimiterComma);
-            $delimiters[ImportModel::DelimiterPipe] = substr_count($lines[0], ImportModel::DelimiterPipe);
+                // Detect delimiter from first row
+                $delimiters = array();
+                $delimiters[ImportModel::DelimiterSemicolon] = substr_count($lines[0], ImportModel::DelimiterSemicolon);
+                $delimiters[ImportModel::DelimiterComma] = substr_count($lines[0], ImportModel::DelimiterComma);
+                $delimiters[ImportModel::DelimiterPipe] = substr_count($lines[0], ImportModel::DelimiterPipe);
 
-            // Sort by delimiter with most occurences
-            arsort($delimiters, SORT_NUMERIC);
+                // Sort by delimiter with most occurences
+                arsort($delimiters, SORT_NUMERIC);
 
-            // Give me the keys
-            $delimiters = array_keys($delimiters);
+                // Give me the keys
+                $delimiters = array_keys($delimiters);
 
-            // Use first key -> this is the one with most occurences
-            $delimiter = array_shift($delimiters);
+                // Use first key -> this is the one with most occurences
+                $delimiter = array_shift($delimiters);
 
-            // Open file and parse csv rows
-            $handle = fopen($file, 'r');
-            while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+                // Open file and parse csv rows
+                $handle = fopen($file, 'r');
+                while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
 
-                // Add row to data array
-                $data[] = $row;
+                    // Add row to data array
+                    $this->_data[] = $row;
+                }
+                fclose($handle);
             }
-            fclose($handle);
         }
 
         // Return data array
-        return $data;
+        return $this->_data;
     }
 
     /**

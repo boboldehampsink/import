@@ -49,26 +49,19 @@ class ImportController extends BaseController
         // Is file valid?
         if (!is_null($file)) {
 
-            // Determine folder
-            $folder = craft()->path->getStoragePath().'import/';
-
-            // Ensure folder exists
-            IOHelper::ensureFolderExists($folder);
-
-            // Get filepath - save in storage folder
-            $path = $folder.$file->getName();
-
-            // Save file to Craft's temp folder for later use
-            $file->saveAs($path);
-
             // Get source
             $source = craft()->assetSources->getSourceTypeById($import['assetsource']);
 
             // Get folder to save to
             $folderId = craft()->assets->getRootFolderBySourceId($import['assetsource']);
 
+            // Save file to Craft's temp folder for later use
+            $fileName = AssetsHelper::cleanAssetName($file->name);
+            $filePath = AssetsHelper::getTempFilePath($file->extensionName);
+            $file->saveAs($filePath);
+
             // Move the file by source type implementation
-            $response = $source->insertFileByPath($path, $folderId, $file->getName(), true);
+            $response = $source->insertFileByPath($filePath, $folderId, $fileName, true);
 
             // Prevent sensitive information leak. Just in case.
             $response->deleteDataItem('filePath');
