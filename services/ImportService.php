@@ -114,11 +114,14 @@ class ImportService extends BaseApplicationComponent
         // Set up a model to save according to element type
         $entry = $service->setModel($settings);
 
-        // If unique is non-empty array, we're replacing or deleting
+        // If unique is non-empty array, we may be replacing or deleting
         if (is_array($settings['unique']) && count($settings['unique']) > 1) {
-            $entry = $this->replaceOrDelete($row, $settings, $service, $fields, $entry);
-            if ($entry === null) {
+            $replacedEntry = $this->replaceOrDelete($row, $settings, $service, $fields, $entry);
+
+            if ($replacedEntry === null && $settings['behavior'] == ImportModel::BehaviorDelete) {
                 return;
+            } elseif ($replacedEntry) {
+                $entry = $replacedEntry;
             }
         }
 

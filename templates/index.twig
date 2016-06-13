@@ -63,7 +63,7 @@
                             <div class="heading">
                                 <label>{{ "Import behavior"|t }}</label>
                                 <div class="instructions">
-                                    <p>{{ "Choose whether to create new records, or update or delete existing data."|t }}</p>
+                                    <p>{{ "Choose whether to add new records, update existing records, or delete records."|t }}</p>
                                 </div>
                             </div>
                         </div>
@@ -73,9 +73,9 @@
                             <div class="input">
                                 <div class="select">
                                     <select name="import[behavior]" id="behaviors">
-                                        {% if currentUser.can('append') %}<option value="append">{{ "Append data"|t }}</option>{% endif %}
-                                        {% if currentUser.can('replace') %}<option value="replace">{{ "Replace data"|t }}</option>{% endif %}
-                                        {% if currentUser.can('delete') %}<option value="delete">{{ "Delete data"|t }}</option>{% endif %}
+                                        {% if currentUser.can('append') %}<option value="append">{{ "Add/Update Records"|t }}</option>{% endif %}
+                                        {% if currentUser.can('replace') %}<option value="replace">{{ "Update Records"|t }}</option>{% endif %}
+                                        {% if currentUser.can('delete') %}<option value="delete">{{ "Delete Records"|t }}</option>{% endif %}
                                     </select>
                                 </div>
                             </div>
