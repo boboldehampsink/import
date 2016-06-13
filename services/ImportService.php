@@ -118,7 +118,7 @@ class ImportService extends BaseApplicationComponent
         if (is_array($settings['unique']) && count($settings['unique']) > 1) {
             $replacedEntry = $this->replaceOrDelete($row, $settings, $service, $fields, $entry);
 
-            if ($replacedEntry === null && $settings['behavior'] == ImportModel::BehaviorDelete) {
+            if ($replacedEntry === null && $settings['behavior'] !== ImportModel::BehaviorAppend) {
                 return;
             } elseif ($replacedEntry) {
                 $entry = $replacedEntry;
