@@ -81,7 +81,7 @@ class Import_HistoryService extends BaseApplicationComponent
         $history = $this->getNewImportHistoryRecord();
         $history->userId = $settings['user'];
         $history->type = $settings['type'];
-        $history->file = craft()->assets->getFileById($settings['file'])->filename;
+        $history->file = $settings['file'];
         $history->rows = $settings['rows'];
         $history->behavior = $settings['behavior'];
         $history->status = ImportModel::StatusStarted;
