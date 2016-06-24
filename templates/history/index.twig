@@ -65,7 +65,7 @@
                 <td data-title="{{ 'Finished'|t }}">{% if item.status != 'started' %}{{ item.dateUpdated | datetime }}{% endif %}</td>
                 <td data-title="{{ 'Total time'|t }}">{% if item.status != 'started' %}{{ item.dateCreated.diff(item.dateUpdated).humanDuration() }}{% endif %}</td>
                 <td data-title="{{ 'User'|t }}">
-                    <a href="users/{{ item.user.id }}" class="go">{{ item.user.username }}</a>
+                    <a href="{{ url('users/' ~ item.user.id ) }}" class="go">{{ item.user.username }}</a>
                 </td>
                 {% if CraftEdition >= CraftClient %}
                 <td data-title="{{ 'Revert'|t }}">
