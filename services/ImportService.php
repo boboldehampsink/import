@@ -682,6 +682,9 @@ class ImportService extends BaseApplicationComponent
             $criteria = craft()->elements->getCriteria(ElementType::Tag);
             $criteria->title = $tag;
             $criteria->groupId = $groupId;
+            $criteria->status = null;
+            $criteria->localeEnabled = null;
+
             $tagArray = array();
 
             if (!$criteria->total()) {
@@ -761,6 +764,8 @@ class ImportService extends BaseApplicationComponent
         $criteria = craft()->elements->getCriteria(ElementType::User);
         $criteria->groupId = $groupIds;
         $criteria->limit = $settings->limit;
+        $criteria->status = null;
+        $criteria->localeEnabled = null;
 
         // Get search strings
         $search = ArrayHelper::stringToArray($data);
@@ -806,6 +811,8 @@ class ImportService extends BaseApplicationComponent
         $criteria = craft()->elements->getCriteria(ElementType::Asset);
         $criteria->folderId = $folderIds;
         $criteria->limit = $settings->limit;
+        $criteria->status = null;
+        $criteria->localeEnabled = null;
 
         // Get search strings
         $search = ArrayHelper::stringToArray($data);
@@ -852,6 +859,8 @@ class ImportService extends BaseApplicationComponent
         $criteria = craft()->elements->getCriteria(ElementType::Category);
         $criteria->groupId = $id;
         $criteria->limit = $settings->limit;
+        $criteria->status = null;
+        $criteria->localeEnabled = null;
 
         // Get search strings
         $search = ArrayHelper::stringToArray($data);
@@ -897,6 +906,8 @@ class ImportService extends BaseApplicationComponent
         $criteria = craft()->elements->getCriteria(ElementType::Entry);
         $criteria->sectionId = $sectionIds;
         $criteria->limit = $settings->limit;
+        $criteria->status = null;
+        $criteria->localeEnabled = null;
 
         // Get search strings
         $search = ArrayHelper::stringToArray($data);
