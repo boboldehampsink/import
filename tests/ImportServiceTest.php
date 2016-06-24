@@ -458,7 +458,9 @@ class ImportServiceTest extends BaseTest
         $mockEmailService->expects($this->exactly(1))->method('sendEmail')->with($this->isInstanceOf('Craft\EmailModel'));
         $this->setComponent(craft(), 'email', $mockEmailService);
 
-        $mockTwigEnvironment = $this->getMock('Craft\TwigEnvironment');
+        $mockTwigEnvironment = $this->getMockBuilder('Craft\TwigEnvironment')
+            ->disableOriginalConstructor()
+            ->getMock();
         $mockTemplatesService = $this->getMock('Craft\TemplatesService');
         $mockTemplatesService->expects($this->exactly(1))->method('render')->willReturn('renderedtemplate');
         $mockTemplatesService->expects($this->exactly(1))->method('getTwig')->willReturn($mockTwigEnvironment);
