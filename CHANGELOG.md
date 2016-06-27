@@ -1,5 +1,10 @@
 Changelog
 =================
+###0.8.32###
+ - Fixed broken relative link for user (thanks to @timkelty)
+ - Fix for assets giving 404 on download (thanks to @MRolefes)
+ - Allow element fieldtypes to find disabled elements (thanks to @timkelty)
+
 ###0.8.31###
  - Make sure we have a unique filename to prevent conflict
  - Cache opening of file to prevent a download on every step
