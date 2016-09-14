@@ -1,5 +1,8 @@
 Changelog
 =================
+###0.8.33###
+ - Require an asset source, closing #132
+
 ###0.8.32###
  - Fixed broken relative link for user (thanks to @timkelty)
  - Fix for assets giving 404 on download (thanks to @MRolefes)

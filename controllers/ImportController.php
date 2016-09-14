@@ -49,46 +49,53 @@ class ImportController extends BaseController
         // Is file valid?
         if (!is_null($file)) {
 
-            // Get source
-            $source = craft()->assetSources->getSourceTypeById($import['assetsource']);
+            // Is asset source valid?
+            if (isset($import['assetsource']) && !empty($import['assetsource'])) {
 
-            // Get folder to save to
-            $folderId = craft()->assets->getRootFolderBySourceId($import['assetsource']);
+                // Get source
+                $source = craft()->assetSources->getSourceTypeById($import['assetsource']);
 
-            // Save file to Craft's temp folder for later use
-            $fileName = AssetsHelper::cleanAssetName($file->name);
-            $filePath = AssetsHelper::getTempFilePath($file->extensionName);
-            $file->saveAs($filePath);
+                // Get folder to save to
+                $folderId = craft()->assets->getRootFolderBySourceId($import['assetsource']);
 
-            // Move the file by source type implementation
-            $response = $source->insertFileByPath($filePath, $folderId, $fileName, true);
+                // Save file to Craft's temp folder for later use
+                $fileName = AssetsHelper::cleanAssetName($file->name);
+                $filePath = AssetsHelper::getTempFilePath($file->extensionName);
+                $file->saveAs($filePath);
 
-            // Prevent sensitive information leak. Just in case.
-            $response->deleteDataItem('filePath');
+                // Move the file by source type implementation
+                $response = $source->insertFileByPath($filePath, $folderId, $fileName, true);
 
-            // Get file id
-            $fileId = $response->getDataItem('fileId');
+                // Prevent sensitive information leak. Just in case.
+                $response->deleteDataItem('filePath');
 
-            // Put vars in model
-            $model = new ImportModel();
-            $model->filetype = $file->getType();
+                // Get file id
+                $fileId = $response->getDataItem('fileId');
 
-            // Validate filetype
-            if ($model->validate()) {
+                // Put vars in model
+                $model = new ImportModel();
+                $model->filetype = $file->getType();
 
-                // Get columns
-                $columns = craft()->import->columns($fileId);
+                // Validate filetype
+                if ($model->validate()) {
 
-                // Send variables to template and display
-                $this->renderTemplate('import/_map', array(
-                    'import' => $import,
-                    'file' => $fileId,
-                    'columns' => $columns,
-                ));
+                    // Get columns
+                    $columns = craft()->import->columns($fileId);
+
+                    // Send variables to template and display
+                    $this->renderTemplate('import/_map', array(
+                        'import' => $import,
+                        'file' => $fileId,
+                        'columns' => $columns,
+                    ));
+                } else {
+
+                    // Not validated, show error
+                    craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
+                }
             } else {
-
-                // Not validated, show error
-                craft()->userSession->setError(Craft::t('This filetype is not valid').': '.$model->filetype);
+                // No asset source selected
+                craft()->userSession->setError(Craft::t('Please select an asset source.'));
             }
         } else {
 
