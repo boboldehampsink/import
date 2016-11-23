@@ -3,17 +3,15 @@
 <p>{{ 'Choose the destination fields for your imported data. "{title}" is always required.'|t({
     title: entrytypes[0].titleLabel
 }) }}</p>
-{% if import.behavior != 'append' %}
-<p>{{ 'Select the field(s) to use as match criteria to find existing Entries to replace or delete data.'|t }}</p>
-{% endif %}
+<p>{{ 'Select the field(s) to use as match criteria to find existing Entries to replace or delete data.'|t }}<br>
+  {{ 'If no match criteria is selected, entries will always be created.'|t }}
+</p>
 
 <table class="data">
     <tr>
         <th>{{ "Column name"|t }}</th>
         <th>{{ "Field name"|t }}</th>
-        {% if import.behavior != 'append' %}
         <th>{{ "Use as match criteria"|t }}</th>
-        {% endif %}
     </tr>
 {% for column in columns %}
     {% set column = column|trim %}
@@ -66,7 +64,6 @@
                 </div>
             </div>
         </td>
-        {% if import.behavior != 'append' %}
         <td class="importCriterium">
         {{ forms.checkboxField({
             label: 'Criterium'|t,
@@ -76,10 +73,9 @@
             checked: loop.first or column|lower == 'locale'
         }) }}
         </td>
-        {% endif %}
     </tr>
 {% endfor %}
     <tr>
-        <td colspan="{% if import.behavior != 'append' %}2{% else %}3{% endif %}" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
+        <td style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
     </tr>
 </table>

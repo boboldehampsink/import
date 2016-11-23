@@ -1,17 +1,16 @@
 {% set categoryGroup = craft.categoryGroups.getGroupById(import.elementvars.group) %}
 
 <p>{{ 'Choose the destination fields for your imported data. "Title" is always required.'|t }}</p>
-{% if import.behavior != 'append' %}
-<p>{{ 'Select the field(s) to use as match criteria to find existing Categories to replace or delete data.'|t }}</p>
-{% endif %}
+<p>
+  {{ 'Select the field(s) to use as match criteria to find existing Categories to replace or delete data.'|t }}<br>
+  {{ 'If no match criteria is selected, categories will always be created.'|t }}
+</p>
 
 <table class="data">
     <tr>
         <th>{{ "Column name"|t }}</th>
         <th>{{ "Field name"|t }}</th>
-        {% if import.behavior != 'append' %}
         <th>{{ "Use as match criteria"|t }}</th>
-        {% endif %}
     </tr>
 {% for column in columns %}
     {% set column = column|trim %}
@@ -57,7 +56,6 @@
                 </div>
             </div>
         </td>
-        {% if import.behavior != 'append' %}
         <td class="importCriterium">
         {{ forms.checkboxField({
             label: 'Criterium'|t,
@@ -67,10 +65,9 @@
             checked: loop.first or column|lower == 'locale'
         }) }}
         </td>
-        {% endif %}
     </tr>
 {% endfor %}
     <tr>
-        <td colspan="{% if import.behavior != 'append' %}2{% else %}3{% endif %}" style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
+        <td style="border-bottom: none"><input type="submit" class="btn submit" value="{{ 'Import'|t }}"></td>
     </tr>
 </table>
