@@ -1,5 +1,8 @@
 Changelog
 =================
+###0.8.34###
+ - Show filename in history overview
+
 ###0.8.33###
  - Require an asset source, closing #132
 

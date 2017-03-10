@@ -41,9 +41,9 @@
                             <span class="status {% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}"></span>
                             <span class="title">
                             {% if item.status != 'started' %}
-                                <a href="{{ url('import/history/' ~ item.id) }}">{{ item.file }}</a>
+                                <a href="{{ url('import/history/' ~ item.id) }}">{{ item.getFilename() }}</a>
                             {% else %}
-                                {{ item.file }}
+                                {{ item.getFilename() }}
                             {% endif %}
                             </span>
                         </div>

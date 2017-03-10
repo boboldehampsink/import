@@ -53,4 +53,14 @@ class Import_HistoryRecord extends BaseRecord
             'log' => array(static::HAS_MANY, 'Import_LogRecord', 'logId'),
         );
     }
+
+    /**
+     * Get real file name.
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return craft()->assets->getFileById($this->file)->filename;
+    }
 }
