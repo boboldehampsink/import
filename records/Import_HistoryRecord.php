@@ -62,7 +62,7 @@ class Import_HistoryRecord extends BaseRecord
     public function getFilename()
     {
         if (is_numeric($this->file)) {
-            return craft()->assets->getFileById()->filename;
+            return craft()->assets->getFileById($this->file)->filename;
         }
 
         return $this->file;
