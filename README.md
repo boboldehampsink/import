@@ -39,7 +39,7 @@ Features
  - View your import history
  - Ability to revert imports
 
-###Roadmap###
+### Roadmap ###
  - Import more ElementTypes (Tags, Globals, Assets?) (0.8)
  - Support JSON and XML (0.9)
 
