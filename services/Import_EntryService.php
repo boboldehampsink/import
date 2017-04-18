@@ -227,9 +227,7 @@ class Import_EntryService extends BaseApplicationComponent implements IImportEle
             // Find matching element
             $criteria = craft()->elements->getCriteria(ElementType::Entry);
             $criteria->sectionId = $sectionId;
-
-            // Exact match
-            $criteria->search = '"'.$data.'"';
+            $criteria->search = $data;
 
             // Return the first found element for connecting
             if ($criteria->total()) {

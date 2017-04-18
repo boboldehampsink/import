@@ -175,9 +175,7 @@ class Import_CategoryService extends BaseApplicationComponent implements IImport
             // Find matching element
             $criteria = craft()->elements->getCriteria(ElementType::Category);
             $criteria->groupId = $groupId;
-
-            // Exact match
-            $criteria->search = '"'.$data.'"';
+            $criteria->search = $data;
             $parentCategory = $criteria->first();
         }
 
