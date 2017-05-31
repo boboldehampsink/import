@@ -411,11 +411,11 @@ class ImportService extends BaseApplicationComponent
                     // Convert yes/no values to boolean
                     switch ($data) {
 
-                        case Craft::t('Yes');
+                        case Craft::t('Yes'):
                             $data = true;
                             break;
 
-                        case Craft::t('No');
+                        case Craft::t('No'):
                             $data = false;
                             break;
 
@@ -546,7 +546,7 @@ class ImportService extends BaseApplicationComponent
      */
     protected function _open($file)
     {
-        if(!count($this->_data)) {
+        if (!count($this->_data)) {
 
             // Turn asset into a file
             $asset = craft()->assets->getFileById($file);
@@ -915,14 +915,20 @@ class ImportService extends BaseApplicationComponent
         // Ability to import multiple Assets at once
         $data = array();
 
-        // Loop through keywords
-        foreach ($search as $query) {
-
-            // Search
-            $criteria->search = $query;
-
-            // Add to data
+        //if id was given then look for entry id and ignore search param.
+        if (isset($search[0]) && is_numeric($search[0])) {
+            $criteria->id = $search[0]; //id passed look by id.
             $data = array_merge($data, $criteria->ids());
+        } else {
+            // Loop through keywords
+            foreach ($search as $query) {
+
+                // Search
+                $criteria->search = $query;
+
+                // Add to data
+                $data = array_merge($data, $criteria->ids());
+            }
         }
 
         return $data;
