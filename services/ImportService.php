@@ -91,7 +91,6 @@ class ImportService extends BaseApplicationComponent
     {
         // See if map and data match (could not be due to malformed csv)
         if (count($settings['map']) != count($data)) {
-
             // Log errors when unsuccessful
             $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Columns and data did not match, could be due to malformed CSV row.'))));
 
@@ -126,13 +125,11 @@ class ImportService extends BaseApplicationComponent
         $entry = $service->prepForElementModel($fields, $entry);
 
         try {
-
             // Hook to prepare as appropriate fieldtypes
             array_walk($fields, function (&$data, $handle) {
                 return craft()->plugins->call('registerImportOperation', array(&$data, $handle));
             });
         } catch (Exception $e) {
-
             // Something went terribly wrong, assume its only this row
             $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
         }
@@ -141,30 +138,24 @@ class ImportService extends BaseApplicationComponent
         $entry->setContentFromPost($fields);
 
         try {
-
             // Hook called after all the field values are set, allowing for modification
             // of the entire entry before it's saved. Include the mapping table and row data.
             craft()->plugins->call('modifyImportRow', array($entry, $settings['map'], $data));
         } catch (Exception $e) {
-
             // Something went terribly wrong, assume its only this row
             $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
         }
 
         try {
-
             // Log
             if (!$service->save($entry, $settings)) {
-
                 // Log errors when unsuccessful
                 $this->log[$row] = craft()->import_history->log($settings['history'], $row, $entry->getErrors());
             } else {
-
                 // Some functions need calling after saving
                 $service->callback($fields, $entry);
             }
         } catch (Exception $e) {
-
             // Something went terribly wrong, assume its only this row
             $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
         }
@@ -203,13 +194,11 @@ class ImportService extends BaseApplicationComponent
 
         // If there's a match...
         if (count($cmodel) && $criteria->count()) {
-
             // Get current user
             $currentUser = craft()->users->getUserById($settings['user']);
 
             // If we're deleting
             if ($currentUser->can('delete') && $settings['behavior'] == ImportModel::BehaviorDelete) {
-
                 // Get elements to delete
                 $elements = $criteria->find();
 
@@ -220,15 +209,12 @@ class ImportService extends BaseApplicationComponent
                 // Give event the chance to blow off deletion
                 if ($event->performAction) {
                     try {
-
                         // Do it
                         if (!$service->delete($elements)) {
-
                             // Log errors when unsuccessful
                             $this->log[$row] = craft()->import_history->log($settings['history'], $row, array(array(Craft::t('Something went wrong while deleting this row.'))));
                         }
                     } catch (Exception $e) {
-
                         // Something went terribly wrong, assume its only this row
                         $this->log[$row] = craft()->import_history->log($settings['history'], $row, array('exception' => array($e->getMessage())));
                     }
@@ -237,11 +223,9 @@ class ImportService extends BaseApplicationComponent
                 // Skip rest and continue
                 return;
             } elseif ($currentUser->can('append') || $currentUser->can('replace')) {
-
                 // Fill new EntryModel with match
                 return $criteria->first();
             } else {
-
                 // No permissions!
                 throw new Exception(Craft::t('Tried to import without permission.'));
             }
@@ -261,7 +245,6 @@ class ImportService extends BaseApplicationComponent
         craft()->import_history->end($settings['history'], ImportModel::StatusFinished);
 
         if ($settings['email']) {
-
             // Gather results
             $results = array(
                 'success' => $settings['rows'],
@@ -318,12 +301,9 @@ class ImportService extends BaseApplicationComponent
 
         // If it's a field ofcourse
         if (!is_null($field)) {
-
             // For some fieldtypes the're special rules
             switch ($field->type) {
-
                 case ImportModel::FieldTypeEntries:
-
                     // No newlines allowed
                     $data = str_replace("\n", '', $data);
                     $data = str_replace("\r", '', $data);
@@ -338,7 +318,6 @@ class ImportService extends BaseApplicationComponent
                     break;
 
                 case ImportModel::FieldTypeCategories:
-
                     if (!empty($data)) {
                         $data = $this->prepCategoriesFieldType($data, $field);
                     } else {
@@ -348,7 +327,6 @@ class ImportService extends BaseApplicationComponent
                     break;
 
                 case ImportModel::FieldTypeAssets:
-
                     if (!empty($data)) {
                         $data = $this->prepAssetsFieldType($data, $field);
                     } else {
@@ -358,7 +336,6 @@ class ImportService extends BaseApplicationComponent
                     break;
 
                 case ImportModel::FieldTypeUsers:
-
                     if (!empty($data)) {
                         $data = $this->prepUsersFieldType($data, $field);
                     } else {
@@ -368,13 +345,11 @@ class ImportService extends BaseApplicationComponent
                     break;
 
                 case ImportModel::FieldTypeTags:
-
                     $data = $this->prepTagsFieldType($data, $field);
 
                     break;
 
                 case ImportModel::FieldTypeNumber:
-
                     // Parse as numberx
                     $data = LocalizationHelper::normalizeNumber($data);
 
@@ -384,7 +359,6 @@ class ImportService extends BaseApplicationComponent
                     break;
 
                 case ImportModel::FieldTypeDate:
-
                     // Parse date from string
                     $data = DateTimeHelper::formatTimeForDb(DateTimeHelper::fromString($data, craft()->timezone));
 
@@ -392,7 +366,6 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeRadioButtons:
                 case ImportModel::FieldTypeDropdown:
-
                     //get field settings
                     $data = $this->prepDropDownFieldType($data, $field);
 
@@ -400,29 +373,23 @@ class ImportService extends BaseApplicationComponent
 
                 case ImportModel::FieldTypeCheckboxes:
                 case ImportModel::FieldTypeMultiSelect:
-
                     // Convert to array
                     $data = ArrayHelper::stringToArray($data);
 
                     break;
 
                 case ImportModel::FieldTypeLightSwitch:
-
                     // Convert yes/no values to boolean
                     switch ($data) {
-
-                        case Craft::t('Yes');
+                        case Craft::t('Yes'):
                             $data = true;
                             break;
-
-                        case Craft::t('No');
+                        case Craft::t('No'):
                             $data = false;
                             break;
-
                     }
 
                     break;
-
             }
         }
 
@@ -457,14 +424,12 @@ class ImportService extends BaseApplicationComponent
 
         // If not, do internal check
         if ($service == null) {
-
             // Get from right elementType
             $service = 'import_'.strtolower($elementType);
         }
 
         // Check if elementtype can be imported
         if (isset(craft()->$service) && craft()->$service instanceof IImportElementType) {
-
             // Return this service
             return craft()->$service;
         }
@@ -483,13 +448,11 @@ class ImportService extends BaseApplicationComponent
     {
         // If option paths haven't been loaded
         if (!$this->_loadedOptionPaths) {
-
             // Call hook for all plugins
             $responses = craft()->plugins->call('registerImportOptionPaths');
 
             // Loop through responses from each plugin
             foreach ($responses as $customPaths) {
-
                 // Append custom paths to master list
                 $this->customOptionPaths = array_merge($this->customOptionPaths, $customPaths);
             }
@@ -500,7 +463,6 @@ class ImportService extends BaseApplicationComponent
 
         // If fieldtype has been registered and is not falsey
         if (array_key_exists($fieldHandle, $this->customOptionPaths) && $this->customOptionPaths[$fieldHandle]) {
-
             // Return specified custom path
             return $this->customOptionPaths[$fieldHandle];
         }
@@ -546,8 +508,7 @@ class ImportService extends BaseApplicationComponent
      */
     protected function _open($file)
     {
-        if(!count($this->_data)) {
-
+        if (!count($this->_data)) {
             // Turn asset into a file
             $asset = craft()->assets->getFileById($file);
             $source = $asset->getSource();
@@ -556,7 +517,6 @@ class ImportService extends BaseApplicationComponent
 
             // Check if file exists in the first place
             if (file_exists($file)) {
-
                 // Automatically detect line endings
                 @ini_set('auto_detect_line_endings', true);
 
@@ -581,7 +541,6 @@ class ImportService extends BaseApplicationComponent
                 // Open file and parse csv rows
                 $handle = fopen($file, 'r');
                 while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
-
                     // Add row to data array
                     $this->_data[] = $row;
                 }
@@ -677,7 +636,6 @@ class ImportService extends BaseApplicationComponent
         $data = array();
 
         foreach ($tags as $tag) {
-
             // Find existing tag
             $criteria = craft()->elements->getCriteria(ElementType::Tag);
             $criteria->title = $tag;
@@ -688,7 +646,6 @@ class ImportService extends BaseApplicationComponent
             $tagArray = array();
 
             if (!$criteria->total()) {
-
                 // Create tag if one doesn't already exist
                 $newtag = $this->getNewTagModel();
                 $newtag->getContent()->title = $tag;
@@ -775,7 +732,6 @@ class ImportService extends BaseApplicationComponent
 
         // Loop through keywords
         foreach ($search as $query) {
-
             // Search
             $criteria->search = $query;
 
@@ -822,7 +778,6 @@ class ImportService extends BaseApplicationComponent
 
         // Loop through keywords
         foreach ($search as $query) {
-
             // Search
             $criteria->search = $query;
 
@@ -870,7 +825,6 @@ class ImportService extends BaseApplicationComponent
 
         // Loop through keywords
         foreach ($search as $query) {
-
             // Find matching element by URI (dirty, not all categories have URI's)
             $criteria->uri = $categoryUrl.$this->slugify($query);
 
@@ -916,13 +870,12 @@ class ImportService extends BaseApplicationComponent
         $data = array();
 
         //if id was given then look for entry id and ignore search param.
-        if ( isset($search[0]) && is_numeric($search[0]) ) {
+        if (isset($search[0]) && is_numeric($search[0])) {
             $criteria->id = $search[0]; //id passed look by id.
             $data = array_merge($data, $criteria->ids());
         } else {
             // Loop through keywords
             foreach ($search as $query) {
-
                 // Search
                 $criteria->search = $query;
 
