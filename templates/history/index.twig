@@ -33,7 +33,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for item in craft.import.history %}
+        {% for item in craft.import.history if item.getFilename() %}
             <tr>
                 <td scope="row" data-title="{{ 'Filename'|t }}">
                     <div class="element" data-id="{{ item.id }}" data-status="{% if item.status == 'started' %}pending{% elseif item.status == 'reverted' %}archived{% else %}live{% endif %}" data-label="{{ item.file }}">
